@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import java.util.HashMap;
 
-public class Wrist {
+public class Wrist implements Updateable {
 
     public RobotMap mRobotMap;
 
