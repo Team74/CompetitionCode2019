@@ -19,7 +19,7 @@ public class SubsystemManager implements Updateable {
     public Elevator m_elevator;
     public Wrist m_wrist;
     public StateTracker m_statetracker;
-    public BallIntake m_ballintake;
+    public BallManipulator m_ballmanipulator;
     //etc. ...
     //incidentally, do we want these to be private? Commands should go from masters through SubsystemManager, and SubsystemManager can deal with converting that into individual commands.
 
@@ -30,9 +30,9 @@ public class SubsystemManager implements Updateable {
         m_elevator = new Elevator(m_robotMap);
         m_wrist = new Wrist(m_robotMap);
         m_statetracker = new StateTracker(this);
-        m_ballintake = new BallIntake(m_robotMap);
+        m_ballmanipulator = new BallManipulator(m_robotMap);
         m_listOfUpdatingObjects.add(m_statetracker);
-        m_listOfUpdatingObjects.add(m_ballintake);
+        m_listOfUpdatingObjects.add(m_ballmanipulator);
         // ... set up other Subsystems if present
         /*
         -setup all the Subsystems: Drivetrain, Grabbers, etc.

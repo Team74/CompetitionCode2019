@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 
 
-public class BallIntake implements Updateable{
+public class BallManipulator implements Updateable{
 
     public RobotMap mRobotMap;  //reference to the original
 
@@ -19,13 +19,13 @@ public class BallIntake implements Updateable{
 
     public final int kTimeoutMs = 30;
 
-    enum BallIntakeState {
+    enum BallManipulatorState {
         INTAKING, OUTTAKING, HOLD
     }
-    BallIntakeState currentState;
+    BallManipulatorState currentState;
 
 
-    public BallIntake(RobotMap robotMap){
+    public BallManipulator(RobotMap robotMap){
         mRobotMap = robotMap;
     
         mIntakeFront = mRobotMap.Intake_0;
@@ -38,7 +38,7 @@ public class BallIntake implements Updateable{
         mIntakeBack.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void setState(BallIntakeState state) {
+    public void setState(BallManipulatorState state) {
         currentState = state;
     }
 
