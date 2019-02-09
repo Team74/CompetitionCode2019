@@ -64,11 +64,11 @@ public class Elevator implements Updateable {
 
     public void setSetpoints(String[] aliases, double[] targets) {
         if(aliases.length != targets.length) {
-            throw Exception("setSetpoints received bad inputs");
+            throw new RuntimeException("setSetpoints received bad inputs");
         }
 
         for(int i = 0; i < aliases.length; ++i) {
-            listedSetpoints_aliases.set(aliases[i], targets[i]);
+            listedSetpoints_aliases.put(aliases[i], i);
         }
 
         setSetpoints(targets);
@@ -84,6 +84,7 @@ public class Elevator implements Updateable {
         if(currentTarget != target) {
             currentTarget = target;
             currentState = ElevatorState.MOVING;
+        }
     }
 
     public void update(double dT) {
