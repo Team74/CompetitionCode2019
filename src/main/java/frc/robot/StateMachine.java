@@ -13,55 +13,77 @@ public class StateMachine {
         ENABLED, DISABLED;
     }
 
+    enum ElevatorTargets {
+        BOTTUM, INTAKEBALL, LOWHATCH, MIDHATCH, HIGHHATCH, LOWBALL, MIDBALL, HIGHBALL, CARGOBALL; 
+    }
+
     enum ElevatorStates {
-        HOLDING, MOVING_TO_POSITION, MANUAL; 
+        HOLDING, MOVING, MANUAL;
+    }
+
+    enum WristTargets {
+        OUT, IN, CARGO;
     }
 
     enum WristStates {
-        HOLDING, MOVING_TO_POSITION, MANUAL;
+        HOLDING, MOVING, MANUAL;
     }
     
-    enum BallManipulatorStates {
+    enum BallManipulatorTargets {
         INTAKING, OUTTAKE, HOLDING;
     }
 
-    enum PanelManipulatorStates {
+    enum PanelManipulatorTargets {
         IN, OUT;
     }
 
     public HashMap<Subsystems, Enum> currentState = new HashMap<>();
     public HashMap<Subsystems, Enum> desiredState = new HashMap<>();
+    public HashMap<Subsystems, Enum> subsystemTargets = new HashMap<>();
 
     public StateMachine(){
         currentState.put(Subsystems.ELEVATOR, ElevatorStates.HOLDING);
         currentState.put(Subsystems.WRIST, WristStates.HOLDING);
-        currentState.put(Subsystems.BALL_MANIPULATOR, BallManipulatorStates.HOLDING);
-        currentState.put(Subsystems.PANEL_MANIPULATOR, PanelManipulatorStates.IN);
 
         desiredState = currentState;
+
+        subsystemTargets.put(Subsystems.ELEVATOR, ElevatorTargets.BOTTUM);
+        subsystemTargets.put(Subsystems.WRIST, WristTargets.IN);
+        subsystemTargets.put(Subsystems.BALL_MANIPULATOR, BallManipulatorTargets.HOLDING);
+        subsystemTargets.put(Subsystems.PANEL_MANIPULATOR, PanelManipulatorTargets.IN);
     }
 
     public void update(){
-        if ( desiredState != currentState){
-        
-        } else {
-            System.out.println("Do nothing");
+        updateElevator(desiredState.get(Subsystems.ELEVATOR), subsystemTargets.get(Subsystems.ELEVATOR));
+        updateWrist(desiredState.get(Subsystems.WRIST), subsystemTargets.get(Subsystems.WRIST));
+        updateBallManipulator(subsystemTargets.get(Subsystems.BALL_MANIPULATOR));
+        updatePanelManipulator(subsystemTargets.get(Subsystems.PANEL_MANIPULATOR));
+
+    }
+
+    public void updateElevator(ElevatorStates desiredState, ElevatorTargets target){
+        switch(desiredState) {
+            case HOLDING:
+                //Set elevator to target
+            case MOVING:
+                //Set elevator to target
+            case MANUAL:
+                //In this state we want to use the joystick to drive the elevator
+            default:
+                System.out.println("Something went wrong");
+
         }
     }
 
-    public void updateElevator(){
+    public void updateWrist(WristStates desiredState, WristTargets target){
 
     }
 
-    public void updateWrist(){
+    public void updateBallManipulator(BallManipulatorTargets target){
 
     }
 
-    public void updateBallManipulator(){
-
-    }
-
-    public void updatePanelManipulator(){
+    public void updatePanelManipulator(PanelManipulatorTargets target){
 
     }
 }
