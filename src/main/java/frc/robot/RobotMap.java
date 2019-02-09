@@ -42,6 +42,8 @@ public class RobotMap {
 
     public CANEncoder Elevator_E_0;
 
+    public WPI_TalonSRX Wrist_0 = new WPI_TalonSRX(6);
+
     public AHRS navX = new AHRS(SPI.Port.kMXP, (byte)60);
 
     public RobotMap() {

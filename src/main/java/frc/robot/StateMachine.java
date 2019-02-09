@@ -54,10 +54,6 @@ public class StateMachine {
     }
 
     public void update(){
-        updateElevator(desiredState.get(Subsystems.ELEVATOR), subsystemTargets.get(Subsystems.ELEVATOR));
-        updateWrist(desiredState.get(Subsystems.WRIST), subsystemTargets.get(Subsystems.WRIST));
-        updateBallManipulator(subsystemTargets.get(Subsystems.BALL_MANIPULATOR));
-        updatePanelManipulator(subsystemTargets.get(Subsystems.PANEL_MANIPULATOR));
 
     }
 
