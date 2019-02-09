@@ -2,84 +2,43 @@ package frc.robot;
 
 import java.util.HashMap;
 
+public class StateMachine implements Updateable {
 
-public class StateMachine {
+    private SubsystemManager m_subsystemManager;
 
-    enum Subsystems {
-        ELEVATOR, WRIST, BALL_MANIPULATOR, PANEL_MANIPULATOR; 
-    }
+    public String elevatorSetpoint = "Bottom";
+    public HashMap<String, Double> elevatorSetpointList= new HashMap<String, Double>();
+    //Possible values hoo boy
 
-    enum DisabledStates {
-        ENABLED, DISABLED;
-    }
+    public String wristSetpoint = "Perpendicular";
+    public HashMap<String, Integer> wristSetpointList= new HashMap<String, Integer>();
+    //Possible values 3:  Parallel Perpendicular CargoDiagonal
 
-    enum ElevatorTargets {
-        BOTTUM, INTAKEBALL, LOWHATCH, MIDHATCH, HIGHHATCH, LOWBALL, MIDBALL, HIGHBALL, CARGOBALL; 
-    }
+    public String ballManipulatorTarget = "Hold";
+    //Possible values 3:  Out In Hold
 
-    enum ElevatorStates {
-        HOLDING, MOVING, MANUAL;
-    }
+    public String panelManipulatorTarget = "In";
+    //Possible values 2:  Out In
 
-    enum WristTargets {
-        OUT, IN, CARGO;
-    }
-
-    enum WristStates {
-        HOLDING, MOVING, MANUAL;
-    }
-    
-    enum BallManipulatorTargets {
-        INTAKING, OUTTAKE, HOLDING;
-    }
-
-    enum PanelManipulatorTargets {
-        IN, OUT;
-    }
-
-    public HashMap<Subsystems, Enum> currentState = new HashMap<>();
-    public HashMap<Subsystems, Enum> desiredState = new HashMap<>();
-    public HashMap<Subsystems, Enum> subsystemTargets = new HashMap<>();
-
-    public StateMachine(){
-        currentState.put(Subsystems.ELEVATOR, ElevatorStates.HOLDING);
-        currentState.put(Subsystems.WRIST, WristStates.HOLDING);
-
-        desiredState = currentState;
-
-        subsystemTargets.put(Subsystems.ELEVATOR, ElevatorTargets.BOTTUM);
-        subsystemTargets.put(Subsystems.WRIST, WristTargets.IN);
-        subsystemTargets.put(Subsystems.BALL_MANIPULATOR, BallManipulatorTargets.HOLDING);
-        subsystemTargets.put(Subsystems.PANEL_MANIPULATOR, PanelManipulatorTargets.IN);
-    }
-
-    public void update(){
-
-    }
-
-    public void updateElevator(ElevatorStates desiredState, ElevatorTargets target){
-        switch(desiredState) {
-            case HOLDING:
-                //Set elevator to target
-            case MOVING:
-                //Set elevator to target
-            case MANUAL:
-                //In this state we want to use the joystick to drive the elevator
-            default:
-                System.out.println("Something went wrong");
-
+    public StateMachine(SubsystemManager subsystemManager) {
+        m_subsystemManager = subsystemManager;
+        {
+            Double[] temp = elevatorSetpointList.values().toArray(new Double[0]); double[] temp2 = new double[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
+            m_subsystemManager.m_elevator.setSetpoints((String[])elevatorSetpointList.keySet().toArray(), temp2);
+        }
+        {
+            Integer[] temp = elevatorSetpointList.values().toArray(new Integer[0]); int[] temp2 = new int[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
+            m_subsystemManager.m_wrist.setSetpoints((String[])wristSetpointList.keySet().toArray(), temp2);
         }
     }
 
-    public void updateWrist(WristStates desiredState, WristTargets target){
+    public void update(double dt) {
 
     }
 
-    public void updateBallManipulator(BallManipulatorTargets target){
 
-    }
-
-    public void updatePanelManipulator(PanelManipulatorTargets target){
-
-    }
 }
+/*abstract        if (m_stateMachine.elevatorSetpoint == "Low" && m_stateMachine.wristSetpoint == "Parallel" && m_buttons.get("1d_down")) {
+            m_stateMachine.ballManipulatorState = "Intaking";
+        } else if ()
+        */

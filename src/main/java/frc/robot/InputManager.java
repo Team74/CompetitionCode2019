@@ -30,6 +30,7 @@ public class InputManager implements Updateable {
         m_buttons.put("0r_trigger", false);    //We're assuming well not need the double
         m_buttons.put("0l_bumper", false);
         m_buttons.put("0r_bumper", false);
+        m_buttons.put("0d_down", false);
 
         m_buttons.put("1x", false);
         m_buttons.put("1y", false);
@@ -39,6 +40,7 @@ public class InputManager implements Updateable {
         m_buttons.put("1r_trigger", false);    //We're assuming well not need the double
         m_buttons.put("1l_bumper", false);
         m_buttons.put("1r_bumper", false);
+        m_buttons.put("1d_down", false);
 
         m_joysticks.put("0lx", (double)0);
         m_joysticks.put("0ly", (double)0);
@@ -78,8 +80,21 @@ public class InputManager implements Updateable {
         m_joysticks.put("1rx", m_controller_1.getX(Hand.kRight));
         m_joysticks.put("1ry", m_controller_1.getY(Hand.kRight));
 
-        m_joysticks.put("1ry", m_controller_1.getY(Hand.kRight));
-        m_joysticks.put("1ry", m_controller_1.getY(Hand.kRight));
+        if(m_controller_0.getPOV(0) == -1) {
+            m_buttons.put("0d_down", false);
+        } else if(m_controller_0.getPOV(0) <= 45 || m_controller_0.getPOV(0) >= 315) {
+            m_buttons.put("0d_down", true);
+        } else {
+            m_buttons.put("0d_down", false);
+        }
+
+        if(m_controller_1.getPOV(0) == -1) {
+            m_buttons.put("1d_down", false);
+        } else if(m_controller_1.getPOV(0) <= 45 || m_controller_1.getPOV(0) >= 315) {
+            m_buttons.put("1d_down", true);
+        } else {
+            m_buttons.put("1d_down", false);
+        }
     }
 
 }

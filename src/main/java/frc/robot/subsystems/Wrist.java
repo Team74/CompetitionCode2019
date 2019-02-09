@@ -32,7 +32,7 @@ public class Wrist implements Updateable {
 
     public final double kHoldingDeadzone = 0.0;
 
-    public double[] listedSetpoints;
+    public int[] listedSetpoints;
     public HashMap<String, Integer> listedSetpoints_aliases;
     public int currentTarget;
 
@@ -72,7 +72,7 @@ public class Wrist implements Updateable {
 
     }
 
-    public void setSetpoints(String[] aliases, double[] targets) {
+    public void setSetpoints(String[] aliases, int[] targets) {
         if(aliases.length != targets.length) {
             throw new RuntimeException("setSetpoints received bad inputs");
         }
@@ -84,7 +84,7 @@ public class Wrist implements Updateable {
         setSetpoints(targets);
     }
 
-    public void setSetpoints(double[] targets) {
+    public void setSetpoints(int[] targets) {
         listedSetpoints = targets;
     }
 

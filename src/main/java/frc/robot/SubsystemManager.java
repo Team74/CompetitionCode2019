@@ -6,6 +6,7 @@ Essentially the 'model' class -- keeps track of the state of the robot, contains
 
 import java.util.ArrayList;
 import frc.robot.Updateable;
+import frc.robot.StateMachine;
 import frc.robot.behavior.Master;
 
 import frc.robot.subsystems.*;
@@ -17,6 +18,7 @@ public class SubsystemManager implements Updateable {
 
     //all the individual subsystems
     public RobotMap m_robotMap;   //plus this one, which directly handles the physical components
+    public StateMachine m_statemachine;
     public Drivetrain m_drivetrain;   //this will get the RobotMap passed in when it's created
     public Elevator m_elevator;
     public Wrist m_wrist;
@@ -30,15 +32,15 @@ public class SubsystemManager implements Updateable {
     SubsystemManager() {
 
         m_robotMap = new RobotMap(); //initializes all the physical hardware bits, but doesn't do anything further with them
+        m_statemachine = new StateMachine(this);
         m_drivetrain = new Drivetrain(m_robotMap);
-
         m_elevator = new Elevator(m_robotMap);
         m_wrist = new Wrist(m_robotMap);
         m_statetracker = new StateTracker(this);
         m_ballmanipulator = new BallManipulator(m_robotMap);
         m_panelmanipulator = new PanelManipulator(m_robotMap);
 
-
+        m_listOfUpdatingObjects.add(m_statemachine);
         m_listOfUpdatingObjects.add(m_elevator);
         m_listOfUpdatingObjects.add(m_wrist);
         m_listOfUpdatingObjects.add(m_statetracker);
