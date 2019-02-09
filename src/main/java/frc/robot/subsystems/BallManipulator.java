@@ -1,9 +1,10 @@
 //TODO: Measure load to know when we've picked up a ball. question: will there be a backstop?
 
 
-package frc.robot;
+package frc.robot.subsystems;
 
 import frc.robot.Updateable;
+import frc.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;

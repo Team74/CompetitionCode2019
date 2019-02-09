@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -29,7 +29,7 @@ public class Drivetrain implements Updateable {
     private final double WIDTH;
     private final double LENGTH;
 
-    Drivetrain(RobotMap robotmap) {
+    public Drivetrain(RobotMap robotmap) {
 
         lf = new SwerveModule( robotmap.Drive_0, robotmap.Drive_E_0, robotmap.Steering_0, 229 + 512);
         lb = new SwerveModule( robotmap.Drive_1, robotmap.Drive_E_1, robotmap.Steering_1, 115 + 512);

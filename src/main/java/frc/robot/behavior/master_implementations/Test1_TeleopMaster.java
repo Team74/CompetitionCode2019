@@ -1,7 +1,8 @@
 package frc.robot.behavior.master_implementations;
 
 import frc.robot.SubsystemManager;
-import frc.robot.SwerveModule;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.SwerveModule;
 import frc.robot.InputManager;
 
 import frc.robot.behavior.TeleopMaster;

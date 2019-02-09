@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import frc.robot.Updateable;
 import frc.robot.behavior.Master;
 
+import frc.robot.subsystems.*;
+
 public class SubsystemManager implements Updateable {
 
     public Master m_currentMaster;  //the thing that's currently giving this thing instructions.
