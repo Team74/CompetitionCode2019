@@ -1,12 +1,11 @@
 package frc.robot.behavior.master_implementations;
 
 import frc.robot.SubsystemManager;
-import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
 import frc.robot.RobotMap;
 
 import frc.robot.Updateable;
 
-import frc.robot.Drivetrain;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.behavior.master_implementations.Paths;
 
 import jaci.pathfinder.Pathfinder;
