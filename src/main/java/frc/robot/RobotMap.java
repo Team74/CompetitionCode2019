@@ -42,9 +42,10 @@ public class RobotMap {
 
     public CANEncoder Elevator_E_0;
 
-    public WPI_TalonSRX Intake_0 = new WPI_TalonSRX(30);//Back right
-    public WPI_TalonSRX Intake_1 = new WPI_TalonSRX(31);//Back right
+    public WPI_TalonSRX Intake_0 = new WPI_TalonSRX(30);
+    public WPI_TalonSRX Intake_1 = new WPI_TalonSRX(31);
 
+    public WPI_TalonSRX Wrist_0 = new WPI_TalonSRX(6);
 
     public AHRS navX = new AHRS(SPI.Port.kMXP, (byte)60);
 

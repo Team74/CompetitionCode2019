@@ -16,6 +16,8 @@ public class SubsystemManager implements Updateable {
     //all the individual subsystems
     public RobotMap m_robotMap;   //plus this one, which directly handles the physical components
     public Drivetrain m_drivetrain;   //this will get the RobotMap passed in when it's created
+    public Elevator m_elevator;
+    public Wrist m_wrist;
     public StateTracker m_statetracker;
     public BallIntake m_ballintake;
     //etc. ...
@@ -25,6 +27,8 @@ public class SubsystemManager implements Updateable {
 
         m_robotMap = new RobotMap(); //initializes all the physical hardware bits, but doesn't do anything further with them
         m_drivetrain = new Drivetrain(m_robotMap);
+        m_elevator = new Elevator(m_robotMap);
+        m_wrist = new Wrist(m_robotMap);
         m_statetracker = new StateTracker(this);
         m_ballintake = new BallIntake(m_robotMap);
         m_listOfUpdatingObjects.add(m_statetracker);

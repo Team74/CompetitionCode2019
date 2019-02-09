@@ -28,9 +28,9 @@ public class Elevator implements Updateable {
     public int currentTarget;
 
     enum ElevatorState {
-        HOLDING, MOVING, MANUAL
+        HOLDING, MOVING, MANUAL;
     }
-    ElevatorState currentState;
+    public ElevatorState currentState;
 
     public Elevator(RobotMap robotMap){
         mRobotMap = robotMap;
@@ -80,6 +80,7 @@ public class Elevator implements Updateable {
     public void setTarget(String targetName) {
         setTarget(listedSetpoints_aliases.get(targetName));
     }
+    
     public void setTarget(int target) {
         if(currentTarget != target) {
             currentTarget = target;

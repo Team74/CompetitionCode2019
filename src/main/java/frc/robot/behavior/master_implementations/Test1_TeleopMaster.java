@@ -3,7 +3,10 @@ package frc.robot.behavior.master_implementations;
 import frc.robot.SubsystemManager;
 import frc.robot.SwerveModule;
 import frc.robot.InputManager;
+
 import frc.robot.behavior.TeleopMaster;
+
+import frc.utils.Utilities;
 
 public class Test1_TeleopMaster extends TeleopMaster {
 
@@ -18,10 +21,6 @@ public class Test1_TeleopMaster extends TeleopMaster {
 
         currentMotor = m_subsystem_manager.m_drivetrain.lb;
         output_extra = "lb: ";
-     }
-
-     private double handleDeadband(double input) {
-        return Math.abs(input) <= k_deadband ? 0 : input; 
      }
 
     public void update(double dt) {  
@@ -71,9 +70,9 @@ public class Test1_TeleopMaster extends TeleopMaster {
         //System.out.println("rightX: " + rightX);
 
         
-        double magnitude = Math.hypot(handleDeadband(leftX), handleDeadband(leftY));
-        double angle = Math.atan2(handleDeadband(leftX), handleDeadband(leftY));
-        double rotation = handleDeadband(rightX);
+        double magnitude = Math.hypot(Utilities.handleDeadband(leftX, k_deadband), Utilities.handleDeadband(leftY, k_deadband));
+        double angle = Math.atan2(Utilities.handleDeadband(leftX, k_deadband), Utilities.handleDeadband(leftY, k_deadband));
+        double rotation = Utilities.handleDeadband(rightX, k_deadband);
 
         //System.out.println("Magnitude: " + magnitude);
         //System.out.println("Magnitude: " + magnitude);
