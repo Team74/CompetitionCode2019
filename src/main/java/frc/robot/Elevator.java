@@ -49,6 +49,8 @@ public class Elevator implements Updateable {
         elevatorController.setOutputRange(kMinOutput, kMaxOutput);
         elevatorController.setSmartMotionMaxVelocity(maxVel, kSlotIDX);
         elevatorController.setSmartMotionMaxAccel(maxAcc, kSlotIDX);
+
+        elevatorMotor.burnFlash();
     }
 
     public void setElevatorHeight(double _setPoint){
