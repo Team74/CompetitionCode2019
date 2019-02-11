@@ -14,7 +14,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
     private HashMap<String, Boolean> m_buttons;
 
     String setPointName = "";
-    boolean panelBall = true;   //true means ball
+    boolean isBall = true;   //true means ball
 
     public PrimaryTeleopMaster(SubsystemManager subsystem_manager, InputManager input_manager) { 
         super(subsystem_manager, input_manager); 
@@ -24,7 +24,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
 
     public void update(double dt) {
 
-        panelBall = true; // get trigger
+        isBall = true; // get trigger
 
         switch(1) {
             case 1:
@@ -40,7 +40,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
                     m_stateMachine.elevatorSetpoint = setPointName;
                     break;
                 }
-                setPointName += panelBall ? "_Ball" : "_Panel";
+                setPointName += isBall ? "_Ball" : "_Panel";
                 m_stateMachine.elevatorSetpoint = setPointName;
         }
 
