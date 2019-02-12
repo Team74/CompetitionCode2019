@@ -20,10 +20,10 @@ public class BallManipulator implements Updateable{
 
     public final int kTimeoutMs = 30;
 
-    enum BallManipulatorState {
-        INTAKING, OUTTAKING, HOLD
+    public static enum BallManipulatorState {
+        IN, OUT, HOLDING;
     }
-    BallManipulatorState currentState;
+    public BallManipulatorState currentState;
 
 
     public BallManipulator(RobotMap robotMap){
