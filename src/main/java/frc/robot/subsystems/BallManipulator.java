@@ -45,15 +45,15 @@ public class BallManipulator implements Updateable{
 
     public void update(double dt) {
         switch(currentState) {
-            case INTAKING:
+            case IN:
                 mIntakeFront.set(1);
                 mIntakeBack.set(1);
             break;
-            case OUTTAKING:
+            case OUT:
             mIntakeFront.set(-1);
             mIntakeBack.set(-1);
             break;
-            case HOLD:
+            case HOLDING:
                 mIntakeFront.set(0);
                 mIntakeBack.set(0);
             break;

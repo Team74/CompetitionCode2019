@@ -37,6 +37,9 @@ public class PrimaryTeleopMaster extends TeleopMaster {
                 } else if (m_buttons.get("1b")) {
                     setPointName = "Cargo";
                 } else {
+                    if(m_buttons.get("1d_down")) {
+                        setPointName = "INTAKE_BALL";
+                    }
                     m_stateMachine.elevatorSetpoint = setPointName;
                     break;
                 }
@@ -47,11 +50,11 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         m_stateMachine.wristSetpoint = "Perpendicular";
         if(m_buttons.get("1d_up")) {
             m_stateMachine.ballManipulatorTarget = "Out";
-            if(setPointName.contains("Low") || setPointName.contains("Cargo")) {
+            if(setPointName == "INTAKE_BALL" || setPointName.contains("Cargo")) {
                 m_stateMachine.wristSetpoint = "CargoDiagonal";
             }
         } else if(m_buttons.get("1d_down")) {
-            if(setPointName.contains("Low")) {
+            if(setPointName == "INTAKE_BALL") {
                 m_stateMachine.wristSetpoint = "Parallel";
                 m_stateMachine.ballManipulatorTarget = "In";
             } else {

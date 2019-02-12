@@ -56,17 +56,24 @@ public class StateMachine implements Updateable {
         } else if(elevator.currentState == Elevator.ElevatorState.HOLDING) {
             
             if(elevator.listedSetpoints_aliases.get(elevatorSetpoint) == elevator.currentTarget) {
-
-                if(elevatorSetpoint == "INTAKE_BALL" || (wrist.currentState == Wrist.WristState.HOLDING && wrist.listedSetpoints_aliases.get(wristSetpoint) == wrist.currentTarget)) {
-                    
-                    if(ballManipulatorTarget == "Out") {
-                        ballManipulator.currentState = BallManipulator.BallManipulatorState.OUT;
-
-                    } else if(ballManipulatorTarget == "In") {
-                        ballManipulator.currentState = BallManipulator.BallManipulatorState.IN;
-
-                    } else {
+                switch(1) {
+                case 1:
+                    if(wrist.listedSetpoints_aliases.get(wristSetpoint) != wrist.currentTarget) {
+                        wrist.setTarget(wristSetpoint);
                         ballManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
+                        break;
+                    }
+                    if( (elevatorSetpoint == "INTAKE_BALL" && ballManipulatorTarget == "In") || (wrist.currentState == Wrist.WristState.HOLDING) {
+                        
+                        if(ballManipulatorTarget == "Out") {
+                            ballManipulator.currentState = BallManipulator.BallManipulatorState.OUT;
+
+                        } else if(ballManipulatorTarget == "In") {
+                            ballManipulator.currentState = BallManipulator.BallManipulatorState.IN;
+
+                        } else {
+                            ballManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
+                        }
                     }
                 }
             } else {
@@ -74,8 +81,8 @@ public class StateMachine implements Updateable {
 
                 if (wrist.currentState == Wrist.WristState.HOLDING && wristSetpoint == "Perpendicular"){
                     elevator.setTarget(elevatorSetpoint);
-                }else {
-                    wrist.setTarget(wristSetpoint);
+                } else {
+                    wrist.setTarget(wristSetpoint); //should always be Perpendicular, really -- if bugs, check here
                 }
             } 
         }
