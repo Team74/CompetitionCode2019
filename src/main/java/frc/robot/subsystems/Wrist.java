@@ -36,7 +36,7 @@ public class Wrist implements Updateable {
     public HashMap<String, Integer> listedSetpoints_aliases;
     public int currentTarget;
 
-    enum WristState {
+    public static enum WristState {
         HOLDING, MOVING, MANUAL;
     }
     public WristState currentState;

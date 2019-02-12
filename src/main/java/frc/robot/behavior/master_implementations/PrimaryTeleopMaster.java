@@ -49,7 +49,6 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             m_stateMachine.ballManipulatorTarget = "Out";
             if(setPointName.contains("Low")) {
                 m_stateMachine.wristSetpoint = "Parallel";
-                m_stateMachine.ballManipulatorTarget = "In";
             } else if(setPointName.contains("Cargo")) {
                 m_stateMachine.wristSetpoint = "CargoDiagonal";
             }

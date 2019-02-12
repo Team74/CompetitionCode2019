@@ -13,6 +13,11 @@ import frc.robot.RobotMap;
 
 public class Elevator implements Updateable {
 
+
+    public static enum ElevatorState {
+        HOLDING, MOVING, MANUAL;
+    }
+
     public RobotMap mRobotMap;  //reference to the original
 
     public CANSparkMax elevatorMotor;
@@ -27,9 +32,6 @@ public class Elevator implements Updateable {
     public HashMap<String, Integer> listedSetpoints_aliases;
     public int currentTarget;
 
-    enum ElevatorState {
-        HOLDING, MOVING, MANUAL;
-    }
     public ElevatorState currentState;
 
     public Elevator(RobotMap robotMap){

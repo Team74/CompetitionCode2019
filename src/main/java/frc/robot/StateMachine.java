@@ -2,9 +2,15 @@ package frc.robot;
 
 import java.util.HashMap;
 
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Wrist;
+
 public class StateMachine implements Updateable {
 
     private SubsystemManager m_subsystemManager;
+    private Elevator elev;
+    private Wrist wrist;
+
 
     public String elevatorSetpoint = "Bottom";
     public HashMap<String, Double> elevatorSetpointList= new HashMap<String, Double>();
@@ -22,6 +28,9 @@ public class StateMachine implements Updateable {
 
     public StateMachine(SubsystemManager subsystemManager) {
         m_subsystemManager = subsystemManager;
+        elev = m_subsystemManager.m_elevator;
+        wrist = m_subsystemManager.m_wrist;
+
         {
             Double[] temp = elevatorSetpointList.values().toArray(new Double[0]); double[] temp2 = new double[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
             m_subsystemManager.m_elevator.setSetpoints((String[])elevatorSetpointList.keySet().toArray(), temp2);
@@ -33,7 +42,29 @@ public class StateMachine implements Updateable {
     }
 
     public void update(double dt) {
-        
+
+        if(elev.currentState == Elevator.ElevatorState.MOVING) {
+            assert wristSetpoint == "Perpendicular";
+            assert ballManipulatorTarget == "Hold";
+            assert panelManipulatorTarget == "In";
+            //don't actually do much -- the Elevator is handling moving on its own, don't damage things
+        } else if(elev.currentState == Elevator.ElevatorState.HOLDING) {
+            if(elev.listedSetpoints_aliases.get(elevatorSetpoint) == elev.currentTarget) {
+                if(elevatorSetpoint == "Low_Ball" || (wrist.currentState == Wrist.WristState.HOLDING && wrist.listedSetpoints_aliases.get(wristSetpoint) == wrist.currentTarget)) {
+                    if(ballManipulatorTarget == "OUT") {
+
+                    } else if(ballManipulatorTarget == "IN") {
+
+                    } else {
+                        m_subsystemManager
+                    }
+                }
+            } else {
+                
+            }
+        } else { //MANUAL CONTROL
+            //put code here, someday
+        }
     }
 
 
