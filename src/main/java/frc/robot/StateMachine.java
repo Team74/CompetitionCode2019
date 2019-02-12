@@ -63,7 +63,7 @@ public class StateMachine implements Updateable {
                         ballManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
                         break;
                     }
-                    if( (elevatorSetpoint == "INTAKE_BALL" && ballManipulatorTarget == "In") || (wrist.currentState == Wrist.WristState.HOLDING) {
+                    if( (elevatorSetpoint == "INTAKE_BALL" && ballManipulatorTarget == "In") || (wrist.currentState == Wrist.WristState.HOLDING)) {
                         
                         if(ballManipulatorTarget == "Out") {
                             ballManipulator.currentState = BallManipulator.BallManipulatorState.OUT;
