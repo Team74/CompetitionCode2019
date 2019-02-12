@@ -2,14 +2,17 @@ package frc.robot;
 
 import java.util.HashMap;
 
+import frc.robot.subsystems.BallManipulator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.BallManipulator.BallManipulatorState;
 
 public class StateMachine implements Updateable {
 
     private SubsystemManager m_subsystemManager;
-    private Elevator elev;
+    private Elevator elevator;
     private Wrist wrist;
+    private BallManipulator ballManipulator;
 
 
     public String elevatorSetpoint = "Bottom";
@@ -28,8 +31,9 @@ public class StateMachine implements Updateable {
 
     public StateMachine(SubsystemManager subsystemManager) {
         m_subsystemManager = subsystemManager;
-        elev = m_subsystemManager.m_elevator;
+        elevator = m_subsystemManager.m_elevator;
         wrist = m_subsystemManager.m_wrist;
+        ballManipulator = m_subsystemManager.m_ballmanipulator;
 
         {
             Double[] temp = elevatorSetpointList.values().toArray(new Double[0]); double[] temp2 = new double[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
@@ -43,31 +47,42 @@ public class StateMachine implements Updateable {
 
     public void update(double dt) {
 
-        if(elev.currentState == Elevator.ElevatorState.MOVING) {
+        if(elevator.currentState == Elevator.ElevatorState.MOVING) {
             assert wristSetpoint == "Perpendicular";
             assert ballManipulatorTarget == "Hold";
             assert panelManipulatorTarget == "In";
             //don't actually do much -- the Elevator is handling moving on its own, don't damage things
-        } else if(elev.currentState == Elevator.ElevatorState.HOLDING) {
-            if(elev.listedSetpoints_aliases.get(elevatorSetpoint) == elev.currentTarget) {
-                if(elevatorSetpoint == "Low_Ball" || (wrist.currentState == Wrist.WristState.HOLDING && wrist.listedSetpoints_aliases.get(wristSetpoint) == wrist.currentTarget)) {
-                    if(ballManipulatorTarget == "OUT") {
 
-                    } else if(ballManipulatorTarget == "IN") {
+        } else if(elevator.currentState == Elevator.ElevatorState.HOLDING) {
+            
+            if(elevator.listedSetpoints_aliases.get(elevatorSetpoint) == elevator.currentTarget) {
+
+                if(elevatorSetpoint == "INTAKE_BALL" || (wrist.currentState == Wrist.WristState.HOLDING && wrist.listedSetpoints_aliases.get(wristSetpoint) == wrist.currentTarget)) {
+                    
+                    if(ballManipulatorTarget == "Out") {
+                        ballManipulator.currentState = BallManipulator.BallManipulatorState.OUT;
+
+                    } else if(ballManipulatorTarget == "In") {
+                        ballManipulator.currentState = BallManipulator.BallManipulatorState.IN;
 
                     } else {
-                        m_subsystemManager
+                        ballManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
                     }
                 }
             } else {
-                
-            }
-        } else { //MANUAL CONTROL
+                ballManipulator.setState(BallManipulator.BallManipulatorState.HOLDING);
+
+                if (wrist.currentState == Wrist.WristState.HOLDING && wristSetpoint == "Perpendicular"){
+                    elevator.setTarget(elevatorSetpoint);
+                }else {
+                    wrist.setTarget(wristSetpoint);
+                }
+            } 
+        }
+        else { //MANUAL CONTROL
             //put code here, someday
         }
-    }
-
-
+    } 
 }
 /*abstract        if (m_stateMachine.elevatorSetpoint == "Low" && m_stateMachine.wristSetpoint == "Parallel" && m_buttons.get("1d_down")) {
             m_stateMachine.ballManipulatorState = "Intaking";
