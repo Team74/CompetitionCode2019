@@ -5,7 +5,6 @@ import java.util.HashMap;
 import frc.robot.subsystems.BallManipulator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.BallManipulator.BallManipulatorState;
 
 public class StateMachine implements Updateable {
 
@@ -17,7 +16,7 @@ public class StateMachine implements Updateable {
 
     public String elevatorSetpoint = "Bottom";
     public HashMap<String, Double> elevatorSetpointList= new HashMap<String, Double>();
-    //Possible values hoo boy
+    //Possible values hoo boy there's a lot: Bottom, Intake, Low_Panel, Mid_Panel, High_Panel, Low_Ball, Mid_Ball, High_Ball, Cargo_Ball
 
     public String wristSetpoint = "Perpendicular";
     public HashMap<String, Integer> wristSetpointList= new HashMap<String, Integer>();
