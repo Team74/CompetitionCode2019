@@ -31,6 +31,8 @@ public class InputManager implements Updateable {
         m_buttons.put("0l_bumper", false);
         m_buttons.put("0r_bumper", false);
         m_buttons.put("0d_down", false);
+        m_buttons.put("0d_up", false);
+
 
         m_buttons.put("1x", false);
         m_buttons.put("1y", false);
@@ -41,6 +43,7 @@ public class InputManager implements Updateable {
         m_buttons.put("1l_bumper", false);
         m_buttons.put("1r_bumper", false);
         m_buttons.put("1d_down", false);
+        m_buttons.put("1d_up", false);
 
         m_joysticks.put("0lx", (double)0);
         m_joysticks.put("0ly", (double)0);
@@ -94,6 +97,22 @@ public class InputManager implements Updateable {
             m_buttons.put("1d_down", true);
         } else {
             m_buttons.put("1d_down", false);
+        }
+
+        if(m_controller_0.getPOV(0) == -1) {
+            m_buttons.put("0d_up", false);
+        } else if(m_controller_0.getPOV(0) <= 45 || m_controller_0.getPOV(0) >= 315) {
+            m_buttons.put("0d_up", true);
+        } else {
+            m_buttons.put("0d_up", false);
+        }
+
+        if(m_controller_1.getPOV(0) == -1) {
+            m_buttons.put("1d_up", false);
+        } else if(m_controller_1.getPOV(0) <= 225 && m_controller_1.getPOV(0) >= 135) {
+            m_buttons.put("1d_up", true);
+        } else {
+            m_buttons.put("1d_up", false);
         }
     }
 
