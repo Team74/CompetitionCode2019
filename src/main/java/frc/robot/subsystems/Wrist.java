@@ -66,7 +66,7 @@ public class Wrist implements Updateable {
         wristMotor.configMotionCruiseVelocity(kMaxVel, kTimeoutMs);
         wristMotor.configMotionAcceleration(kMaxAccel, kTimeoutMs);
 
-        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, kPIDLoopIdx, kTimeoutMs);//Not sure what feeback device type to use
+        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, kPIDLoopIdx, kTimeoutMs);//Not sure what feeback device type to use
         wristMotor.setSensorPhase(kSensorPhase);
 
 

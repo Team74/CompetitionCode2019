@@ -17,38 +17,41 @@ public class SubsystemManager implements Updateable {
     private ArrayList<Updateable> m_listOfUpdatingObjects = new ArrayList<Updateable>();  //this will have duplicate references from the various things below, plus others -- positionTracker, etc.
 
     //all the individual subsystems
-    public RobotMap m_robotMap;   //plus this one, which directly handles the physical components
-    public StateMachine m_statemachine;
-    public DrivePlanner m_driveplanner;
-    public Drivetrain m_drivetrain;   //this will get the RobotMap passed in when it's created
-    public Elevator m_elevator;
-    public Wrist m_wrist;
-    public StateTracker m_statetracker;
-    public BallManipulator m_ballmanipulator;
-    public PanelManipulator m_panelmanipulator;
+    public RobotMap mRobotMap;   //plus this one, which directly handles the physical components
+    public StateMachine mStateMachine;
+    public DrivePlanner mDrivePlanner;
+    public Drivetrain mDrivetrain;   //this will get the RobotMap passed in when it's created
+    public Elevator mElevator;
+    public Wrist mWrist;
+    public StateTracker mStateTracker;
+    public BallManipulator mBallManipulator;
+    public PanelManipulator mPanelManipulator;
+    public Dashboard mDashboard;
 
     //etc. ...
     //incidentally, do we want these to be private? Commands should go from masters through SubsystemManager, and SubsystemManager can deal with converting that into individual commands.
 
     SubsystemManager() {
 
-        m_robotMap = new RobotMap(); //initializes all the physical hardware bits, but doesn't do anything further with them
-        m_statemachine = new StateMachine(this);
-        m_driveplanner = new DrivePlanner(this);
-        m_drivetrain = new Drivetrain(m_robotMap);
-        m_elevator = new Elevator(m_robotMap);
-        m_wrist = new Wrist(m_robotMap);
-        m_statetracker = new StateTracker(this);
-        m_ballmanipulator = new BallManipulator(m_robotMap);
-        m_panelmanipulator = new PanelManipulator(m_robotMap);
+        mRobotMap = new RobotMap(); //initializes all the physical hardware bits, but doesn't do anything further with them
+        mStateMachine = new StateMachine(this);
+        mDrivePlanner = new DrivePlanner(this);
+        mDrivetrain = new Drivetrain(mRobotMap);
+        mElevator = new Elevator(mRobotMap);
+        mWrist = new Wrist(mRobotMap);
+        mStateTracker = new StateTracker(this);
+        mBallManipulator = new BallManipulator(mRobotMap);
+        mPanelManipulator = new PanelManipulator(mRobotMap);
+        mDashboard = new Dashboard(this);
 
-        m_listOfUpdatingObjects.add(m_statemachine);
-        m_listOfUpdatingObjects.add(m_driveplanner);
-        m_listOfUpdatingObjects.add(m_elevator);
-        m_listOfUpdatingObjects.add(m_wrist);
-        m_listOfUpdatingObjects.add(m_statetracker);
-        m_listOfUpdatingObjects.add(m_ballmanipulator);
-        m_listOfUpdatingObjects.add(m_panelmanipulator);
+        m_listOfUpdatingObjects.add(mStateMachine);
+        m_listOfUpdatingObjects.add(mDrivePlanner);
+        m_listOfUpdatingObjects.add(mElevator);
+        m_listOfUpdatingObjects.add(mWrist);
+        m_listOfUpdatingObjects.add(mStateTracker);
+        m_listOfUpdatingObjects.add(mBallManipulator);
+        m_listOfUpdatingObjects.add(mPanelManipulator);
+        m_listOfUpdatingObjects.add(mDashboard);
 
         // ... set up other Subsystems if present
         /*

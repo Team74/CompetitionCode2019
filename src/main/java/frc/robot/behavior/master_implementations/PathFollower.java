@@ -16,9 +16,9 @@ import jaci.pathfinder.modifiers.SwerveModifier;
 
 public class PathFollower implements Updateable {
 
-    public SubsystemManager m_subsystem_manager;
-    public RobotMap map = m_subsystem_manager.m_robotMap;       // a reference -- do not try to make a new one.
-    public Drivetrain drive = m_subsystem_manager.m_drivetrain; // ditto
+    public SubsystemManager mSubsystemManager;
+    public RobotMap map = mSubsystemManager.mRobotMap;       // a reference -- do not try to make a new one.
+    public Drivetrain drive = mSubsystemManager.mDrivetrain; // ditto
     public Paths paths = new Paths();
 
     public final double timeStep = 0.0;
@@ -38,7 +38,7 @@ public class PathFollower implements Updateable {
     private EncoderFollower rbFollower = new EncoderFollower();
 
     public PathFollower(SubsystemManager subsystem_manager) {
-        m_subsystem_manager = subsystem_manager;
+        mSubsystemManager = subsystem_manager;
         // kP, kI, kD, 1/maxVel, acceleration gain
         lfFollower.configurePIDVA(0.0, 0.0, 0.0, 1/map.maxVel, 0);
         rfFollower.configurePIDVA(0.0, 0.0, 0.0, 1/map.maxVel, 0);

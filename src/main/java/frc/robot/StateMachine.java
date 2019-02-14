@@ -8,12 +8,8 @@ import frc.robot.subsystems.Wrist;
 
 public class StateMachine implements Updateable {
 
-    private SubsystemManager m_subsystemManager;
-    private Elevator elevator;
-    private Wrist wrist;
-    private BallManipulator ballManipulator;
-
-
+    private SubsystemManager mSubsystemManager;
+    
     public String elevatorSetpoint = "Bottom";
     public HashMap<String, Double> elevatorSetpointList= new HashMap<String, Double>();
     //Possible values hoo boy there's a lot: Bottom, Intake, Low_Panel, Mid_Panel, High_Panel, Low_Ball, Mid_Ball, High_Ball, Cargo_Ball
@@ -29,59 +25,57 @@ public class StateMachine implements Updateable {
     //Possible values 2:  Out In
 
     public StateMachine(SubsystemManager subsystemManager) {
-        m_subsystemManager = subsystemManager;
-        elevator = m_subsystemManager.m_elevator;
-        wrist = m_subsystemManager.m_wrist;
-        ballManipulator = m_subsystemManager.m_ballmanipulator;
-
+        mSubsystemManager = subsystemManager;
         {
             Double[] temp = elevatorSetpointList.values().toArray(new Double[0]); double[] temp2 = new double[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
-            m_subsystemManager.m_elevator.setSetpoints((String[])elevatorSetpointList.keySet().toArray(), temp2);
+            mSubsystemManager.mElevator.setSetpoints((String[])elevatorSetpointList.keySet().toArray(), temp2);
         }
         {
             Integer[] temp = elevatorSetpointList.values().toArray(new Integer[0]); int[] temp2 = new int[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
-            m_subsystemManager.m_wrist.setSetpoints((String[])wristSetpointList.keySet().toArray(), temp2);
+            mSubsystemManager.mWrist.setSetpoints((String[])wristSetpointList.keySet().toArray(), temp2);
         }
     }
 
     public void update(double dt) {
 
-        if(elevator.currentState == Elevator.ElevatorState.MOVING) {
+        if(mSubsystemManager.mElevator.currentState == Elevator.ElevatorState.MOVING) {
             assert wristSetpoint == "Perpendicular";
             assert ballManipulatorTarget == "Hold";
             assert panelManipulatorTarget == "In";
             //don't actually do much -- the Elevator is handling moving on its own, don't damage things
 
-        } else if(elevator.currentState == Elevator.ElevatorState.HOLDING) {
+        } else if(mSubsystemManager.mElevator.currentState == Elevator.ElevatorState.HOLDING) {
             
-            if(elevator.listedSetpoints_aliases.get(elevatorSetpoint) == elevator.currentTarget) {
+            if(mSubsystemManager.mElevator.listedSetpoints_aliases.get(elevatorSetpoint) == mSubsystemManager.mElevator.currentTarget) {
                 switch(1) {
                 case 1:
-                    if(wrist.listedSetpoints_aliases.get(wristSetpoint) != wrist.currentTarget) {
-                        wrist.setTarget(wristSetpoint);
-                        ballManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
+                    if(mSubsystemManager.mWrist.listedSetpoints_aliases.get(wristSetpoint) != mSubsystemManager.mWrist.currentTarget) {
+                        mSubsystemManager.mWrist.setTarget(wristSetpoint);
+                        mSubsystemManager.mBallManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
                         break;
                     }
-                    if( (elevatorSetpoint == "INTAKE_BALL" && ballManipulatorTarget == "In") || (wrist.currentState == Wrist.WristState.HOLDING)) {
+                    if( (elevatorSetpoint == "INTAKE_BALL" && ballManipulatorTarget == "In") || (mSubsystemManager.mWrist.currentState == Wrist.WristState.HOLDING)) {
+                        
+                        if (mSubsystemManager.mBallManipulator.haveBall) { ballManipulatorTarget = "Hold"; }
                         
                         if(ballManipulatorTarget == "Out") {
-                            ballManipulator.currentState = BallManipulator.BallManipulatorState.OUT;
+                            mSubsystemManager.mBallManipulator.currentState = BallManipulator.BallManipulatorState.OUT;
 
                         } else if(ballManipulatorTarget == "In") {
-                            ballManipulator.currentState = BallManipulator.BallManipulatorState.IN;
+                            mSubsystemManager.mBallManipulator.currentState = BallManipulator.BallManipulatorState.IN;
 
                         } else {
-                            ballManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
+                            mSubsystemManager.mBallManipulator.currentState = BallManipulator.BallManipulatorState.HOLDING;
                         }
                     }
                 }
             } else {
-                ballManipulator.setState(BallManipulator.BallManipulatorState.HOLDING);
+                mSubsystemManager.mBallManipulator.setState(BallManipulator.BallManipulatorState.HOLDING);
 
-                if (wrist.currentState == Wrist.WristState.HOLDING && wristSetpoint == "Perpendicular"){
-                    elevator.setTarget(elevatorSetpoint);
+                if (mSubsystemManager.mWrist.currentState == Wrist.WristState.HOLDING && wristSetpoint == "Perpendicular"){
+                    mSubsystemManager.mElevator.setTarget(elevatorSetpoint);
                 } else {
-                    wrist.setTarget(wristSetpoint); //should always be Perpendicular, really -- if bugs, check here
+                    mSubsystemManager.mWrist.setTarget(wristSetpoint); //should always be Perpendicular, really -- if bugs, check here
                 }
             } 
         }

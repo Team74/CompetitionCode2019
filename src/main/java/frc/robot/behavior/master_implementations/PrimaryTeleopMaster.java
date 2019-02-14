@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public class PrimaryTeleopMaster extends TeleopMaster {
     
-    private StateMachine m_stateMachine;
-    private DrivePlanner m_drivePlanner;
+    private StateMachine mStateMachine;
+    private DrivePlanner mDrivePlanner;
 
     private HashMap<String, Boolean> m_buttons;
     private HashMap<String, Double> m_joysticks;
@@ -32,35 +32,63 @@ public class PrimaryTeleopMaster extends TeleopMaster {
 
     public PrimaryTeleopMaster(SubsystemManager subsystem_manager, InputManager input_manager) { 
         super(subsystem_manager, input_manager); 
-        m_stateMachine = m_subsystem_manager.m_statemachine;
-        m_drivePlanner = m_subsystem_manager.m_driveplanner;
-        m_buttons = m_input_manager.m_buttons;
-        m_joysticks = m_input_manager.m_joysticks;
+        mStateMachine = mSubsystemManager.mStateMachine;
+        mDrivePlanner = mSubsystemManager.mDrivePlanner;
+        m_buttons = mInputManager.m_buttons;
+        m_joysticks = mInputManager.m_joysticks;
     }
 
     public void update(double dt) {
-        //Handle the swerve drive
-        lx = m_joysticks.get("0lx");
-        ly = m_joysticks.get("0ly");
-        rx = m_joysticks.get("0rx");
+        if (m_buttons.get("0l_trigger") && !m_buttons.get("0r_trigger")) {
+            mDrivePlanner.setSpeed(DrivePlanner.Speed.Low);
+        } else if (m_buttons.get("0r_trigger") && !m_buttons.get("0l_trigger")) {
+            mDrivePlanner.setSpeed(DrivePlanner.Speed.High);
+        } else if (m_buttons.get("0l_trigger") && m_buttons.get("0r_trigger")) {
+            System.out.println("Screw you");
+        } else {
+            mDrivePlanner.setSpeed(DrivePlanner.Speed.Mid);
+        }
+        if (m_buttons.get("0d_down") || m_buttons.get("0d_up") || m_buttons.get("0d_right") || m_buttons.get("0d_left")) {
+            if(m_buttons.get("0d_down")) {
+                mDrivePlanner.angle = 180;
+                mDrivePlanner.speed = .5;
+                mDrivePlanner.rotation = 0;
+            } else if (m_buttons.get("0d_up")) {
+                mDrivePlanner.angle = 0;
+                mDrivePlanner.speed = .5;
+                mDrivePlanner.rotation = 0;
+            } else if (m_buttons.get("0d_right")) {
+                mDrivePlanner.angle = 90;
+                mDrivePlanner.speed = .5;
+                mDrivePlanner.rotation = 0;
+            } else if (m_buttons.get("0d_left")) {
+                mDrivePlanner.angle = 270;
+                mDrivePlanner.speed = .5;
+                mDrivePlanner.rotation = 0;
+            }
+        } else {
+            //Handle the swerve drive
+            lx = -m_joysticks.get("0lx");
+            ly = m_joysticks.get("0ly");
+            rx = -m_joysticks.get("0rx");
 
-        lx = Utilities.handleDeadband(lx, kDeadband);
-        ly = Utilities.handleDeadband(ly, kDeadband);
-        rx = Utilities.handleDeadband(rx, kDeadband);
+            lx = Utilities.handleDeadband(lx, kDeadband);
+            ly = Utilities.handleDeadband(ly, kDeadband);
+            rx = Utilities.handleDeadband(rx, kDeadband);
 
-        m_drivePlanner.speed = Math.hypot(lx, ly);
-        m_drivePlanner.angle = Math.atan2(ly, lx);
-        m_drivePlanner.rotation = rx/30;
+            mDrivePlanner.speed = Math.hypot(lx, ly);
+            mDrivePlanner.angle = Math.atan2(ly, lx);
+            mDrivePlanner.rotation = rx/30;
 
-        gyroVal = m_subsystem_manager.m_drivetrain.gyro.getAngle();
-        gyroVal *= Math.PI / 180;
+            gyroVal = mSubsystemManager.mDrivetrain.gyro.getAngle();
+            gyroVal *= Math.PI / 180;
 
-        m_drivePlanner.angle -= gyroVal;
+            mDrivePlanner.angle -= gyroVal;
 
-        m_drivePlanner.angle %= 2*Math.PI;
-        m_drivePlanner.angle += (m_drivePlanner.angle < -Math.PI) ? 2*Math.PI : 0;
-        m_drivePlanner.angle -= (m_drivePlanner.angle > Math.PI) ? 2*Math.PI : 0;
-
+            mDrivePlanner.angle %= 2*Math.PI;
+            mDrivePlanner.angle += (mDrivePlanner.angle < -Math.PI) ? 2*Math.PI : 0;
+            mDrivePlanner.angle -= (mDrivePlanner.angle > Math.PI) ? 2*Math.PI : 0;
+        }
         isBall = true; // get trigger
 
         switch(1) {
@@ -77,31 +105,31 @@ public class PrimaryTeleopMaster extends TeleopMaster {
                     if(m_buttons.get("1d_down")) {
                         setPointName = "INTAKE_BALL";
                     }
-                    m_stateMachine.elevatorSetpoint = setPointName;
+                    mStateMachine.elevatorSetpoint = setPointName;
                     break;
                 }
                 setPointName += isBall ? "_Ball" : "_Panel";
-                m_stateMachine.elevatorSetpoint = setPointName;
+                mStateMachine.elevatorSetpoint = setPointName;
         }
 
-        m_stateMachine.wristSetpoint = "Perpendicular";
+        mStateMachine.wristSetpoint = "Perpendicular";
         if(m_buttons.get("1d_up")) {
-            m_stateMachine.ballManipulatorTarget = "Out";
+            mStateMachine.ballManipulatorTarget = "Out";
             if(setPointName == "INTAKE_BALL" || setPointName.contains("Cargo")) {
-                m_stateMachine.wristSetpoint = "CargoDiagonal";
+                mStateMachine.wristSetpoint = "CargoDiagonal";
             }
         } else if(m_buttons.get("1d_down")) {
             if(setPointName == "INTAKE_BALL") {
-                m_stateMachine.wristSetpoint = "Parallel";
-                m_stateMachine.ballManipulatorTarget = "In";
+                mStateMachine.wristSetpoint = "Parallel";
+                mStateMachine.ballManipulatorTarget = "In";
             } else {
-                m_stateMachine.ballManipulatorTarget = "Hold";
+                mStateMachine.ballManipulatorTarget = "Hold";
             }
         } else {
-            m_stateMachine.ballManipulatorTarget = "Hold";
+            mStateMachine.ballManipulatorTarget = "Hold";
         }
 
-        m_stateMachine.panelManipulatorTarget = m_buttons.get("1r_bumper") ? "Out" : "In";
+        mStateMachine.panelManipulatorTarget = m_buttons.get("1r_bumper") ? "Out" : "In";
         //make that a toggle if we want; for now, hold it down
     }
 }

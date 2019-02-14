@@ -13,11 +13,11 @@ public class Robot extends TimedRobot {
     SubsystemManager m_subsystem_manager;
     InputManager m_input_manager;
 
-    Timer m_timer = new Timer();
-    double dt = 0;  //no m_ just for consistency with everywhere else
+    Timer mTimer = new Timer();
+    double dt = 0.02;  //no m_ just for consistency with everywhere else
     private void updateTime() {
-        dt = m_timer.get();
-        m_timer.reset();
+        dt = mTimer.get();
+        mTimer.reset();
     }
 
 
@@ -25,14 +25,14 @@ public class Robot extends TimedRobot {
         m_subsystem_manager = new SubsystemManager(); //this will set up the whole robot and its subsystems
         m_input_manager = new InputManager(); //this is the significantly smaller bit of code that handles input from the xbox controllers and such
 
-        m_timer.stop();
-        m_timer.reset();
+        mTimer.stop();
+        mTimer.reset();
     }
     public void autonomousInit() {
         m_subsystem_manager.setCurrentMaster(new Implemented_AutonMaster(m_subsystem_manager));
          //or whatever other auton we want -- we'll probably need something for SmartDashboard eventually
 
-         m_timer.start();
+         mTimer.start();
         }   
     public void autonomousPeriodic() {
         updateTime();
@@ -41,8 +41,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         m_subsystem_manager.setCurrentMaster(new Test1_TeleopMaster(m_subsystem_manager, m_input_manager));
         //similarly, if we want to do, say, a different control scheme, a different teleopmaster could be subbed in that would interpret the inputs differently
-        m_timer.reset();
-        m_timer.start();
+        mTimer.reset();
+        mTimer.start();
     }
     public void teleopPeriodic() {
         updateTime();

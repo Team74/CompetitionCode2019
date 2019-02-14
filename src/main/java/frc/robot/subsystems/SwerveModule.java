@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANPIDController;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -10,7 +11,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class SwerveModule {
-    public final double maxVel = 0.0;
+    public double kMaxVel = 0.0;
 
     public CANSparkMax drive_motor;
     public CANEncoder drive_encoder;
@@ -38,7 +39,6 @@ public class SwerveModule {
     }
     
     public void instantiateSteeringPID(double kP, double kI, double kD, double kF, double kIZone, boolean kSensorPhase, boolean kMotorInvert){
-        //HandleEncoder encoder = new HandleEncoder(rotate_motor, kSensorPhase);
         //Start by reseting everything to factory defaults
         rotate_motor.configFactoryDefault(kTimeoutMs);
 
@@ -65,22 +65,18 @@ public class SwerveModule {
         rotate_motor.setSensorPhase(kSensorPhase);
         rotate_motor.configFeedbackNotContinuous(false, kTimeoutMs);
     }
-    /*
+
     public void instantiateVelocityPID(double kP, double kI, double kD, double kF, double kIZone) {
-        //We're going to tune the gains using the tuner than hardcode them.
-        /*
         velController.setP(kP, kSlotIdx);
         velController.setI(kI, kSlotIdx);
         velController.setD(kD, kSlotIdx);
         velController.setFF(kF, kSlotIdx);
         velController.setIZone(kIZone, kSlotIdx);
         velController.setOutputRange(-1.0, 1.0, kSlotIdx);
+
+        drive_motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
         drive_motor.burnFlash();
-        /*
-
-
     }
-    */
 
     public void stopMotors() {
         rotate_motor.stopMotor();
@@ -91,31 +87,20 @@ public class SwerveModule {
         double totalRotation;
         double currentRotation;
         double currentAngle;
-        double angleDelta;
         double angleModifier;
-        double absAngleDelta;
-
-        double targetEncoderTicks = angleToEncoder(Math.toDegrees(targetAngle));
-
-    // System.out.println("Raw target Angle: " + Math.toDegrees(targetAngle));
 
         //Get current angle
         totalRotation = rotate_motor.getSelectedSensorPosition();
-        //System.out.println("Encoder: " + totalRotation);
         currentRotation = totalRotation - zeroOffset;// % kEncoderTicks;
         //Change currentRotation to be in radians
         currentAngle = 2*(Math.PI)*(currentRotation/kEncoderTicks);
-        //currentAngle += Math.PI;
         currentAngle %= 2*Math.PI;
-        //System.out.println(Math.toDegrees(currentAngle));
-        //currentAngle = currentAngle < 0 ? currentAngle + 2*Math.PI : currentAngle;
+
         if(Math.abs(currentAngle) > Math.PI) {
             currentAngle -= Math.signum(currentAngle)*Math.PI*2;
         }        
         //Change target angle to be on the 0 to 2pi range
         targetAngle = targetAngle < 0 ? targetAngle + 2*(Math.PI) : targetAngle;
-
-        //more attempts to fix here
 
         currentAngle = Math.toDegrees(currentAngle);
         targetAngle = Math.toDegrees(targetAngle);
@@ -138,67 +123,22 @@ public class SwerveModule {
         if(Math.abs(speedDifference) > 90) {
             targetSpeed *= -1;
         }
-
-
-        
         setMotors(targetRotation, targetSpeed * 0.4);
-        
-//more attempts to fix here
-
-        //Calculate the differance in angle
-        /*angleDelta = Math.toDegrees(targetAngle - currentAngle);  //convert to degrees
-
-
-        angleDelta = Math.abs(angleDelta) > 180 ? angleDelta - Math.signum(angleDelta)*180 : angleDelta;
-
-        absAngleDelta = Math.abs(angleDelta);
-        //Begin checking cases
-        targetSpeed = _targetSpeed;
-
-        if(absAngleDelta <= 90) {
-            angleModifier = angleDelta;
-        } else {
-            angleModifier = angleDelta - 180 * Math.signum(angleDelta);
-            targetSpeed *= -1;
-        }
-//*/
-    /*    System.out.println("Angle Delta: " + adjustedDelta);// angleDelta);//(angleDelta/Math.PI*180));
-        System.out.println("Current Angle: " + adjustedCurrentAngle); //currentAngle/Math.PI*180);
-        System.out.println("Target Angle: " + adjustedTargetAngle);// targetAngle/Math.PI*180);
-        System.out.println("Target Speed: " + targetSpeed);
-        System.out.println("-");
-//*/
-
-/*
-        if (absAngleDelta <= 90) {
-            angleModifier = angleDelta;
-        } /*else if (90 < absAngleDelta && absAngleDelta <= 180) {
-            angleModifier = angleDelta - 180;//or -(180-delta)
-            //Reverse wheel direction
-            targetSpeed = _targetSpeed * -1;
-        }else if (180 < absAngleDelta && absAngleDelta < 270) {
-            angleModifier = angleDelta - 180;
-            //Reverse wheel direction
-            targetSpeed = _targetSpeed * -1;
-        }else if (270 <= absAngleDelta && absAngleDelta < 360) {
-            angleModifier = Math.abs(absAngleDelta - 360);// or -(360-delta)
-        *///  else {
-         //   angleModifier = 0;
-        //}//*/
-        //Convert angle modifier to encoder
-        //angleModifier = angleToEncoder(angleModifier);
-        
-        //Add modifier to current total rotation to get new referance point
-        //targetRotation = currentRotation + angleModifier;
-        
-        //setMotors(targetRotation, 0*targetSpeed / 10);
-        
-        //System.out.println("Current Rotation: " + currentRotation);
     }
 
     public void setMotors(double _targetRotation, double _targetSpeed) {
-        drive_motor.set(_targetSpeed);
-        rotate_motor.set(ControlMode.MotionMagic, (_targetRotation + zeroOffset));
+        if (_targetSpeed == 0) {
+            drive_motor.stopMotor();
+            rotate_motor.stopMotor();
+        } else {
+            double targetSpeed = _targetSpeed * kMaxVel;
+            if (targetSpeed != 0){
+                velController.setReference(targetSpeed, ControlType.kVelocity);
+            } else{
+                drive_motor.stopMotor();
+            }
+            rotate_motor.set(ControlMode.MotionMagic, (_targetRotation + zeroOffset));
+        }
     }
 
     public void setMotorsPercentOutput(double _angularVelocity, double _targetSpeed) {
