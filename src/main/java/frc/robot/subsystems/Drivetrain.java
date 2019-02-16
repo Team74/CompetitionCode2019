@@ -106,7 +106,7 @@ public class Drivetrain implements Updateable {
         swerveVectors[1][0] = Math.atan2(B,C);//rf 1
         swerveVectors[2][0] = Math.atan2(A,D);//lb 3
         swerveVectors[3][0] = Math.atan2(A,C);//rb 4
-            manageModules(swerveVectors);
+        manageModules(swerveVectors);
     }
 
     public void manageModules(double swerveVectors[][]){
@@ -117,7 +117,11 @@ public class Drivetrain implements Updateable {
         rf.setModule(mSwerveVectors[1][0], mSwerveVectors[1][1]);
         lb.setModule(mSwerveVectors[2][0], mSwerveVectors[2][1]);
         rb.setModule(mSwerveVectors[3][0], mSwerveVectors[3][1]);
-//*/   
+
+        lf.setCurrentAngle();
+        lb.setCurrentAngle();
+        rf.setCurrentAngle();
+        rb.setCurrentAngle();
     }
 
     public void update(double dt) {

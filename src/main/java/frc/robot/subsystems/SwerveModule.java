@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import frc.utils.Utilities;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
@@ -12,6 +14,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class SwerveModule {
     public double kMaxVel = 0.0;
+
+    public double currentAngle;
 
     public CANSparkMax drive_motor;
     public CANEncoder drive_encoder;
@@ -78,17 +82,12 @@ public class SwerveModule {
         drive_motor.burnFlash();
     }
 
-    public void stopMotors() {
-        rotate_motor.stopMotor();
-        drive_motor.stopMotor();
-    }
-
     public void setModule(double targetAngle, double _targetSpeed){
         double totalRotation;
         double currentRotation;
         double currentAngle;
         double angleModifier;
-
+        
         //Get current angle
         totalRotation = rotate_motor.getSelectedSensorPosition();
         currentRotation = totalRotation - zeroOffset;// % kEncoderTicks;
@@ -112,7 +111,7 @@ public class SwerveModule {
         adjustedDelta = Math.abs(adjustedDelta) > 90 ? -Math.signum(adjustedDelta)*(180 - Math.abs(adjustedDelta)) : adjustedDelta;
         
         //Convert angle modifier to encoder
-        angleModifier = angleToEncoder(adjustedDelta);
+        angleModifier = Utilities.angleToEncoder(adjustedDelta, kEncoderTicks);
         
         //Add modifier to current total rotation to get new referance point
         targetRotation = currentRotation + angleModifier;
@@ -123,7 +122,7 @@ public class SwerveModule {
         if(Math.abs(speedDifference) > 90) {
             targetSpeed *= -1;
         }
-        setMotors(targetRotation, targetSpeed * 0.4);
+        setMotors(targetRotation, targetSpeed);
     }
 
     public void setMotors(double _targetRotation, double _targetSpeed) {
@@ -146,9 +145,9 @@ public class SwerveModule {
         drive_motor.set(_targetSpeed);
     }
 
-    public double angleToEncoder(double angle){
-        double encoder;
-        encoder = (angle/360) * kEncoderTicks;
-        return encoder;
+    public void setCurrentAngle(){
+        double currentEncoder = rotate_motor.getSelectedSensorPosition() % kEncoderTicks;
+        currentAngle = Utilities.encoderToAngle(currentEncoder, kEncoderTicks);
+        currentAngle += zeroOffset;
     }
     }
