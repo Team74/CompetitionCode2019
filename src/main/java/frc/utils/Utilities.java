@@ -1,7 +1,11 @@
 package frc.utils;
 
 public class Utilities {
+    
+    //Really small number
+    public static final double kEpsilon = 1e-12;
 
+    //Prevent this class from being instantiated
     private Utilities(){
 
     }
@@ -23,5 +27,13 @@ public class Utilities {
     public static double angleToEncoder(double angle, double countsPerRev){
         double encoder = (angle/360) * countsPerRev;
         return encoder;
+    }
+
+    public static double[] angleToUnitVector(double _angle){
+        double[] vector = new double[] { 
+            Math.cos(_angle),
+            Math.sin(_angle)
+        };
+        return vector;
     }
 }
