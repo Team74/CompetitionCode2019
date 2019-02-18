@@ -37,8 +37,8 @@ public class SubsystemManager implements Updateable {
         mStateMachine = new StateMachine(this);
         mDrivePlanner = new DrivePlanner(this);
         mDrivetrain = new Drivetrain(mRobotMap);
-        mElevator = new Elevator(mRobotMap);
-        mWrist = new Wrist(mRobotMap);
+        mElevator = new Elevator(this, mRobotMap);
+        mWrist = new Wrist(this, mRobotMap);
         mStateTracker = new StateTracker(this);
         mBallManipulator = new BallManipulator(mRobotMap);
         mPanelManipulator = new PanelManipulator(mRobotMap);

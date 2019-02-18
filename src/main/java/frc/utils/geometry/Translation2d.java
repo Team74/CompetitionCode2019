@@ -1,5 +1,7 @@
 package frc.utils.geometry;
 
+//Stores x, y positions as vectors, or transformations from the origin
+
 public class Translation2d {
     protected static final Translation2d kIdentity = new Translation2d();
 
@@ -46,7 +48,7 @@ public class Translation2d {
         y = _y;
     }
 
-    //You can combine transforms by adding the x and y shifts
+    //You can combine transforms by adding the x and y shifts AKA adding vectors
     public Translation2d translateBy(final Translation2d other) {
         return new Translation2d(x + other.x, y + other.y);
     }
@@ -56,7 +58,7 @@ public class Translation2d {
         return new Translation2d(-x, -y);
     }
 
-    //The "norm" of a transform is th Euclidean distance in x and y. 
+    //The "norm" of a transform is th Euclidean distance in x and y. AKA the length of the vector 
     public double norm() {
         return Math.hypot(x, y);
     }
@@ -71,6 +73,7 @@ public class Translation2d {
         return a.x * b.y - a.y * b.x;
     }
 
+    //Finds the distance of a straight line between the point of the Translation2d this is called from and other
     public double distance(final Translation2d other) {
         return inverse().translateBy(other).norm();
     }

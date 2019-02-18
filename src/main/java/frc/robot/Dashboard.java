@@ -8,14 +8,26 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 
 public class Dashboard implements Updateable {
 
     private SubsystemManager mSubsystemManager;
 
-    public ShuffleboardTab testTab;
+    public ShuffleboardTab teleopTab;
+    public ShuffleboardTab pidfTuning;
+
+    public NetworkTableEntry elevatorP;
+    public NetworkTableEntry elevatorI;
+    public NetworkTableEntry elevatorD;
+    public NetworkTableEntry elevatorF;
+
+    public NetworkTableEntry wristP;
+    public NetworkTableEntry wristI;
+    public NetworkTableEntry wristD;
+    public NetworkTableEntry wristF;
+
     public NetworkTableEntry sanityCheck;
     
     public NetworkTableEntry lfAngle;
@@ -27,15 +39,28 @@ public class Dashboard implements Updateable {
 
     public Dashboard(SubsystemManager _subsystemManager){
         mSubsystemManager = _subsystemManager;
-        testTab = Shuffleboard.getTab("Test tab");
-        Shuffleboard.selectTab("Test tab");
 
-        sanityCheck = testTab.add("Sanity Check", true).getEntry();
+        teleopTab = Shuffleboard.getTab("Teleop");
+        Shuffleboard.selectTab("Teleop");
 
-        lfAngle = testTab.add("LF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
-        lbAngle = testTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
-        rfAngle = testTab.add("RF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
-        rbAngle = testTab.add("RB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+        pidfTuning = Shuffleboard.getTab("PIDF Tuning");
+
+        sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
+
+        lfAngle = teleopTab.add("LF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+        lbAngle = teleopTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+        rfAngle = teleopTab.add("RF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+        rbAngle = teleopTab.add("RB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+
+        elevatorP = pidfTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
+        elevatorI = pidfTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
+        elevatorD = pidfTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
+        elevatorF = pidfTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
+
+        wristP = pidfTuning.add("Wrist P", mSubsystemManager.mWrist.kP).getEntry();
+        wristI = pidfTuning.add("Wrist I", mSubsystemManager.mWrist.kI).getEntry();
+        wristD = pidfTuning.add("Wrist D", mSubsystemManager.mWrist.kD).getEntry();
+        wristF = pidfTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
 
         camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 25);// width, height, framerate

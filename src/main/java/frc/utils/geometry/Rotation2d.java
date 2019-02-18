@@ -61,6 +61,17 @@ public class Rotation2d {
         return sin_angle;
     }
 
+    public double tan() {
+        if (Math.abs(cos_angle) < kEpsilon) {
+            if (sin_angle >= 0.0) {
+                return Double.POSITIVE_INFINITY;
+            } else {
+                return Double.NEGATIVE_INFINITY;
+            }
+        }
+        return sin_angle / cos_angle;
+    }
+
     public Rotation2d getRotation(){
         return this;
     }

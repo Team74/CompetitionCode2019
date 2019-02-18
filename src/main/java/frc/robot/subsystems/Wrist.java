@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
 
 import frc.robot.Updateable;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 
 public class Wrist implements Updateable {
 
+    public SubsystemManager mSubsystemManager;
     public RobotMap mRobotMap;
 
     public WPI_TalonSRX wristMotor;
@@ -23,10 +25,8 @@ public class Wrist implements Updateable {
     public final boolean kMotorInvert = false;
     public final boolean kSensorPhase = false;
 
-    public final double kF = 0.0;
-    public final double kP = 0.0; 
-    public final double kI = 0.0; 
-    public final double kD = 0.0;
+    public double kP, kI, kD, kF;
+
     public final int kMaxVel = 0;
     public final int kMaxAccel = 0;
 
@@ -41,7 +41,13 @@ public class Wrist implements Updateable {
     }
     public WristState currentState;
 
-    public Wrist(RobotMap _robotMap){
+    public Wrist(SubsystemManager _subsystemManager, RobotMap _robotMap){
+        kP = 0.0;
+        kI = 0.0;
+        kD = 0.0;
+        kD = 0.0;
+        
+        mSubsystemManager = _subsystemManager;
         mRobotMap = _robotMap;
         wristMotor = mRobotMap.Wrist_0;
 
@@ -51,6 +57,8 @@ public class Wrist implements Updateable {
 
         wristMotor.setInverted(kMotorInvert);
 
+        updatePIDFCoefficents();
+
         wristMotor.configNominalOutputForward(0, kTimeoutMs);
 		wristMotor.configNominalOutputReverse(0, kTimeoutMs);
 		wristMotor.configPeakOutputForward(1, kTimeoutMs);
@@ -58,10 +66,6 @@ public class Wrist implements Updateable {
 
         wristMotor.configAllowableClosedloopError(0, kPIDLoopIdx, kTimeoutMs);
 
-        wristMotor.config_kF(kPIDLoopIdx, kF, kTimeoutMs);
-		wristMotor.config_kP(kPIDLoopIdx, kP, kTimeoutMs);
-		wristMotor.config_kI(kPIDLoopIdx, kI, kTimeoutMs);
-        wristMotor.config_kD(kPIDLoopIdx, kD, kTimeoutMs);
 
         wristMotor.configMotionCruiseVelocity(kMaxVel, kTimeoutMs);
         wristMotor.configMotionAcceleration(kMaxAccel, kTimeoutMs);
@@ -70,6 +74,23 @@ public class Wrist implements Updateable {
         wristMotor.setSensorPhase(kSensorPhase);
 
 
+    }
+
+    private void updatePIDFCoefficents() {
+        double _p = mSubsystemManager.mDashboard.wristP.getDouble(kP);
+        double _i = mSubsystemManager.mDashboard.wristI.getDouble(kI);
+        double _d = mSubsystemManager.mDashboard.wristD.getDouble(kD);
+        double _f = mSubsystemManager.mDashboard.wristF.getDouble(kF);
+
+        kP = _p == kP ? kP : _p;
+        kI = _i == kI ? kI : _i;
+        kD = _d == kD ? kD : _d;
+        kF = _f == kF ? kF : _f;
+
+        wristMotor.config_kF(kPIDLoopIdx, kF, kTimeoutMs);
+		wristMotor.config_kP(kPIDLoopIdx, kP, kTimeoutMs);
+		wristMotor.config_kI(kPIDLoopIdx, kI, kTimeoutMs);
+        wristMotor.config_kD(kPIDLoopIdx, kD, kTimeoutMs);
     }
 
     public void setSetpoints(String[] aliases, int[] targets) {
@@ -100,6 +121,8 @@ public class Wrist implements Updateable {
     }
 
     public void update(double dT) {
+        updatePIDFCoefficents();
+
         wristMotor.set(ControlMode.MotionMagic, listedSetpoints[currentTarget]);
         
         if(Math.abs(listedSetpoints[currentTarget] - wristMotor.getSelectedSensorPosition()) < kHoldingDeadzone ) {//we're here!

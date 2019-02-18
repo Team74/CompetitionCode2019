@@ -15,7 +15,7 @@ public class Utilities {
     }
 
     public static boolean doubleToBool(double input){
-        boolean temp = Math.abs(input) > 0 ? true : false;
+        boolean temp = Math.abs(input) > 0.0 ? true : false;
         return temp;
     }
 

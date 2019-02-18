@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Updateable;
+import frc.robot.SubsystemManager;
+import frc.robot.RobotMap;
 
 import java.util.HashMap;
 
@@ -9,8 +11,6 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
-import frc.robot.RobotMap;
-
 public class Elevator implements Updateable {
 
 
@@ -18,6 +18,7 @@ public class Elevator implements Updateable {
         HOLDING, MOVING, MANUAL;
     }
 
+    public SubsystemManager mSubsystemManager;
     public RobotMap mRobotMap;  //reference to the original
 
     public CANSparkMax elevatorMotor;
@@ -25,7 +26,7 @@ public class Elevator implements Updateable {
     public CANPIDController elevatorController;
 
     public double kHoldingDeadzone = 50;
-    public double kP, kI, kD, kIZ, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, maxAcc;
+    public double kP, kI, kD, kIZ, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, maxAcc;
     public int kSlotIDX;
 
     public double[] listedSetpoints;
@@ -34,8 +35,9 @@ public class Elevator implements Updateable {
 
     public ElevatorState currentState;
 
-    public Elevator(RobotMap robotMap){
-        mRobotMap = robotMap;
+    public Elevator(SubsystemManager _subsystemManager, RobotMap _robotMap){
+        mSubsystemManager = _subsystemManager;
+        mRobotMap = _robotMap;
 
         elevatorMotor = mRobotMap.Elevator_0;
         elevatorEncoder = mRobotMap.Elevator_E_0;
@@ -44,7 +46,7 @@ public class Elevator implements Updateable {
         kP = 0.0;
         kI = 0.0;
         kD = 0.0;
-        kFF = 0.0;
+        kF = 0.0;
         kIZ = 0.0;
         kMaxOutput = 1.0;
         kMinOutput = -1.0;
@@ -52,16 +54,31 @@ public class Elevator implements Updateable {
         maxVel = 0.0;
         maxAcc = 0.0;
 
-        elevatorController.setP(kP);
-        elevatorController.setI(kI);
-        elevatorController.setD(kD);
+        updatePIDFCoefficents();
         elevatorController.setIZone(kIZ);
-        elevatorController.setFF(kFF);
         elevatorController.setOutputRange(kMinOutput, kMaxOutput);
         elevatorController.setSmartMotionMaxVelocity(maxVel, kSlotIDX);
         elevatorController.setSmartMotionMaxAccel(maxAcc, kSlotIDX);
 
         elevatorMotor.burnFlash();
+    }
+
+    private void updatePIDFCoefficents() {
+        double _p = mSubsystemManager.mDashboard.elevatorP.getDouble(kP);
+        double _i = mSubsystemManager.mDashboard.elevatorI.getDouble(kI);
+        double _d = mSubsystemManager.mDashboard.elevatorD.getDouble(kD);
+        double _f = mSubsystemManager.mDashboard.elevatorF.getDouble(kF);
+
+        kP = _p == kP ? kP : _p;
+        kI = _i == kI ? kI : _i;
+        kD = _d == kD ? kD : _d;
+        kF = _f == kF ? kF : _f;
+
+        elevatorController.setP(kP);
+        elevatorController.setI(kI);
+        elevatorController.setD(kD);
+        elevatorController.setIZone(kIZ);
+        elevatorController.setFF(kF);
     }
 
     public void setSetpoints(String[] aliases, double[] targets) {
@@ -91,6 +108,8 @@ public class Elevator implements Updateable {
     }
 
     public void update(double dT) {
+        updatePIDFCoefficents();
+
         elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);
         if(Math.abs(listedSetpoints[currentTarget] - elevatorEncoder.getPosition()) < kHoldingDeadzone ) {//we're here)
             currentState = ElevatorState.HOLDING;
