@@ -145,9 +145,8 @@ public class SwerveModule {
         drive_motor.set(_targetSpeed);
     }
 
-    public void setCurrentAngle(){
-        double currentEncoder = rotate_motor.getSelectedSensorPosition() % kEncoderTicks;
+    public void setCurrentAngle(){  //called from outside purely (in theory) so that currentAngle can be read for the Dashboard
+        double currentEncoder = (rotate_motor.getSelectedSensorPosition() + zeroOffset) % kEncoderTicks;
         currentAngle = Utilities.encoderToAngle(currentEncoder, kEncoderTicks);
-        currentAngle += zeroOffset;
     }
-    }
+}

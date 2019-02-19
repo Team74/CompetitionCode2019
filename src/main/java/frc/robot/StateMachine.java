@@ -36,19 +36,19 @@ public class StateMachine implements Updateable {
         wristSetpointList.put("Parallel", 3190);
         wristSetpointList.put("CargoDiagonal", 2000);
         wristSetpointList.put("Perpendicular", 3190);
-        /*
+        
         {
-            Double[] temp = elevatorSetpointList.values().toArray(new Double[0]); double[] temp2 = new double[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; }     
+            Double[] temp = elevatorSetpointList.values().toArray(new Double[0]); double[] temp2 = new double[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i].doubleValue(); }     
             //mSubsystemManager.mElevator.setSetpoints((String[])elevatorSetpointList.keySet().toArray(), temp2);
             String[] temp3 = elevatorSetpointList.keySet().toArray(new String[0]); //String[] temp4 = new String[temp3.length]; for(int i = 0; i < temp3.length; ++i) { temp4[i] = temp3[i]; }         
             mSubsystemManager.mElevator.setSetpoints(temp3, temp2);
         }
         {
-            Integer[] temp = wristSetpointList.values().toArray(new Integer[0]); int[] temp2 = new int[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i]; } 
+            Integer[] temp = wristSetpointList.values().toArray(new Integer[0]); int[] temp2 = new int[temp.length]; for(int i = 0; i < temp.length; ++i) { temp2[i] = temp[i].intValue(); } 
             String[] temp3 = wristSetpointList.keySet().toArray(new String[0]); //String[] temp4 = new String[temp3.length]; for(int i = 0; i < temp3.length; ++i) { temp4[i] = temp3[i]; }         
             mSubsystemManager.mWrist.setSetpoints(temp3, temp2);
         }
-        */
+        //*/
     }
 
     public void update(double dt) {
