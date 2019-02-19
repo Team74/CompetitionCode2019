@@ -30,6 +30,9 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry wristD;
     public NetworkTableEntry wristF;
 
+    public NetworkTableEntry frontIntakeCurrent;
+    public NetworkTableEntry backIntakeCurrent;
+
     public NetworkTableEntry sanityCheck;
     
     public NetworkTableEntry lfAngle;
@@ -44,7 +47,7 @@ public class Dashboard implements Updateable {
 
         teleopTab = Shuffleboard.getTab("Teleop");
 
-        pidfTuning = Shuffleboard.getTab("PIDF Tuning");
+        pidfTuning = Shuffleboard.getTab("Robot Tuning");
 
         Shuffleboard.selectTab("PIDF Tuning");
 
@@ -67,6 +70,9 @@ public class Dashboard implements Updateable {
         wristF = pidfTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
 
         elevatorEncoder = pidfTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
+        
+        frontIntakeCurrent = pidfTuning.add("Front Current", mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent()).getEntry();
+        backIntakeCurrent = pidfTuning.add("Back Current", mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent()).getEntry();
 
         camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 25);// width, height, framerate
@@ -79,5 +85,8 @@ public class Dashboard implements Updateable {
         rbAngle.setDouble(mSubsystemManager.mDrivetrain.rb.currentAngle);
 
         elevatorEncoder.setDouble(mSubsystemManager.mElevator.elevatorEncoder.getPosition());
+        
+        frontIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent());
+        backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());
     }
 }
