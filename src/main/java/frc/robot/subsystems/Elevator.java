@@ -43,10 +43,6 @@ public class Elevator implements Updateable {
         elevatorEncoder = mRobotMap.Elevator_E_0;
         elevatorController = elevatorMotor.getPIDController();
 
-        kP = 0.0;
-        kI = 0.0;
-        kD = 0.0;
-        kF = 0.0;
         kIZ = 0.0;
         kMaxOutput = 1.0;
         kMinOutput = -1.0;
@@ -54,7 +50,6 @@ public class Elevator implements Updateable {
         maxVel = 0.0;
         maxAcc = 0.0;
 
-        updatePIDFCoefficents();
         elevatorController.setIZone(kIZ);
         elevatorController.setOutputRange(kMinOutput, kMaxOutput);
         elevatorController.setSmartMotionMaxVelocity(maxVel, kSlotIDX);
@@ -109,10 +104,11 @@ public class Elevator implements Updateable {
 
     public void update(double dT) {
         updatePIDFCoefficents();
-
+        /*
         elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);
         if(Math.abs(listedSetpoints[currentTarget] - elevatorEncoder.getPosition()) < kHoldingDeadzone ) {//we're here)
             currentState = ElevatorState.HOLDING;
         }
+        */
     }
 }

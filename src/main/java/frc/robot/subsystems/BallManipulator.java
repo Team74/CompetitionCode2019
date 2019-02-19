@@ -25,7 +25,7 @@ public class BallManipulator implements Updateable{
     public static enum BallManipulatorState {
         IN, OUT, HOLDING;
     }
-    public BallManipulatorState currentState;
+    public BallManipulatorState currentState = BallManipulatorState.HOLDING;
 
     public boolean haveBall = false;
 

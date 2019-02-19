@@ -32,14 +32,14 @@ public class SwerveModule {
 
     public int zeroOffset = 0;
 
-    CANPIDController velController = new CANPIDController(drive_motor);
+    public CANPIDController velController;
 
     public SwerveModule(CANSparkMax _drive_motor, CANEncoder _drive_encoder, WPI_TalonSRX _rotate_motor, int _zeroOffset) {
         drive_motor = _drive_motor;
         rotate_motor = _rotate_motor;
         drive_encoder = _drive_encoder;
         zeroOffset = _zeroOffset;
-
+        velController = drive_motor.getPIDController();
     }
     
     public void instantiateSteeringPID(double kP, double kI, double kD, double kF, double kIZone, boolean kSensorPhase, boolean kMotorInvert){
@@ -70,7 +70,7 @@ public class SwerveModule {
         rotate_motor.configFeedbackNotContinuous(false, kTimeoutMs);
     }
 
-    public void instantiateVelocityPID(double kP, double kI, double kD, double kF, double kIZone) {
+    public void instantiateVelocityPID(double kP, double kI, double kD, double kF, double kIZone) {        
         velController.setP(kP, kSlotIdx);
         velController.setI(kI, kSlotIdx);
         velController.setD(kD, kSlotIdx);

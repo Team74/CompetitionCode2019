@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import java.util.HashMap;
 
 public class Wrist implements Updateable {
+    // Parallel Setpoint 0, Perpendiular Setpoint 3190, Cargo Diagonal setpoint 2000
 
     public SubsystemManager mSubsystemManager;
     public RobotMap mRobotMap;
@@ -27,8 +28,8 @@ public class Wrist implements Updateable {
 
     public double kP, kI, kD, kF;
 
-    public final int kMaxVel = 0;
-    public final int kMaxAccel = 0;
+    public final int kMaxVel = 200;
+    public final int kMaxAccel = 1000;
 
     public final double kHoldingDeadzone = 0.0;
 
@@ -42,10 +43,6 @@ public class Wrist implements Updateable {
     public WristState currentState;
 
     public Wrist(SubsystemManager _subsystemManager, RobotMap _robotMap){
-        kP = 0.0;
-        kI = 0.0;
-        kD = 0.0;
-        kD = 0.0;
         
         mSubsystemManager = _subsystemManager;
         mRobotMap = _robotMap;
@@ -56,8 +53,6 @@ public class Wrist implements Updateable {
         wristMotor.setNeutralMode(NeutralMode.Brake);
 
         wristMotor.setInverted(kMotorInvert);
-
-        updatePIDFCoefficents();
 
         wristMotor.configNominalOutputForward(0, kTimeoutMs);
 		wristMotor.configNominalOutputReverse(0, kTimeoutMs);
@@ -72,21 +67,32 @@ public class Wrist implements Updateable {
 
         wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, kPIDLoopIdx, kTimeoutMs);//Not sure what feeback device type to use
         wristMotor.setSensorPhase(kSensorPhase);
+        wristMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
 
+        kP = 1.5;
+        kI = 0.0;
+        kD = 0.0;
+        kF = .8525;
 
+        wristMotor.config_kF(kPIDLoopIdx, kF, kTimeoutMs);
+		wristMotor.config_kP(kPIDLoopIdx, kP, kTimeoutMs);
+		wristMotor.config_kI(kPIDLoopIdx, kI, kTimeoutMs);
+        wristMotor.config_kD(kPIDLoopIdx, kD, kTimeoutMs);
     }
 
     private void updatePIDFCoefficents() {
+
         double _p = mSubsystemManager.mDashboard.wristP.getDouble(kP);
         double _i = mSubsystemManager.mDashboard.wristI.getDouble(kI);
         double _d = mSubsystemManager.mDashboard.wristD.getDouble(kD);
         double _f = mSubsystemManager.mDashboard.wristF.getDouble(kF);
 
+        
         kP = _p == kP ? kP : _p;
         kI = _i == kI ? kI : _i;
         kD = _d == kD ? kD : _d;
         kF = _f == kF ? kF : _f;
-
+        
         wristMotor.config_kF(kPIDLoopIdx, kF, kTimeoutMs);
 		wristMotor.config_kP(kPIDLoopIdx, kP, kTimeoutMs);
 		wristMotor.config_kI(kPIDLoopIdx, kI, kTimeoutMs);
@@ -123,11 +129,13 @@ public class Wrist implements Updateable {
     public void update(double dT) {
         updatePIDFCoefficents();
 
+        /*
         wristMotor.set(ControlMode.MotionMagic, listedSetpoints[currentTarget]);
         
         if(Math.abs(listedSetpoints[currentTarget] - wristMotor.getSelectedSensorPosition()) < kHoldingDeadzone ) {//we're here!
             currentState = WristState.HOLDING;
         }
+        */
     }
 
 }

@@ -18,6 +18,8 @@ public class Dashboard implements Updateable {
     public ShuffleboardTab teleopTab;
     public ShuffleboardTab pidfTuning;
 
+    public NetworkTableEntry elevatorEncoder;
+
     public NetworkTableEntry elevatorP;
     public NetworkTableEntry elevatorI;
     public NetworkTableEntry elevatorD;
@@ -41,9 +43,11 @@ public class Dashboard implements Updateable {
         mSubsystemManager = _subsystemManager;
 
         teleopTab = Shuffleboard.getTab("Teleop");
-        Shuffleboard.selectTab("Teleop");
 
         pidfTuning = Shuffleboard.getTab("PIDF Tuning");
+
+        Shuffleboard.selectTab("PIDF Tuning");
+
 
         sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
 
@@ -62,6 +66,8 @@ public class Dashboard implements Updateable {
         wristD = pidfTuning.add("Wrist D", mSubsystemManager.mWrist.kD).getEntry();
         wristF = pidfTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
 
+        elevatorEncoder = pidfTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
+
         camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 25);// width, height, framerate
     }
@@ -71,5 +77,7 @@ public class Dashboard implements Updateable {
         lbAngle.setDouble(mSubsystemManager.mDrivetrain.lb.currentAngle);
         rfAngle.setDouble(mSubsystemManager.mDrivetrain.rf.currentAngle);
         rbAngle.setDouble(mSubsystemManager.mDrivetrain.rb.currentAngle);
+
+        elevatorEncoder.setDouble(mSubsystemManager.mElevator.elevatorEncoder.getPosition());
     }
 }
