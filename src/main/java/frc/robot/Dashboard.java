@@ -16,7 +16,7 @@ public class Dashboard implements Updateable {
     private SubsystemManager mSubsystemManager;
 
     public ShuffleboardTab teleopTab;
-    public ShuffleboardTab pidfTuning;
+    public ShuffleboardTab robotTuning;
 
     public NetworkTableEntry elevatorEncoder;
 
@@ -33,6 +33,8 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry frontIntakeCurrent;
     public NetworkTableEntry backIntakeCurrent;
 
+    public NetworkTableEntry elevatorCurrent;
+
     public NetworkTableEntry sanityCheck;
     
     public NetworkTableEntry lfAngle;
@@ -47,10 +49,12 @@ public class Dashboard implements Updateable {
 
         teleopTab = Shuffleboard.getTab("Teleop");
 
-        pidfTuning = Shuffleboard.getTab("Robot Tuning");
+        robotTuning = Shuffleboard.getTab("Robot Tuning");
 
-        Shuffleboard.selectTab("PIDF Tuning");
+        Shuffleboard.selectTab("Robot Tuning");
 
+        Shuffleboard.getTab("Robot Tuning").add("Front Intake Motor", mSubsystemManager.mBallManipulator.mIntakeFront);
+        Shuffleboard.getTab("Robot Tuning").add("Back Intake Motor", mSubsystemManager.mBallManipulator.mIntakeBack);
 
         sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
 
@@ -59,21 +63,23 @@ public class Dashboard implements Updateable {
         rfAngle = teleopTab.add("RF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         rbAngle = teleopTab.add("RB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
 
-        elevatorP = pidfTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
-        elevatorI = pidfTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
-        elevatorD = pidfTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
-        elevatorF = pidfTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
+        elevatorP = robotTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
+        elevatorI = robotTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
+        elevatorD = robotTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
+        elevatorF = robotTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
 
-        wristP = pidfTuning.add("Wrist P", mSubsystemManager.mWrist.kP).getEntry();
-        wristI = pidfTuning.add("Wrist I", mSubsystemManager.mWrist.kI).getEntry();
-        wristD = pidfTuning.add("Wrist D", mSubsystemManager.mWrist.kD).getEntry();
-        wristF = pidfTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
+        wristP = robotTuning.add("Wrist P", mSubsystemManager.mWrist.kP).getEntry();
+        wristI = robotTuning.add("Wrist I", mSubsystemManager.mWrist.kI).getEntry();
+        wristD = robotTuning.add("Wrist D", mSubsystemManager.mWrist.kD).getEntry();
+        wristF = robotTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
 
-        elevatorEncoder = pidfTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
+        elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
         
-        frontIntakeCurrent = pidfTuning.add("Front Current", mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent()).getEntry();
-        backIntakeCurrent = pidfTuning.add("Back Current", mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent()).getEntry();
+        frontIntakeCurrent = robotTuning.add("Front Current", mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent()).getEntry();
+        backIntakeCurrent = robotTuning.add("Back Current", mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent()).getEntry();
 
+        elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
+        
         camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 25);// width, height, framerate
     }
@@ -88,5 +94,7 @@ public class Dashboard implements Updateable {
         
         frontIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent());
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());
+
+        elevatorCurrent.setDouble(mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent());
     }
 }

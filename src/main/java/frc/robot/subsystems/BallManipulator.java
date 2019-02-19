@@ -50,12 +50,14 @@ public class BallManipulator implements Updateable{
     }
 
     public void update(double dt) {
+        /*
         double averageCurrent = (mIntakeBack.getOutputCurrent() + mIntakeFront.getOutputCurrent() ) / 2;
         if (averageCurrent >= kCurrentThreshold) { elapsedTime += dt; }
         if (elapsedTime >= .2) {
             currentState = BallManipulatorState.HOLDING;
             haveBall = true;
         }
+        */
         switch(currentState) {
             case IN:
                 mIntakeFront.set(1);
