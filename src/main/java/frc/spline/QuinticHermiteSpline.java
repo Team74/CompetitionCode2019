@@ -4,7 +4,7 @@ import frc.utils.geometry.Pose2d;
 import frc.utils.geometry.Rotation2d;
 import frc.utils.geometry.Translation2d;
 
-public class QuinticHermiteSpline {
+public class QuinticHermiteSpline extends Spline {
 
     private double x0, x1, dx0, dx1, ddx0, ddx1, y0, y1, dy0, dy1, ddy0, ddy1;
     private double ax, bx, cx, dx, ex, fx, ay, by, cy, dy, ey, fy;
@@ -97,6 +97,26 @@ public class QuinticHermiteSpline {
 
     private double dddy(double t) {
         return 60 * ay * Math.pow(t, 2) + 24 * by * t + 6 * cy;
+    }
+
+    public double getVelocity(double t) {
+        return Math.hypot(dx(t), dy(t));
+    }
+
+    public double getCurvature(double t) {
+        return (dx(t) * ddy(t) - ddx(t) * dy(t)) / ((dx(t) * dx(t) + dy(t) * dy(t)) * Math.sqrt((dx(t) * dx(t) + dy(t) * dy(t))));
+    }
+
+    public  double getDCurvature(double t) {
+        double dx2dy2 = (dx(t) * dx(t) + dy(t) * dy(t));
+        double num = (dx(t)*dddy(t) - dddx(t)*dy(t)) * dx2dy2 - 3 * (dx(t) * ddy(t) - ddx(t) * dy(t)) * (dx(t) * ddx(t) + dy(t) * ddy(t));
+        return num / (dx2dy2 * dx2dy2 * Math.sqrt(dx2dy2));
+    }
+
+    public double dCurvature2(double t) {
+        double dx2dy2 = (dx(t) * dx(t) + dy(t) * dy(t));
+        double num = (dx(t)*dddy(t) - dddx(t)*dy(t)) * dx2dy2 - 3 * (dx(t) * ddy(t) - ddx(t) * dy(t)) * (dx(t) * ddx(t) + dy(t) * ddy(t));
+        return num * num / (dx2dy2 * dx2dy2 * dx2dy2 * dx2dy2 * dx2dy2);
     }
 
     //Method to get the heading of the spline at point t
