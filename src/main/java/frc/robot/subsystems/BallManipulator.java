@@ -20,16 +20,16 @@ public class BallManipulator implements Updateable{
 
     public final int kTimeoutMs = 30;
 
-    private final double kCurrentThreshold = 0.0;
+    private final double kCurrentThreshold = 50.0;
+
+    private final double kInSpeed = .2;
 
     public static enum BallManipulatorState {
         IN, OUT, HOLDING;
     }
     public BallManipulatorState currentState = BallManipulatorState.HOLDING;
 
-    public boolean haveBall = false;
-
-    private double elapsedTime = 0.0;
+    public static boolean haveBall = false;
 
 
     public BallManipulator(RobotMap robotMap){
@@ -50,22 +50,19 @@ public class BallManipulator implements Updateable{
     }
 
     public void update(double dt) {
-        /*
-        double averageCurrent = (mIntakeBack.getOutputCurrent() + mIntakeFront.getOutputCurrent() ) / 2;
-        if (averageCurrent >= kCurrentThreshold) { elapsedTime += dt; }
-        if (elapsedTime >= .2) {
+        if (mIntakeBack.getOutputCurrent() >= kCurrentThreshold) {
             currentState = BallManipulatorState.HOLDING;
             haveBall = true;
         }
-        */
+        
         switch(currentState) {
             case IN:
-                mIntakeFront.set(1);
-                mIntakeBack.set(1);
+                mIntakeFront.set(kInSpeed);
+                mIntakeBack.set(-kInSpeed);
             break;
             case OUT:
             mIntakeFront.set(-1);
-            mIntakeBack.set(-1);
+            mIntakeBack.set(1);
             haveBall = false;
             break;
             case HOLDING:

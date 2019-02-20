@@ -5,6 +5,8 @@ import frc.robot.SubsystemManager;
 import static frc.robot.RobotMap.isElevatorDown;
 import static frc.robot.RobotMap.isWristUp;
 
+import static frc.robot.subsystems.BallManipulator.haveBall;
+
 import frc.utils.Utilities;
 
 import edu.wpi.cscore.UsbCamera;
@@ -40,6 +42,8 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry wristLimit;
     public NetworkTableEntry elevatorLimit;
 
+    public NetworkTableEntry doWeHaveBall;
+
     public NetworkTableEntry elevatorCurrent;
 
     public NetworkTableEntry sanityCheck;
@@ -67,6 +71,8 @@ public class Dashboard implements Updateable {
 
         wristLimit = teleopTab.add("Is Wrist Up?", isWristUp.get()).getEntry();
         elevatorLimit = teleopTab.add("Is Elevator Down?", isElevatorDown.get()).getEntry();
+
+        doWeHaveBall = teleopTab.add("Do we have a ball?", haveBall).getEntry();
 
         lfAngle = teleopTab.add("LF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         lbAngle = teleopTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
@@ -104,6 +110,8 @@ public class Dashboard implements Updateable {
         
         frontIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent());
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());
+
+        doWeHaveBall.setBoolean(haveBall);
 
         elevatorCurrent.setDouble(mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent());
 

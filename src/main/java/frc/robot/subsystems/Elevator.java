@@ -13,6 +13,19 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
+/*
+Elevator Setpoints
+    Bottom/Climb: 0
+    IntakeBall: 0
+    LowBall: 20
+    MidBall: 115
+    HighBall: 200
+    CargoBall:
+    LowPanel:
+    MidPanel:
+    HighPanel:
+*/
+
 public class Elevator implements Updateable {
 
 
@@ -31,8 +44,8 @@ public class Elevator implements Updateable {
     public double kP, kI, kD, kIZ, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, maxAcc;
     public int kSlotIDX;
 
-    public double[] listedSetpoints;
-    public HashMap<String, Integer> listedSetpoints_aliases;
+    public double[] listedSetpoints = new double[0];
+    public HashMap<String, Integer> listedSetpoints_aliases = new HashMap<String, Integer>();
     public int currentTarget;
 
     public ElevatorState currentState;
@@ -42,17 +55,20 @@ public class Elevator implements Updateable {
         mRobotMap = _robotMap;
 
         elevatorMotor = mRobotMap.Elevator_0;
+        elevatorMotor.setInverted(true);
+        elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
         elevatorEncoder = mRobotMap.Elevator_E_0;
         elevatorEncoder.setPosition(0);
 
         elevatorController = elevatorMotor.getPIDController();
 
         kIZ = 0.0;
-        kMaxOutput = 1.0;
-        kMinOutput = -1.0;
+        kMaxOutput = .5;
+        kMinOutput = -0.5;
         maxRPM = 0.0;
-        maxVel = 0.0;
-        maxAcc = 0.0;
+        maxVel = 100;
+        maxAcc = 50;
 
         elevatorController.setIZone(kIZ);
         elevatorController.setOutputRange(kMinOutput, kMaxOutput);
@@ -108,7 +124,7 @@ public class Elevator implements Updateable {
 
     public void checkLimit() {
         if (isElevatorDown.get()) {
-            elevatorEncoder.setPosition(0);
+            //elevatorEncoder.setPosition(0);
         }
     }
 

@@ -30,13 +30,13 @@ public class Wrist implements Updateable {
 
     public double kP, kI, kD, kF;
 
-    public final int kMaxVel = 200;
-    public final int kMaxAccel = 1000;
+    public final int kMaxVel = 400;
+    public final int kMaxAccel = 200;
 
     public final double kHoldingDeadzone = 0.0;
 
-    public int[] listedSetpoints;
-    public HashMap<String, Integer> listedSetpoints_aliases;
+    public int[] listedSetpoints = new int[0];
+    public HashMap<String, Integer> listedSetpoints_aliases = new HashMap<String, Integer>();;
     public int currentTarget;
 
     public static enum WristState {
@@ -129,7 +129,7 @@ public class Wrist implements Updateable {
     }
     public void checkLimit() {
         if (isWristUp.get()) {
-            wristMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+            //wristMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
         }
     }
 

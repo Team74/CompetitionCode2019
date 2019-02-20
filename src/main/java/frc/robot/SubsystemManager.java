@@ -35,7 +35,6 @@ public class SubsystemManager implements Updateable {
 
         mRobotMap = new RobotMap(); //initializes all the physical hardware bits, but doesn't do anything further with them
         mDrivetrain = new Drivetrain(mRobotMap);
-        mStateMachine = new StateMachine(this);
         mDrivePlanner = new DrivePlanner(this);
         mElevator = new Elevator(this, mRobotMap);
         mWrist = new Wrist(this, mRobotMap);
@@ -43,6 +42,7 @@ public class SubsystemManager implements Updateable {
         mBallManipulator = new BallManipulator(mRobotMap);
         mPanelManipulator = new PanelManipulator(mRobotMap);
         mDashboard = new Dashboard(this);
+        mStateMachine = new StateMachine(this);
 
         m_listOfUpdatingObjects.add(mStateMachine);
         m_listOfUpdatingObjects.add(mDrivePlanner);

@@ -5,6 +5,8 @@ import frc.robot.InputManager;
 import frc.robot.StateMachine;
 import frc.robot.DrivePlanner;
 
+import frc.robot.subsystems.SwerveModule;
+
 import frc.robot.behavior.TeleopMaster;
 
 import frc.utils.Utilities;
@@ -15,6 +17,9 @@ public class PrimaryTeleopMaster extends TeleopMaster {
     
     private StateMachine mStateMachine;
     private DrivePlanner mDrivePlanner;
+
+    SwerveModule currentMotor;
+    String output_extra;
 
     private HashMap<String, Boolean> m_buttons;
     private HashMap<String, Double> m_joysticks;
@@ -36,9 +41,37 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         mDrivePlanner = mSubsystemManager.mDrivePlanner;
         m_buttons = mInputManager.m_buttons;
         m_joysticks = mInputManager.m_joysticks;
+
+        currentMotor = mSubsystemManager.mDrivetrain.lb;
+        output_extra = "lb: ";
     }
 
     public void update(double dt) {
+        if(mInputManager.m_buttons.get("0a")) {
+            currentMotor = mSubsystemManager.mDrivetrain.lb;
+            output_extra = "lb: ";
+        }
+        else if(mInputManager.m_buttons.get("0x")) {
+            currentMotor = mSubsystemManager.mDrivetrain.lf;
+            output_extra = "lf: ";
+        }        
+        else if(mInputManager.m_buttons.get("0y")) {
+            currentMotor = mSubsystemManager.mDrivetrain.rf;
+            output_extra = "rf: ";
+        }       
+        else if(mInputManager.m_buttons.get("0b")) {
+            currentMotor = mSubsystemManager.mDrivetrain.rb;
+            output_extra = "rb: ";
+        }        
+        double encoderCount = currentMotor.rotate_motor.getSelectedSensorPosition(0);
+        double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
+        System.out.println(output_extra + encoderCount);
+
+        if (m_buttons.get("0back")) {
+            System.out.println("Gyro reset");
+            mSubsystemManager.mDrivetrain.gyro.reset();
+        }
+
         if (m_buttons.get("0l_trigger") && !m_buttons.get("0r_trigger")) {
             mDrivePlanner.setSpeed(DrivePlanner.Speed.Low);
         } else if (m_buttons.get("0r_trigger") && !m_buttons.get("0l_trigger")) {
@@ -89,6 +122,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             mDrivePlanner.angle += (mDrivePlanner.angle < -Math.PI) ? 2*Math.PI : 0;
             mDrivePlanner.angle -= (mDrivePlanner.angle > Math.PI) ? 2*Math.PI : 0;
         }
+        /*
         isBall = true; // get trigger
 
         switch(1) {
@@ -131,5 +165,6 @@ public class PrimaryTeleopMaster extends TeleopMaster {
 
         mStateMachine.panelManipulatorTarget = m_buttons.get("1r_bumper") ? "Out" : "In";
         //make that a toggle if we want; for now, hold it down
+        */
     }
 }

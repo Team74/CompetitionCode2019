@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.SubsystemManager;
 import frc.robot.InputManager;
 import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
+import frc.robot.behavior.master_implementations.PrimaryTeleopMaster;
 import frc.robot.behavior.master_implementations.Test1_TeleopMaster;
 
 public class Robot extends TimedRobot {
@@ -39,7 +40,7 @@ public class Robot extends TimedRobot {
         mSubsystemManager.update(dt); 
     }
     public void teleopInit() {
-        mSubsystemManager.setCurrentMaster(new Test1_TeleopMaster(mSubsystemManager, mInputManager));
+        mSubsystemManager.setCurrentMaster(new PrimaryTeleopMaster(mSubsystemManager, mInputManager));
         //similarly, if we want to do, say, a different control scheme, a different teleopmaster could be subbed in that would interpret the inputs differently
         mTimer.reset();
         mTimer.start();

@@ -108,6 +108,7 @@ public class SwerveModule {
         double adjustedTargetAngle = targetAngle < 0 ? 180 + targetAngle : targetAngle;
 
         double adjustedDelta = (adjustedTargetAngle - adjustedCurrentAngle);
+        adjustedDelta = Math.IEEEremainder(adjustedDelta, 360);
         adjustedDelta = Math.abs(adjustedDelta) > 90 ? -Math.signum(adjustedDelta)*(180 - Math.abs(adjustedDelta)) : adjustedDelta;
         
         //Convert angle modifier to encoder

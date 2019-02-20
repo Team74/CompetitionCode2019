@@ -41,5 +41,15 @@ public class Pose2d {
     public Rotation2d getRotation() {
         return mRotation;
     }
+    /*
+    public Pose2d inverse() {
+        Rotation2d rotation_inverted = mRotation.inverse();
+        return new Pose2d(mTranslation.inverse().rotateBy(rotation_inverted), rotation_inverted);
+    }
+
+    public double distance(final Pose2d other) {
+        return Pose2d.log(inverse().transformBy(other)).norm();
+    }
+*/
 
 }

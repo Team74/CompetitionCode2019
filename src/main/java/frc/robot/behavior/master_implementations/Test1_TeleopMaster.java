@@ -12,6 +12,7 @@ import frc.utils.Utilities;
 import static frc.robot.subsystems.BallManipulator.BallManipulatorState;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.revrobotics.CANError;
 import com.revrobotics.ControlType;
 
 public class Test1_TeleopMaster extends TeleopMaster {
@@ -29,29 +30,48 @@ public class Test1_TeleopMaster extends TeleopMaster {
         output_extra = "lb: ";
      }
 
-    public void update(double dt) {  
+    public void update(double dt) {
+        
+        double referencePoint = 0;
+        CANError x = CANError.kOK; boolean xx = true;
         if (mInputManager.m_buttons.get("0a")) {
-            mSubsystemManager.mElevator.elevatorController.setReference(0, ControlType.kSmartMotion);
+            System.out.println("Setpoint = 0");
+            referencePoint = 0;
+            x = mSubsystemManager.mElevator.elevatorController.setReference(0, ControlType.kSmartMotion, 0);
         } else if (mInputManager.m_buttons.get("0x")) {
-            mSubsystemManager.mElevator.elevatorController.setReference(0, ControlType.kSmartMotion);
+            System.out.println("Setpoint = 115");
+            referencePoint = 115;
+            x = mSubsystemManager.mElevator.elevatorController.setReference(115, ControlType.kSmartMotion, 0);
         }  else if (mInputManager.m_buttons.get("0y")) {
-            mSubsystemManager.mElevator.elevatorController.setReference(-200, ControlType.kSmartMotion);
+            referencePoint = 190;
+            System.out.println("Setpoint = 190");
+            x = mSubsystemManager.mElevator.elevatorController.setReference(190, ControlType.kSmartMotion, 0);
         } else if (mInputManager.m_buttons.get("0b")) {
-            mSubsystemManager.mElevator.elevatorMotor.set(Utilities.handleDeadband(mInputManager.m_joysticks.get("0ry"), .1));
+            System.out.println("Manual");
+            double joy_input = Utilities.handleDeadband(-mInputManager.m_joysticks.get("0ry"), .1);
+            final double up_percentage = 1.0;
+            final double down_percentage = 0.5;
+            mSubsystemManager.mElevator.elevatorMotor.set(joy_input * (joy_input > 0 ? up_percentage : down_percentage));
+            xx = false;
         } else {
+            System.out.println("Stop Motor");
             mSubsystemManager.mElevator.elevatorMotor.set(0.0);
+            xx = false;
         }
 
+        System.out.println("CANError: " +( xx ? x.name() : "nothing"));
         if (mInputManager.m_buttons.get("0d_up")) {
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, 0);
+        mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, mInputManager.m_joysticks.get("0ly"));
         } else if (mInputManager.m_buttons.get("0d_down")) {
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, 3190);
-        } else if (mInputManager.m_buttons.get("0d_left")) {
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, 2000);
-        } else if (mInputManager.m_buttons.get("0d_right")) {
-            mSubsystemManager.mWrist.wristMotor.set(mInputManager.m_joysticks.get("0ly"));
-        } else {
             mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, 0);
+        }
+
+
+        if (mInputManager.m_buttons.get("0d_up")) {
+        } else if (mInputManager.m_buttons.get("0d_down")) {
+        } else if (mInputManager.m_buttons.get("0d_left")) {
+        } else if (mInputManager.m_buttons.get("0d_right")) {
+        } else {
         }
 
         if (mInputManager.m_buttons.get("0l_bumper")) {
@@ -61,9 +81,16 @@ public class Test1_TeleopMaster extends TeleopMaster {
         } else if (mInputManager.m_buttons.get("0l_trigger")) {
             mSubsystemManager.mBallManipulator.setState(BallManipulatorState.HOLDING);
         }
-
+        
+        if (mInputManager.m_buttons.get("0r_trigger")) {
+            mSubsystemManager.mElevator.elevatorEncoder.setPosition(0);
+            mSubsystemManager.mWrist.wristMotor.setSelectedSensorPosition(0);
+        }
+        
         System.out.println("Position: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
-        System.out.println("Velocity: " + mSubsystemManager.mElevator.elevatorEncoder.getVelocity());
+        System.out.println("Velocity: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
+        System.out.println("Wrist: " + mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition());
         System.out.println("-----------------");
+
     }
 }

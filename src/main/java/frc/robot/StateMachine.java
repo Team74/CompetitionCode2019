@@ -48,7 +48,7 @@ public class StateMachine implements Updateable {
             String[] temp3 = wristSetpointList.keySet().toArray(new String[0]); //String[] temp4 = new String[temp3.length]; for(int i = 0; i < temp3.length; ++i) { temp4[i] = temp3[i]; }         
             mSubsystemManager.mWrist.setSetpoints(temp3, temp2);
         }
-        //*/
+        
     }
 
     public void update(double dt) {
