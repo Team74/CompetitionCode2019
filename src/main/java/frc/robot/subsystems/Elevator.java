@@ -4,6 +4,8 @@ import frc.robot.Updateable;
 import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
 
+import static frc.robot.RobotMap.isElevatorDown;
+
 import java.util.HashMap;
 
 import com.revrobotics.CANEncoder;
@@ -41,6 +43,8 @@ public class Elevator implements Updateable {
 
         elevatorMotor = mRobotMap.Elevator_0;
         elevatorEncoder = mRobotMap.Elevator_E_0;
+        elevatorEncoder.setPosition(0);
+
         elevatorController = elevatorMotor.getPIDController();
 
         kIZ = 0.0;
@@ -102,7 +106,14 @@ public class Elevator implements Updateable {
         }
     }
 
+    public void checkLimit() {
+        if (isElevatorDown.get()) {
+            elevatorEncoder.setPosition(0);
+        }
+    }
+
     public void update(double dT) {
+        checkLimit();
         updatePIDFCoefficents();
         /*
         elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);

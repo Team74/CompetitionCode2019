@@ -2,6 +2,9 @@ package frc.robot;
 
 import frc.robot.SubsystemManager;
 
+import static frc.robot.RobotMap.isElevatorDown;
+import static frc.robot.RobotMap.isWristUp;
+
 import frc.utils.Utilities;
 
 import edu.wpi.cscore.UsbCamera;
@@ -17,6 +20,7 @@ public class Dashboard implements Updateable {
 
     public ShuffleboardTab teleopTab;
     public ShuffleboardTab robotTuning;
+    public ShuffleboardTab cameraTab;
 
     public NetworkTableEntry elevatorEncoder;
 
@@ -33,6 +37,9 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry frontIntakeCurrent;
     public NetworkTableEntry backIntakeCurrent;
 
+    public NetworkTableEntry wristLimit;
+    public NetworkTableEntry elevatorLimit;
+
     public NetworkTableEntry elevatorCurrent;
 
     public NetworkTableEntry sanityCheck;
@@ -48,8 +55,8 @@ public class Dashboard implements Updateable {
         mSubsystemManager = _subsystemManager;
 
         teleopTab = Shuffleboard.getTab("Teleop");
-
         robotTuning = Shuffleboard.getTab("Robot Tuning");
+        cameraTab = Shuffleboard.getTab("Camera");
 
         Shuffleboard.selectTab("Robot Tuning");
 
@@ -57,6 +64,9 @@ public class Dashboard implements Updateable {
         Shuffleboard.getTab("Robot Tuning").add("Back Intake Motor", mSubsystemManager.mBallManipulator.mIntakeBack);
 
         sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
+
+        wristLimit = teleopTab.add("Is Wrist Up?", isWristUp.get()).getEntry();
+        elevatorLimit = teleopTab.add("Is Elevator Down?", isElevatorDown.get()).getEntry();
 
         lfAngle = teleopTab.add("LF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         lbAngle = teleopTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
@@ -96,5 +106,8 @@ public class Dashboard implements Updateable {
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());
 
         elevatorCurrent.setDouble(mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent());
+
+        wristLimit.setBoolean(isWristUp.get());
+        elevatorLimit.setBoolean(isElevatorDown.get());
     }
 }

@@ -1,9 +1,11 @@
 package frc.robot.subsystems;
 
 import frc.robot.SubsystemManager;
+import frc.robot.Updateable;
 import frc.robot.RobotMap;
 
-import frc.robot.Updateable;
+import static frc.robot.RobotMap.isWristUp;
+
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -125,8 +127,14 @@ public class Wrist implements Updateable {
             currentState = WristState.MOVING;
         }
     }
+    public void checkLimit() {
+        if (isWristUp.get()) {
+            wristMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+        }
+    }
 
     public void update(double dT) {
+        checkLimit();
         updatePIDFCoefficents();
 
         /*

@@ -4,6 +4,7 @@ import com.revrobotics.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.DigitalInput;
 /*
 This class sets up all the different things related to the PWM, plus some other stuff. It'll get passed in to other classes so they can get references back to the individual components.
 */
@@ -46,6 +47,9 @@ public class RobotMap {
     public WPI_TalonSRX Intake_1 = new WPI_TalonSRX(2); //Back
 
     public WPI_TalonSRX Wrist_0 = new WPI_TalonSRX(7);
+
+    public static DigitalInput isWristUp = new DigitalInput(0);
+    public static DigitalInput isElevatorDown = new DigitalInput(1);
 
     public AHRS navX = new AHRS(SPI.Port.kMXP, (byte)60);
 
