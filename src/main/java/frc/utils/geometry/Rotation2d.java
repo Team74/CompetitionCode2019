@@ -72,6 +72,24 @@ public class Rotation2d {
         return sin_angle / cos_angle;
     }
 
+    public double getRadians() {
+        return Math.atan2(sin_angle, cos_angle);
+    }
+
+    public double getDegrees() {
+        return Math.toDegrees(getRadians());
+    }
+
+    public Rotation2d rotateBy(final Rotation2d other) {
+        return new Rotation2d(cos_angle * other.cos_angle - sin_angle * other.sin_angle,
+        cos_angle * other.sin_angle + sin_angle * other.cos_angle, true);
+    }
+
+    //Inverse undoes this rotation
+    public Rotation2d inverse() {
+        return new Rotation2d(cos_angle, -sin_angle, false);
+    }
+
     public Rotation2d getRotation(){
         return this;
     }
