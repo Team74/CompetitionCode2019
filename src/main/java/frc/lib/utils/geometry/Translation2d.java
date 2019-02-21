@@ -1,4 +1,4 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
 //Stores x, y positions as vectors, or transformations from the origin
 

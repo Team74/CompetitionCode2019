@@ -1,7 +1,7 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
-import frc.utils.geometry.Translation2d;
-import frc.utils.geometry.Rotation2d;
+import frc.lib.utils.geometry.Translation2d;
+import frc.lib.utils.geometry.Rotation2d;
 
 public class Pose2d {
 
@@ -34,6 +34,14 @@ public class Pose2d {
     public Pose2d(final Pose2d other) {
         mTranslation = new Translation2d(other.mTranslation);
         mRotation = new Rotation2d(other.mRotation);
+    }
+
+    public static Pose2d fromTranslation(final Translation2d _translation) {
+        return new Pose2d(_translation, new Rotation2d());
+    }
+
+    public static Pose2d fromRotation(final Rotation2d _rotation) {
+        return new Pose2d(new Translation2d(), _rotation);
     }
 
     public Pose2d transformBy(final Pose2d other) {

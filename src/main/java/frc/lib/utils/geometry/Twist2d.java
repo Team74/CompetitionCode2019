@@ -1,6 +1,6 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
-import static frc.utils.Utilities.kEpsilon;
+import static frc.lib.utils.Utilities.kEpsilon;
 
 /*
     A movement along an arc at constant curvature and velocity. We can use ideas from "differential calculus" to create

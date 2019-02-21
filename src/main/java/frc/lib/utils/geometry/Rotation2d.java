@@ -1,6 +1,6 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
-import static frc.utils.Utilities.kEpsilon;
+import static frc.lib.utils.Utilities.kEpsilon;
 
 public class Rotation2d {
     protected static final Rotation2d kIdentity = new Rotation2d();
@@ -51,6 +51,16 @@ public class Rotation2d {
 
     public Rotation2d(final Translation2d direction, boolean normalize) {
         this(direction.x(), direction.y(), normalize);
+    }
+
+    //Creates a Rotation2d object from a spedified radian amount
+    public static Rotation2d fromRadians(double angle_radians) {
+        return new Rotation2d(Math.cos(angle_radians), Math.sin(angle_radians), false);
+    }
+
+    //Creates a Rotation2d object from a specified degree amount
+    public static Rotation2d fromDegrees(double angle_degrees) {
+        return fromRadians(Math.toRadians(angle_degrees));
     }
 
     public double cos() {

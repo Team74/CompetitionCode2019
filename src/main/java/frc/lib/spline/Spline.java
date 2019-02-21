@@ -1,9 +1,9 @@
-package frc.spline;
+package frc.lib.spline;
 
-import frc.utils.geometry.Pose2d;
-import frc.utils.geometry.Translation2d;
-import frc.utils.geometry.Rotation2d;
-import frc.utils.geometry.Pose2dWithCurvature;
+import frc.lib.utils.geometry.Pose2d;
+import frc.lib.utils.geometry.Translation2d;
+import frc.lib.utils.geometry.Rotation2d;
+import frc.lib.utils.geometry.Pose2dWithCurvature;
 
 public abstract class Spline {
     public abstract Translation2d getPoint(double t);

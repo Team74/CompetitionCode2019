@@ -1,4 +1,4 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
 public class Pose2dWithCurvature {
     protected static final Pose2dWithCurvature kIdentity = new Pose2dWithCurvature();

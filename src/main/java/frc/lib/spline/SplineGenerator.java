@@ -1,9 +1,9 @@
-package frc.spline;
+package frc.lib.spline;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import frc.utils.geometry.*;
+import frc.lib.utils.geometry.*;
 
 public class SplineGenerator {
 

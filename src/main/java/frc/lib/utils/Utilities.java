@@ -1,4 +1,4 @@
-package frc.utils;
+package frc.lib.utils;
 
 public class Utilities {
     
