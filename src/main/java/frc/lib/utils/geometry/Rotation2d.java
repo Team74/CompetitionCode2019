@@ -1,6 +1,6 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
-import static frc.utils.Utilities.kEpsilon;
+import static frc.lib.utils.Utilities.kEpsilon;
 
 public class Rotation2d {
     protected static final Rotation2d kIdentity = new Rotation2d();
@@ -53,6 +53,16 @@ public class Rotation2d {
         this(direction.x(), direction.y(), normalize);
     }
 
+    //Creates a Rotation2d object from a spedified radian amount
+    public static Rotation2d fromRadians(double angle_radians) {
+        return new Rotation2d(Math.cos(angle_radians), Math.sin(angle_radians), false);
+    }
+
+    //Creates a Rotation2d object from a specified degree amount
+    public static Rotation2d fromDegrees(double angle_degrees) {
+        return fromRadians(Math.toRadians(angle_degrees));
+    }
+
     public double cos() {
         return cos_angle;
     }
@@ -70,6 +80,24 @@ public class Rotation2d {
             }
         }
         return sin_angle / cos_angle;
+    }
+
+    public double getRadians() {
+        return Math.atan2(sin_angle, cos_angle);
+    }
+
+    public double getDegrees() {
+        return Math.toDegrees(getRadians());
+    }
+
+    public Rotation2d rotateBy(final Rotation2d other) {
+        return new Rotation2d(cos_angle * other.cos_angle - sin_angle * other.sin_angle,
+        cos_angle * other.sin_angle + sin_angle * other.cos_angle, true);
+    }
+
+    //Inverse undoes this rotation
+    public Rotation2d inverse() {
+        return new Rotation2d(cos_angle, -sin_angle, false);
     }
 
     public Rotation2d getRotation(){

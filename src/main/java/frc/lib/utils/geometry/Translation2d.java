@@ -1,4 +1,4 @@
-package frc.utils.geometry;
+package frc.lib.utils.geometry;
 
 //Stores x, y positions as vectors, or transformations from the origin
 
@@ -51,6 +51,11 @@ public class Translation2d {
     //You can combine transforms by adding the x and y shifts AKA adding vectors
     public Translation2d translateBy(final Translation2d other) {
         return new Translation2d(x + other.x, y + other.y);
+    }
+
+    //You can rotate Translation2d's https://en.wikipedia.org/wiki/Rotation_matrix
+    public Translation2d rotateBy(final Rotation2d _rotation) {
+        return new Translation2d(x * _rotation.cos() - y * _rotation.sin(), x * _rotation.sin() + y * _rotation.cos());
     }
     
     //Inverse returns a Translations2d that undoes the Translation2d it is called from, hence -x, -y

@@ -7,7 +7,7 @@ import static frc.robot.RobotMap.isWristUp;
 
 import static frc.robot.subsystems.BallManipulator.haveBall;
 
-import frc.utils.Utilities;
+import frc.lib.utils.Utilities;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode.PixelFormat;

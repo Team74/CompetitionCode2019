@@ -6,7 +6,7 @@ Class that handles *human* input; for sensors, see SensorManager. Since the vari
 
 import frc.robot.Updateable;
 
-import frc.utils.Utilities;
+import frc.lib.utils.Utilities;
 
 import java.util.HashMap;
 import edu.wpi.first.wpilibj.XboxController;
