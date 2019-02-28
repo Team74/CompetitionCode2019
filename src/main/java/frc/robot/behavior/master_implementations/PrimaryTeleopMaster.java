@@ -121,6 +121,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             mDrivePlanner.angle %= 2*Math.PI;
             mDrivePlanner.angle += (mDrivePlanner.angle < -Math.PI) ? 2*Math.PI : 0;
             mDrivePlanner.angle -= (mDrivePlanner.angle > Math.PI) ? 2*Math.PI : 0;
+            mDrivePlanner.angle += Math.PI/2;
         }
         /*
         isBall = true; // get trigger

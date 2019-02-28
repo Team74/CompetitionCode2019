@@ -62,6 +62,7 @@ public class Elevator implements Updateable {
 
         elevatorController = elevatorMotor.getPIDController();
 
+        //Instatiate controller parameters
         kIZ = 0.0;
         kMaxOutput = 1;
         kMinOutput = -1;
@@ -87,6 +88,7 @@ public class Elevator implements Updateable {
     }
 
     public void updatePIDFCoefficents() {
+        //Check dashboard to see if coefficents have changed
         double _p = mSubsystemManager.mDashboard.elevatorP.getDouble(kP);
         double _i = mSubsystemManager.mDashboard.elevatorI.getDouble(kI);
         double _d = mSubsystemManager.mDashboard.elevatorD.getDouble(kD);
@@ -137,13 +139,12 @@ public class Elevator implements Updateable {
     }
 
     public void checkLimit() {
-            //elevatorEncoder.setPosition(0);
-        
+        //elevatorEncoder.setPosition(0);
     }
 
     public void update(double dT) {
-        //checkLimit();
-        //updatePIDFCoefficents();
+        checkLimit();
+        updatePIDFCoefficents();
         /*
         elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);
         if(Math.abs(listedSetpoints[currentTarget] - elevatorEncoder.getPosition()) < kHoldingDeadzone ) {//we're here)

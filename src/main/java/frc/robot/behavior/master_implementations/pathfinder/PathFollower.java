@@ -1,4 +1,4 @@
-package frc.robot.behavior.master_implementations;
+package frc.robot.behavior.master_implementations.pathfinder;
 
 import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
@@ -6,7 +6,7 @@ import frc.robot.RobotMap;
 import frc.robot.Updateable;
 
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.behavior.master_implementations.Paths;
+import frc.robot.behavior.master_implementations.pathfinder.Paths;
 
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.followers.EncoderFollower;
