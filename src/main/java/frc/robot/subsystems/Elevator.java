@@ -4,8 +4,6 @@ import frc.robot.Updateable;
 import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
 
-import static frc.robot.RobotMap.isElevatorDown;
-
 import java.util.HashMap;
 
 import com.revrobotics.CANEncoder;
@@ -41,8 +39,8 @@ public class Elevator implements Updateable {
     public CANPIDController elevatorController;
 
     public double kHoldingDeadzone = 50;
-    public double kP, kI, kD, kIZ, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, maxAcc;
-    public int kSlotIDX;
+    public double kP, kI, kD, kIZ, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedError;
+    public int kSlotIDX = 0;
 
     public double[] listedSetpoints = new double[0];
     public HashMap<String, Integer> listedSetpoints_aliases = new HashMap<String, Integer>();
@@ -55,8 +53,9 @@ public class Elevator implements Updateable {
         mRobotMap = _robotMap;
 
         elevatorMotor = mRobotMap.Elevator_0;
+        elevatorMotor.restoreFactoryDefaults();
         elevatorMotor.setInverted(true);
-        elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
         elevatorEncoder = mRobotMap.Elevator_E_0;
         elevatorEncoder.setPosition(0);
@@ -64,36 +63,51 @@ public class Elevator implements Updateable {
         elevatorController = elevatorMotor.getPIDController();
 
         kIZ = 0.0;
-        kMaxOutput = .5;
-        kMinOutput = -0.5;
+        kMaxOutput = 1;
+        kMinOutput = -1;
         maxRPM = 0.0;
-        maxVel = 100;
-        maxAcc = 50;
+        maxVel = 5600;
+        minVel = 0.0;
+        maxAcc = 1000;
+        allowedError = 0.0;
 
-        elevatorController.setIZone(kIZ);
-        elevatorController.setOutputRange(kMinOutput, kMaxOutput);
+        kP = 0.0;
+        kI = 0.0;
+        kD = 0.0;
+        kF = 0.000156;
+
+        elevatorController.setIZone(kIZ, kSlotIDX);
+        elevatorController.setOutputRange(kMinOutput, kMaxOutput, kSlotIDX);
         elevatorController.setSmartMotionMaxVelocity(maxVel, kSlotIDX);
+        elevatorController.setSmartMotionMinOutputVelocity(minVel, kSlotIDX);
         elevatorController.setSmartMotionMaxAccel(maxAcc, kSlotIDX);
+        elevatorController.setSmartMotionAllowedClosedLoopError(allowedError, kSlotIDX);
 
-        elevatorMotor.burnFlash();
+        //elevatorMotor.burnFlash();
     }
 
-    private void updatePIDFCoefficents() {
+    public void updatePIDFCoefficents() {
         double _p = mSubsystemManager.mDashboard.elevatorP.getDouble(kP);
         double _i = mSubsystemManager.mDashboard.elevatorI.getDouble(kI);
         double _d = mSubsystemManager.mDashboard.elevatorD.getDouble(kD);
         double _f = mSubsystemManager.mDashboard.elevatorF.getDouble(kF);
 
-        kP = _p == kP ? kP : _p;
-        kI = _i == kI ? kI : _i;
-        kD = _d == kD ? kD : _d;
-        kF = _f == kF ? kF : _f;
-
-        elevatorController.setP(kP);
-        elevatorController.setI(kI);
-        elevatorController.setD(kD);
-        elevatorController.setIZone(kIZ);
-        elevatorController.setFF(kF);
+        if (kP != _p) {
+            kP = _p;
+            elevatorController.setP(kP, kSlotIDX);
+        } 
+        if (kI != _i) {
+            kI = _i;
+            elevatorController.setI(kI, kSlotIDX);
+        }
+        if (kD != _d) {
+            kD = _d;
+            elevatorController.setD(kD, kSlotIDX);
+        }
+        if (kF != _f) {
+            kF = _f;
+            elevatorController.setFF(kF, kSlotIDX);
+        }
     }
 
     public void setSetpoints(String[] aliases, double[] targets) {
@@ -123,14 +137,13 @@ public class Elevator implements Updateable {
     }
 
     public void checkLimit() {
-        if (isElevatorDown.get()) {
             //elevatorEncoder.setPosition(0);
-        }
+        
     }
 
     public void update(double dT) {
-        checkLimit();
-        updatePIDFCoefficents();
+        //checkLimit();
+        //updatePIDFCoefficents();
         /*
         elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);
         if(Math.abs(listedSetpoints[currentTarget] - elevatorEncoder.getPosition()) < kHoldingDeadzone ) {//we're here)
