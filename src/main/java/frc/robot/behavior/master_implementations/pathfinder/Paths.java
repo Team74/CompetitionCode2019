@@ -1,4 +1,4 @@
-package frc.robot.behavior.master_implementations;
+package frc.robot.behavior.master_implementations.pathfinder;
 
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Waypoint;

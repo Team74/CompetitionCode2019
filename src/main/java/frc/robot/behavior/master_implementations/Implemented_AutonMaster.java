@@ -4,8 +4,8 @@ import frc.robot.SubsystemManager;
 
 import frc.robot.behavior.AutonMaster;
 
-import frc.robot.behavior.master_implementations.Paths;
-import frc.robot.behavior.master_implementations.PathFollower;
+import frc.robot.behavior.master_implementations.pathfinder.Paths;
+import frc.robot.behavior.master_implementations.pathfinder.PathFollower;
 
 import jaci.pathfinder.Waypoint;
 
