@@ -1,7 +1,9 @@
 package frc.robot;
 
+import frc.lib.motorcontroller.TalonSRXBuilder;
+
 import com.revrobotics.*;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -34,19 +36,19 @@ public class RobotMap {
     public CANEncoder Drive_E_3;
 
 
-    public WPI_TalonSRX Steering_0 = new WPI_TalonSRX(6);//Front left
-    public WPI_TalonSRX Steering_1 = new WPI_TalonSRX(3);//Back left
-    public WPI_TalonSRX Steering_2 = new WPI_TalonSRX(4);//Front right
-    public WPI_TalonSRX Steering_3 = new WPI_TalonSRX(5);//Back right
+    public TalonSRX Steering_0 = TalonSRXBuilder.buildDefaultTalon(6);//Front left Steering Motor
+    public TalonSRX Steering_1 = TalonSRXBuilder.buildDefaultTalon(3);//Back left Steering Motor
+    public TalonSRX Steering_2 = TalonSRXBuilder.buildDefaultTalon(4);//Front right Steering Motor
+    public TalonSRX Steering_3 = TalonSRXBuilder.buildDefaultTalon(5);//Back right Steering Motor
 
     public CANSparkMax Elevator_0 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     public CANEncoder Elevator_E_0;
 
-    public WPI_TalonSRX Intake_0 = new WPI_TalonSRX(1); //Front
-    public WPI_TalonSRX Intake_1 = new WPI_TalonSRX(2); //Back
+    public TalonSRX Intake_0 = TalonSRXBuilder.buildDefaultTalon(1);//Front
+    public TalonSRX Intake_1 = TalonSRXBuilder.buildDefaultTalon(2);//Back
 
-    public WPI_TalonSRX Wrist_0 = new WPI_TalonSRX(7);
+    public TalonSRX Wrist_0 = TalonSRXBuilder.buildDefaultTalon(7);//Wrist
 
     public static DigitalInput isWristUp = new DigitalInput(0);
     public static DigitalInput isElevatorDown = new DigitalInput(1);

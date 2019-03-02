@@ -12,7 +12,6 @@ import frc.lib.utils.Utilities;
 import static frc.robot.subsystems.BallManipulator.BallManipulatorState;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.revrobotics.CANError;
 import com.revrobotics.ControlType;
 
 public class TestTeleopMaster extends TeleopMaster {
@@ -21,6 +20,8 @@ public class TestTeleopMaster extends TeleopMaster {
     String output_extra;
 
     double k_deadband = 0.05;
+
+    private double oldElevatorReferencePoint = 0.0;
 
 
     public TestTeleopMaster(SubsystemManager subsystem_manager, InputManager input_manager) {
@@ -31,38 +32,49 @@ public class TestTeleopMaster extends TeleopMaster {
      }
 
     public void update(double dt) {
-        String mode = "";
-        double referencePoint = 0;
+        double elevatorReferencePoint = 0.0;
         if (mInputManager.m_buttons.get("0a")) {
-            mode ="Setpoint = 0";
-            referencePoint = 0;
+            elevatorReferencePoint = 0;
+            if (elevatorReferencePoint != oldElevatorReferencePoint) {
+                oldElevatorReferencePoint = elevatorReferencePoint;
+                System.out.println("Set Elevator 0");
+                mSubsystemManager.mElevator.elevatorController.setReference(elevatorReferencePoint, ControlType.kSmartMotion);
+            }
         } 
         else if (mInputManager.m_buttons.get("0x")) {
-            mode ="Setpoint = 115";
-            referencePoint = 115;
+            elevatorReferencePoint = 115;
+            if (elevatorReferencePoint != oldElevatorReferencePoint) {
+                oldElevatorReferencePoint = elevatorReferencePoint;
+                mSubsystemManager.mElevator.elevatorController.setReference(elevatorReferencePoint, ControlType.kSmartMotion);
+            }        
         }  
         else if (mInputManager.m_buttons.get("0y")) {
-            referencePoint = 190;
-            mode = "Setpoint = 190";
+            mSubsystemManager.mElevator.elevatorEncoder.setPosition(0);
         } 
         else if (mInputManager.m_buttons.get("0b")) {
-            mode = "Manual";
-            double joy_input = Utilities.handleDeadband(-mInputManager.m_joysticks.get("0ry"), .1);
+            double joy_input = Utilities.handleDeadband(-mInputManager.m_joysticks.get("0ly"), .1);
+            System.out.println(joy_input);
             mSubsystemManager.mElevator.elevatorMotor.set(joy_input);
-        }
+        } 
+        else {}
 
+        int wristReferencePoint = 0;
         if (mInputManager.m_buttons.get("0d_up")) {
-        mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, mInputManager.m_joysticks.get("0ly"));
+        mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, mInputManager.m_joysticks.get("0ry"));
         } 
         else if (mInputManager.m_buttons.get("0d_down")) {
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, 0);
+            wristReferencePoint = 0;
+            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
         }
         else if (mInputManager.m_buttons.get("0d_left")) {
+            wristReferencePoint = 2000;
+            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
         } 
         else if (mInputManager.m_buttons.get("0d_right")) {
+            wristReferencePoint = 3190;
+            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
         } 
-        else {
-        }
+        else {}
 
         if (mInputManager.m_buttons.get("0l_bumper")) {
             mSubsystemManager.mBallManipulator.setState(BallManipulatorState.IN);
@@ -74,13 +86,14 @@ public class TestTeleopMaster extends TeleopMaster {
             mSubsystemManager.mBallManipulator.setState(BallManipulatorState.HOLDING);
         }
         if (mInputManager.m_buttons.get("0r_trigger")) {
-            mSubsystemManager.mElevator.elevatorEncoder.setPosition(0);
             mSubsystemManager.mWrist.wristMotor.setSelectedSensorPosition(0);
         }
-        
-        System.out.println("Position: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
-        System.out.println("Velocity: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
+        /*
+        System.out.println("Elevator Setpoint: " + mode);
+        System.out.println("Elevator Position: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
+        System.out.println("Elevator Velocity: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
         System.out.println("-----------------");
+        */
 
     }
 }

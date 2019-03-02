@@ -5,7 +5,8 @@ package frc.robot.subsystems;
 import frc.robot.Updateable;
 import frc.robot.RobotMap;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 
@@ -14,14 +15,15 @@ public class BallManipulator implements Updateable{
 
     public RobotMap mRobotMap;  //reference to the original
 
-    public WPI_TalonSRX mIntakeFront;
-    public WPI_TalonSRX mIntakeBack;
+    public TalonSRX mIntakeFront;
+    public TalonSRX mIntakeBack;
 
     public final int kTimeoutMs = 30;
 
     private final double kCurrentThreshold = 50.0;
 
     private final double kInSpeed = .2;
+    private final double kOutSpeed = 1.0;
 
     public static enum BallManipulatorState {
         IN, OUT, HOLDING;
@@ -56,17 +58,17 @@ public class BallManipulator implements Updateable{
         
         switch(currentState) {
             case IN:
-                mIntakeFront.set(kInSpeed);
-                mIntakeBack.set(-kInSpeed);
+                mIntakeFront.set(ControlMode.PercentOutput, kInSpeed);
+                mIntakeBack.set(ControlMode.PercentOutput, -kInSpeed);
             break;
             case OUT:
-            mIntakeFront.set(-1);
-            mIntakeBack.set(1);
+            mIntakeFront.set(ControlMode.PercentOutput, -kOutSpeed);
+            mIntakeBack.set(ControlMode.PercentOutput, kOutSpeed);
             haveBall = false;
             break;
             case HOLDING:
-                mIntakeFront.set(0);
-                mIntakeBack.set(0);
+                mIntakeFront.set(ControlMode.PercentOutput, 0);
+                mIntakeBack.set(ControlMode.PercentOutput, 0);
             break;
             default:
                 throw new RuntimeException("How did this happen? @BallIntake.java");

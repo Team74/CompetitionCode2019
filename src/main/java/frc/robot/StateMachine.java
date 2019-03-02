@@ -39,7 +39,8 @@ public class StateMachine implements Updateable {
         elevatorSetpointList.put("Cargo_Ball", 0.0);
         
 
-        wristSetpointList.put("Parallel", 3190);
+        wristSetpointList.put("Stow", 0);
+        wristSetpointList.put("Parallel", 200);
         wristSetpointList.put("CargoDiagonal", 2000);
         wristSetpointList.put("Perpendicular", 3190);
         

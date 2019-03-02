@@ -7,7 +7,7 @@ import frc.robot.RobotMap;
 import static frc.robot.RobotMap.isWristUp;
 
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -16,13 +16,14 @@ import java.util.HashMap;
 
 public class Wrist implements Updateable {
     // Parallel Setpoint 0, Perpendiular Setpoint 3190, Cargo Diagonal setpoint 2000
+    //Parallel maybe different from Stow
 
     public SubsystemManager mSubsystemManager;
     public RobotMap mRobotMap;
 
-    public WPI_TalonSRX wristMotor;
+    public TalonSRX wristMotor;
 
-    public final int kPIDLoopIdx = 0;
+    public final int kSlotIDX = 0;
     public final int kTimeoutMs = 30;
 
     public final boolean kMotorInvert = false;
@@ -61,25 +62,25 @@ public class Wrist implements Updateable {
 		wristMotor.configPeakOutputForward(1, kTimeoutMs);
         wristMotor.configPeakOutputReverse(-1, kTimeoutMs);
 
-        wristMotor.configAllowableClosedloopError(0, kPIDLoopIdx, kTimeoutMs);
+        wristMotor.configAllowableClosedloopError(0, kSlotIDX, kTimeoutMs);
 
 
         wristMotor.configMotionCruiseVelocity(kMaxVel, kTimeoutMs);
         wristMotor.configMotionAcceleration(kMaxAccel, kTimeoutMs);
 
-        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, kPIDLoopIdx, kTimeoutMs);//Not sure what feeback device type to use
+        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, kSlotIDX, kTimeoutMs);//Not sure what feeback device type to use
         wristMotor.setSensorPhase(kSensorPhase);
-        wristMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+        wristMotor.setSelectedSensorPosition(0, kSlotIDX, kTimeoutMs);
 
         kP = 1.5;
         kI = 0.0;
         kD = 0.0;
         kF = .8525;
 
-        wristMotor.config_kF(kPIDLoopIdx, kF, kTimeoutMs);
-		wristMotor.config_kP(kPIDLoopIdx, kP, kTimeoutMs);
-		wristMotor.config_kI(kPIDLoopIdx, kI, kTimeoutMs);
-        wristMotor.config_kD(kPIDLoopIdx, kD, kTimeoutMs);
+        wristMotor.config_kF(kSlotIDX, kF, kTimeoutMs);
+		wristMotor.config_kP(kSlotIDX, kP, kTimeoutMs);
+		wristMotor.config_kI(kSlotIDX, kI, kTimeoutMs);
+        wristMotor.config_kD(kSlotIDX, kD, kTimeoutMs);
     }
 
     private void updatePIDFCoefficents() {
@@ -89,16 +90,22 @@ public class Wrist implements Updateable {
         double _d = mSubsystemManager.mDashboard.wristD.getDouble(kD);
         double _f = mSubsystemManager.mDashboard.wristF.getDouble(kF);
 
-        
-        kP = _p == kP ? kP : _p;
-        kI = _i == kI ? kI : _i;
-        kD = _d == kD ? kD : _d;
-        kF = _f == kF ? kF : _f;
-        
-        wristMotor.config_kF(kPIDLoopIdx, kF, kTimeoutMs);
-		wristMotor.config_kP(kPIDLoopIdx, kP, kTimeoutMs);
-		wristMotor.config_kI(kPIDLoopIdx, kI, kTimeoutMs);
-        wristMotor.config_kD(kPIDLoopIdx, kD, kTimeoutMs);
+        if (kP != _p) {
+            kP = _p;
+            wristMotor.config_kP(kSlotIDX, kP, kTimeoutMs);
+        } 
+        if (kI != _i) {
+            kI = _i;
+            wristMotor.config_kI(kSlotIDX, kI, kTimeoutMs);
+        }
+        if (kD != _d) {
+            kD = _d;
+            wristMotor.config_kD(kSlotIDX, kD, kTimeoutMs);
+        }
+        if (kF != _f) {
+            kF = _f;
+            wristMotor.config_kF(kSlotIDX, kF, kTimeoutMs);
+        }
     }
 
     public void setSetpoints(String[] aliases, int[] targets) {

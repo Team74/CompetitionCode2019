@@ -116,5 +116,4 @@ public class Pose2d {
     public Rotation2d getRotation() {
         return mRotation;
     }
-
 }

@@ -122,8 +122,5 @@ public class QuinticHermiteSpline extends Spline {
     //Method to get the heading of the spline at point t
     public Rotation2d getHeading(double t) {
         return new Rotation2d(dx(t), dy(t), true);
-    }
-
-
-    
+    }   
 }

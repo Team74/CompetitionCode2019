@@ -24,11 +24,15 @@ public class Dashboard implements Updateable {
     public ShuffleboardTab robotState;
 
     public NetworkTableEntry elevatorEncoder;
+    public NetworkTableEntry elevatorCurrent;
+    public NetworkTableEntry testElevatorSetpoint;
 
     public NetworkTableEntry elevatorP;
     public NetworkTableEntry elevatorI;
     public NetworkTableEntry elevatorD;
     public NetworkTableEntry elevatorF;
+
+    public NetworkTableEntry testWristSetpoint;
 
     public NetworkTableEntry wristP;
     public NetworkTableEntry wristI;
@@ -42,8 +46,6 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry elevatorLimit;
 
     public NetworkTableEntry doWeHaveBall;
-
-    public NetworkTableEntry elevatorCurrent;
 
     public NetworkTableEntry sanityCheck;
     
@@ -70,9 +72,6 @@ public class Dashboard implements Updateable {
 
         Shuffleboard.selectTab("Robot Tuning");
 
-        Shuffleboard.getTab("Robot Tuning").add("Front Intake Motor", mSubsystemManager.mBallManipulator.mIntakeFront);
-        Shuffleboard.getTab("Robot Tuning").add("Back Intake Motor", mSubsystemManager.mBallManipulator.mIntakeBack);
-
         sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
 
         wristLimit = teleopTab.add("Is Wrist Up?", isWristUp.get()).getEntry();
@@ -85,29 +84,32 @@ public class Dashboard implements Updateable {
         rfAngle = teleopTab.add("RF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         rbAngle = teleopTab.add("RB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
 
+        elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
+        elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
+        testElevatorSetpoint = robotTuning.add("Elevator Setpoint", 115.0).getEntry();
+
         elevatorP = robotTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
         elevatorI = robotTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
         elevatorD = robotTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
         elevatorF = robotTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
 
+        testWristSetpoint = robotTuning.add("Wrist Setpoint", 0).getEntry();
+
         wristP = robotTuning.add("Wrist P", mSubsystemManager.mWrist.kP).getEntry();
         wristI = robotTuning.add("Wrist I", mSubsystemManager.mWrist.kI).getEntry();
         wristD = robotTuning.add("Wrist D", mSubsystemManager.mWrist.kD).getEntry();
         wristF = robotTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
-
-        elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
         
         frontIntakeCurrent = robotTuning.add("Front Current", mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent()).getEntry();
         backIntakeCurrent = robotTuning.add("Back Current", mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent()).getEntry();
 
-        elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
-
+        /*
         elevatorState = robotState.add("Elevator State", mSubsystemManager.mElevator.currentState.name()).getEntry();
         elevatorTarget = robotState.add("Elevator Target", mSubsystemManager.mStateMachine.elevatorSetpoint).getEntry();
         wristState = robotState.add("Wrist State", mSubsystemManager.mWrist.currentState.name()).getEntry();
         wristTarget = robotState.add("Wrist Target", mSubsystemManager.mStateMachine.wristSetpoint).getEntry();
         ballManipulatorState = robotState.add("Ball Manipulator State", mSubsystemManager.mBallManipulator.currentState.name()).getEntry();
-        
+        */
         camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 25);// width, height, framerate
     }

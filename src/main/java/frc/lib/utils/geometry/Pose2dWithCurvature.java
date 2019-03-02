@@ -68,5 +68,4 @@ public class Pose2dWithCurvature {
     public Pose2dWithCurvature transformBy(Pose2d _transform) {
         return new Pose2dWithCurvature(getPose().transformBy(_transform), getCurvature(), getDCurvature());
     }
-
 }

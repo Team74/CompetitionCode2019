@@ -70,5 +70,4 @@ public class SplineGenerator {
             rv.add(s.getPose2dWithCurvature(t1));
         }
     }
-
 }
