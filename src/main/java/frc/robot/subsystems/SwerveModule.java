@@ -13,7 +13,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class SwerveModule {
-    public double kMaxVel = 0.0;
+    public int kMaxVel = 0;
 
     public double currentAngle;
 
@@ -131,9 +131,9 @@ public class SwerveModule {
             drive_motor.stopMotor();
             rotate_motor.stopMotor();
         } else {
-            double targetSpeed = _targetSpeed * kMaxVel;
-            if (targetSpeed != 0){
-                velController.setReference(targetSpeed, ControlType.kVelocity);
+            _targetSpeed *= kMaxVel;
+            if (_targetSpeed != 0){
+                velController.setReference(_targetSpeed, ControlType.kVelocity);
             } else{
                 drive_motor.stopMotor();
             }

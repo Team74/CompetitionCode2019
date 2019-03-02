@@ -30,8 +30,6 @@ public class PrimaryTeleopMaster extends TeleopMaster {
     private double ly;
     private double rx;
 
-    private double gyroVal;
-
     String setPointName = "";
     boolean isBall = true;   //true means ball
 
@@ -83,7 +81,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         }
         if (m_buttons.get("0d_down") || m_buttons.get("0d_up") || m_buttons.get("0d_right") || m_buttons.get("0d_left")) {
             if(m_buttons.get("0d_down")) {
-                mDrivePlanner.angle = 180;
+                mDrivePlanner.angle = Math.PI;
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
             } else if (m_buttons.get("0d_up")) {
@@ -91,11 +89,11 @@ public class PrimaryTeleopMaster extends TeleopMaster {
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
             } else if (m_buttons.get("0d_right")) {
-                mDrivePlanner.angle = 90;
+                mDrivePlanner.angle = (Math.PI / 2);
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
             } else if (m_buttons.get("0d_left")) {
-                mDrivePlanner.angle = 270;
+                mDrivePlanner.angle = -(Math.PI / 2);
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
             }
@@ -109,19 +107,9 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             ly = Utilities.handleDeadband(ly, kDeadband);
             rx = Utilities.handleDeadband(rx, kDeadband);
 
-            mDrivePlanner.speed = Math.hypot(lx, ly);
-            mDrivePlanner.angle = Math.atan2(ly, lx);
-            mDrivePlanner.rotation = rx/30;
+            mDrivePlanner.swerve(lx, ly, rx);
 
-            gyroVal = mSubsystemManager.mDrivetrain.gyro.getAngle();
-            gyroVal *= Math.PI / 180;
-
-            mDrivePlanner.angle -= gyroVal;
-
-            mDrivePlanner.angle %= 2*Math.PI;
-            mDrivePlanner.angle += (mDrivePlanner.angle < -Math.PI) ? 2*Math.PI : 0;
-            mDrivePlanner.angle -= (mDrivePlanner.angle > Math.PI) ? 2*Math.PI : 0;
-            mDrivePlanner.angle += Math.PI/2;
+            
         }
         /*
         isBall = true; // get trigger

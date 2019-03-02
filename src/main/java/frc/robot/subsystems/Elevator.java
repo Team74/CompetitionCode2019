@@ -4,6 +4,8 @@ import frc.robot.Updateable;
 import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
 
+import static frc.robot.RobotMap.isElevatorDown;
+
 import java.util.HashMap;
 
 import com.revrobotics.CANEncoder;
@@ -139,7 +141,9 @@ public class Elevator implements Updateable {
     }
 
     public void checkLimit() {
-        //elevatorEncoder.setPosition(0);
+        if (isElevatorDown.get()) {
+            //elevatorEncoder.setPosition(0);
+        }
     }
 
     public void update(double dT) {

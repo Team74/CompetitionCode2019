@@ -5,8 +5,6 @@ import frc.robot.SubsystemManager;
 import static frc.robot.RobotMap.isElevatorDown;
 import static frc.robot.RobotMap.isWristUp;
 
-import static frc.robot.subsystems.BallManipulator.haveBall;
-
 import frc.lib.utils.Utilities;
 
 import edu.wpi.cscore.UsbCamera;
@@ -23,6 +21,7 @@ public class Dashboard implements Updateable {
     public ShuffleboardTab teleopTab;
     public ShuffleboardTab robotTuning;
     public ShuffleboardTab cameraTab;
+    public ShuffleboardTab robotState;
 
     public NetworkTableEntry elevatorEncoder;
 
@@ -53,6 +52,12 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry rfAngle;
     public NetworkTableEntry rbAngle;
 
+    public NetworkTableEntry elevatorState;
+    public NetworkTableEntry elevatorTarget;
+    public NetworkTableEntry wristState;
+    public NetworkTableEntry wristTarget;
+    public NetworkTableEntry ballManipulatorState;
+
     public UsbCamera camera;
 
     public Dashboard(SubsystemManager _subsystemManager){
@@ -61,6 +66,7 @@ public class Dashboard implements Updateable {
         teleopTab = Shuffleboard.getTab("Teleop");
         robotTuning = Shuffleboard.getTab("Robot Tuning");
         cameraTab = Shuffleboard.getTab("Camera");
+        robotState = Shuffleboard.getTab("Robot State");
 
         Shuffleboard.selectTab("Robot Tuning");
 
@@ -72,7 +78,7 @@ public class Dashboard implements Updateable {
         wristLimit = teleopTab.add("Is Wrist Up?", isWristUp.get()).getEntry();
         elevatorLimit = teleopTab.add("Is Elevator Down?", isElevatorDown.get()).getEntry();
 
-        doWeHaveBall = teleopTab.add("Do we have a ball?", haveBall).getEntry();
+        doWeHaveBall = teleopTab.add("Do we have a ball?", mSubsystemManager.mBallManipulator.haveBall).getEntry();
 
         lfAngle = teleopTab.add("LF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         lbAngle = teleopTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
@@ -95,6 +101,12 @@ public class Dashboard implements Updateable {
         backIntakeCurrent = robotTuning.add("Back Current", mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent()).getEntry();
 
         elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
+
+        elevatorState = robotState.add("Elevator State", mSubsystemManager.mElevator.currentState.name()).getEntry();
+        elevatorTarget = robotState.add("Elevator Target", mSubsystemManager.mStateMachine.elevatorSetpoint).getEntry();
+        wristState = robotState.add("Wrist State", mSubsystemManager.mWrist.currentState.name()).getEntry();
+        wristTarget = robotState.add("Wrist Target", mSubsystemManager.mStateMachine.wristSetpoint).getEntry();
+        ballManipulatorState = robotState.add("Ball Manipulator State", mSubsystemManager.mBallManipulator.currentState.name()).getEntry();
         
         camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 25);// width, height, framerate
@@ -111,7 +123,7 @@ public class Dashboard implements Updateable {
         frontIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent());
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());
 
-        doWeHaveBall.setBoolean(haveBall);
+        doWeHaveBall.setBoolean(mSubsystemManager.mBallManipulator.haveBall);
 
         elevatorCurrent.setDouble(mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent());
 

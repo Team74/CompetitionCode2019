@@ -18,13 +18,8 @@ public class StateTracker implements Updateable {
     }
 
     //We can get a vector for each pod and use them to figure out how the robot is moving throughout auton and the match.
+    //aka Inverse Kinematics
     public void update(double dt){
-        double xPoseMod = 0;
-        double yPoseMod = 0;    
-        swerveVectors = mSubsytemManager.mDrivetrain.mSwerveVectors;
-        xPose += xPoseMod;
-        yPose += yPoseMod;
-        heading = mSubsytemManager.mDrivetrain.gyro.getAngle();
     }
 
 }

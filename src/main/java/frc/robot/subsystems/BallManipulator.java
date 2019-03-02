@@ -1,6 +1,5 @@
 //TODO: Measure load to know when we've picked up a ball. question: will there be a backstop?
 
-
 package frc.robot.subsystems;
 
 import frc.robot.Updateable;
@@ -29,7 +28,7 @@ public class BallManipulator implements Updateable{
     }
     public BallManipulatorState currentState = BallManipulatorState.HOLDING;
 
-    public static boolean haveBall = false;
+    public boolean haveBall = false;
 
 
     public BallManipulator(RobotMap robotMap){
