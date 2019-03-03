@@ -11,6 +11,8 @@ import frc.robot.behavior.Master;
 
 import frc.robot.subsystems.*;
 
+import frc.lib.sims.*;
+
 public class SubsystemManager implements Updateable {
 
     public Master m_currentMaster;  //the thing that's currently giving this thing instructions.
@@ -27,6 +29,9 @@ public class SubsystemManager implements Updateable {
     public BallManipulator mBallManipulator;
     public PanelManipulator mPanelManipulator;
     public Dashboard mDashboard;
+    public ElevatorSim mElevatorSim;
+    public WristSim mWristSim;
+    public BallManipulatorSim mBallManipulatorSim;
 
     //etc. ...
     //incidentally, do we want these to be private? Commands should go from masters through SubsystemManager, and SubsystemManager can deal with converting that into individual commands.
@@ -43,6 +48,10 @@ public class SubsystemManager implements Updateable {
         mPanelManipulator = new PanelManipulator(mRobotMap);
         mDashboard = new Dashboard(this);
         mStateMachine = new StateMachine(this);
+
+        mElevatorSim = new ElevatorSim(this, mRobotMap);
+        mWristSim = new WristSim(this, mRobotMap);
+        mBallManipulatorSim = new BallManipulatorSim(mRobotMap);
 
         m_listOfUpdatingObjects.add(mStateMachine);
         m_listOfUpdatingObjects.add(mDrivePlanner);
@@ -68,10 +77,10 @@ public class SubsystemManager implements Updateable {
     }
 
     public void update(double dt) {
+        m_currentMaster.update(dt);//current_master, which has a reference to this object, will call the various commands below to tell the robot to do things
         for(int i = 0; i < m_listOfUpdatingObjects.size(); ++i){
             m_listOfUpdatingObjects.get(i).update(dt);
         }
-        m_currentMaster.update(dt);    //current_master, which has a reference to this object, will call the various commands below to tell the robot to do things
     }
 
         /*

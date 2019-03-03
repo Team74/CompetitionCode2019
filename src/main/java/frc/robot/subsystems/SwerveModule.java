@@ -7,19 +7,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANPIDController;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class SwerveModule {
-    public double kMaxVel = 0.0;
+    public int kMaxVel = 0;
 
     public double currentAngle;
 
     public CANSparkMax drive_motor;
     public CANEncoder drive_encoder;
-    public WPI_TalonSRX rotate_motor;
+    public TalonSRX rotate_motor;
 
     private double targetRotation;
     private double targetSpeed;
@@ -34,7 +34,7 @@ public class SwerveModule {
 
     public CANPIDController velController;
 
-    public SwerveModule(CANSparkMax _drive_motor, CANEncoder _drive_encoder, WPI_TalonSRX _rotate_motor, int _zeroOffset) {
+    public SwerveModule(CANSparkMax _drive_motor, CANEncoder _drive_encoder, TalonSRX _rotate_motor, int _zeroOffset) {
         drive_motor = _drive_motor;
         rotate_motor = _rotate_motor;
         drive_encoder = _drive_encoder;
@@ -129,11 +129,11 @@ public class SwerveModule {
     public void setMotors(double _targetRotation, double _targetSpeed) {
         if (_targetSpeed == 0) {
             drive_motor.stopMotor();
-            rotate_motor.stopMotor();
+            rotate_motor.set(ControlMode.PercentOutput, 0.0);
         } else {
-            double targetSpeed = _targetSpeed * kMaxVel;
-            if (targetSpeed != 0){
-                velController.setReference(targetSpeed, ControlType.kVelocity);
+            _targetSpeed *= kMaxVel;
+            if (_targetSpeed != 0){
+                velController.setReference(_targetSpeed, ControlType.kVelocity);
             } else{
                 drive_motor.stopMotor();
             }
@@ -142,7 +142,7 @@ public class SwerveModule {
     }
 
     public void setMotorsPercentOutput(double _angularVelocity, double _targetSpeed) {
-        rotate_motor.set(_angularVelocity);
+        rotate_motor.set(ControlMode.PercentOutput, _angularVelocity);
         drive_motor.set(_targetSpeed);
     }
 

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TrajectoryGenerator {
+public class PathGenerator {
 
-    public TrajectoryGenerator() {
+    public PathGenerator() {
         
     }
 

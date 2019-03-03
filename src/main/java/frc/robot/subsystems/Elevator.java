@@ -4,6 +4,8 @@ import frc.robot.Updateable;
 import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
 
+import static frc.robot.RobotMap.isElevatorDown;
+
 import java.util.HashMap;
 
 import com.revrobotics.CANEncoder;
@@ -96,18 +98,22 @@ public class Elevator implements Updateable {
 
         if (kP != _p) {
             kP = _p;
+            System.out.println("Changed P");
             elevatorController.setP(kP, kSlotIDX);
         } 
         if (kI != _i) {
             kI = _i;
+            System.out.println("Changed I");
             elevatorController.setI(kI, kSlotIDX);
         }
         if (kD != _d) {
             kD = _d;
+            System.out.println("Changed D");
             elevatorController.setD(kD, kSlotIDX);
         }
         if (kF != _f) {
             kF = _f;
+            System.out.println("Changed F");
             elevatorController.setFF(kF, kSlotIDX);
         }
     }
@@ -139,7 +145,9 @@ public class Elevator implements Updateable {
     }
 
     public void checkLimit() {
-        //elevatorEncoder.setPosition(0);
+        if (isElevatorDown.get()) {
+            //elevatorEncoder.setPosition(0);
+        }
     }
 
     public void update(double dT) {
