@@ -42,17 +42,13 @@ public class Drivetrain implements Updateable {
         rf = new SwerveModule( robotmap.Drive_2, robotmap.Drive_E_2, robotmap.Steering_2, 4);
         rb = new SwerveModule( robotmap.Drive_3, robotmap.Drive_E_3, robotmap.Steering_3, 500);
         
-        lf.drive_motor.setInverted(true);
-        lf.drive_motor.burnFlash();
+        lf.drive_motor.setInverted(false);
         
         lb.drive_motor.setInverted(false);
-        lb.drive_motor.burnFlash();
         
-        rf.drive_motor.setInverted(false);
-        rf.drive_motor.burnFlash();
+        rf.drive_motor.setInverted(true);
 
         rb.drive_motor.setInverted(false);
-        rb.drive_motor.burnFlash();
         //Set up PIDFs here
 
         lf.instantiateSteeringPID(kPS, kIS, kDS, kFS, kIZoneS, kSensorPhase, kMotorInvert);

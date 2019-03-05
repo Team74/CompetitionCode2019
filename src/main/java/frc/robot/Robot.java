@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
         mSubsystemManager.update(dt); 
     }
     public void teleopInit() {
-        mSubsystemManager.setCurrentMaster(new PrimaryTeleopMaster(mSubsystemManager, mInputManager));
+        mSubsystemManager.setCurrentMaster(new TestTeleopMaster(mSubsystemManager, mInputManager));
         //similarly, if we want to do, say, a different control scheme, a different teleopmaster could be subbed in that would interpret the inputs differently
         mTimer.reset();
         mTimer.start();

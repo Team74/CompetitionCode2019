@@ -10,8 +10,8 @@ public class DrivePlanner implements Updateable {
     public Drivetrain mDrivetrain;
 
     private final int kLowSpeed = 1000;
-    private final int kMidSpeed = 2000;
-    private final int kHighSpeed = 3000;
+    private final int kMidSpeed = 2500;
+    private final int kHighSpeed = 5000;
 
     public double speed = 0.0;
     public double angle = 0.0;
@@ -58,7 +58,7 @@ public class DrivePlanner implements Updateable {
         angle = Math.atan2(_ly, _lx);
         rotation = _rx/30;
 
-        gyroVal = mDrivetrain.gyro.getAngle();
+        gyroVal = mSubsytemManager.mDrivetrain.gyro.getAngle();
         gyroVal *= Math.PI / 180;
 
         angle -= gyroVal;

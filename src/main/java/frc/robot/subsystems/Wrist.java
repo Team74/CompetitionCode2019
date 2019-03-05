@@ -27,7 +27,7 @@ public class Wrist implements Updateable {
     public final int kTimeoutMs = 30;
 
     public final boolean kMotorInvert = false;
-    public final boolean kSensorPhase = false;
+    public final boolean kSensorPhase = true;
 
     public double kP, kI, kD, kF;
 

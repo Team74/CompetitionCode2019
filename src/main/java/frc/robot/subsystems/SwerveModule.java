@@ -63,7 +63,7 @@ public class SwerveModule {
         rotate_motor.config_kD(kPIDLoopIdx, kD, kTimeoutMs);
 
         rotate_motor.configMotionCruiseVelocity(230, kTimeoutMs);
-        rotate_motor.configMotionAcceleration(150, kTimeoutMs);
+        rotate_motor.configMotionAcceleration(500, kTimeoutMs);
 
         rotate_motor.configSelectedFeedbackSensor(FeedbackDevice.Analog, kPIDLoopIdx, kTimeoutMs);
         rotate_motor.setSensorPhase(kSensorPhase);

@@ -71,7 +71,7 @@ public class Elevator implements Updateable {
         maxRPM = 0.0;
         maxVel = 5600;
         minVel = 0.0;
-        maxAcc = 1000;
+        maxAcc = 5600;
         allowedError = 0.0;
 
         kP = 0.0;

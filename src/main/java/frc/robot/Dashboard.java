@@ -33,6 +33,7 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry elevatorF;
 
     public NetworkTableEntry testWristSetpoint;
+    public NetworkTableEntry wristEncoder;
 
     public NetworkTableEntry wristP;
     public NetworkTableEntry wristI;
@@ -94,6 +95,7 @@ public class Dashboard implements Updateable {
         elevatorF = robotTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
 
         testWristSetpoint = robotTuning.add("Wrist Setpoint", 0).getEntry();
+        wristEncoder = robotTuning.add("Wrist Encoder", mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition()).getEntry();
 
         wristP = robotTuning.add("Wrist P", mSubsystemManager.mWrist.kP).getEntry();
         wristI = robotTuning.add("Wrist I", mSubsystemManager.mWrist.kI).getEntry();
@@ -121,6 +123,8 @@ public class Dashboard implements Updateable {
         rbAngle.setDouble(mSubsystemManager.mDrivetrain.rb.currentAngle);
 
         elevatorEncoder.setDouble(mSubsystemManager.mElevator.elevatorEncoder.getPosition());
+
+        wristEncoder.setNumber(mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition());
         
         frontIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent());
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());

@@ -60,7 +60,8 @@ public class TestTeleopMaster extends TeleopMaster {
 
         int wristReferencePoint = 0;
         if (mInputManager.m_buttons.get("0d_up")) {
-        mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, mInputManager.m_joysticks.get("0ry"));
+            wristReferencePoint = 3190;
+            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
         } 
         else if (mInputManager.m_buttons.get("0d_down")) {
             wristReferencePoint = 0;
@@ -71,8 +72,8 @@ public class TestTeleopMaster extends TeleopMaster {
             mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
         } 
         else if (mInputManager.m_buttons.get("0d_right")) {
-            wristReferencePoint = 3190;
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
+            mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, mInputManager.m_joysticks.get("0ry"));
+
         } 
         else {}
 

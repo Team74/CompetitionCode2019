@@ -99,9 +99,9 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             }
         } else {
             //Handle the swerve drive
-            lx = -m_joysticks.get("0lx");
+            lx = m_joysticks.get("0lx");
             ly = m_joysticks.get("0ly");
-            rx = -m_joysticks.get("0rx");
+            rx = m_joysticks.get("0rx");
 
             lx = Utilities.handleDeadband(lx, kDeadband);
             ly = Utilities.handleDeadband(ly, kDeadband);
