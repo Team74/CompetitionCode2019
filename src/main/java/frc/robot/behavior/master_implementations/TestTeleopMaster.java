@@ -56,7 +56,9 @@ public class TestTeleopMaster extends TeleopMaster {
             System.out.println(joy_input);
             mSubsystemManager.mElevator.elevatorMotor.set(joy_input);
         } 
-        else {}
+        else {
+            mSubsystemManager.mElevator.elevatorMotor.set(0.0);
+        }
 
         int wristReferencePoint = 0;
         if (mInputManager.m_buttons.get("0d_up")) {
