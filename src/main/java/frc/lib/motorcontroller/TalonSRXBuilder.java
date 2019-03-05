@@ -10,6 +10,8 @@ public class TalonSRXBuilder {
     private static int kTimeoutMS = 30;
 
     //Defualt configs to use
+    //I'll add more when I think of them
+    //Test before implementing
     private static NeutralMode neutralMode = NeutralMode.Brake;
 
     private static double openLoopRampRate = 0.0;//In seconds from 0 to full power
