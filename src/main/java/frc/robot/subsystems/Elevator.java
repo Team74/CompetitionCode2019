@@ -57,7 +57,7 @@ public class Elevator implements Updateable {
         elevatorMotor = mRobotMap.Elevator_0;
         elevatorMotor.restoreFactoryDefaults();
         elevatorMotor.setInverted(true);
-        elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        elevatorMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         elevatorEncoder = mRobotMap.Elevator_E_0;
         elevatorEncoder.setPosition(0);

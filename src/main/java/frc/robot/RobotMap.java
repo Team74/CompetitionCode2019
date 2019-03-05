@@ -50,7 +50,7 @@ public class RobotMap {
 
     public TalonSRX Wrist_0 = TalonSRXBuilder.buildDefaultTalon(7);//Wrist
 
-    public static DigitalInput isWristUp = new DigitalInput(0);
+    public static DigitalInput isWristUp = new DigitalInput(9);
     public static DigitalInput isElevatorDown = new DigitalInput(1);
 
     public AHRS navX = new AHRS(SPI.Port.kMXP, (byte)60);
