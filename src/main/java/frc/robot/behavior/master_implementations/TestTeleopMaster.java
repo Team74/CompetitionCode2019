@@ -21,7 +21,7 @@ public class TestTeleopMaster extends TeleopMaster {
 
     double k_deadband = 0.05;
 
-    private double oldElevatorReferencePoint = 0.0;
+    private double oldElevatorReferencePoint = Double.NEGATIVE_INFINITY;
 
 
     public TestTeleopMaster(SubsystemManager subsystem_manager, InputManager input_manager) {
@@ -32,6 +32,7 @@ public class TestTeleopMaster extends TeleopMaster {
      }
 
     public void update(double dt) {
+        /*
         double elevatorReferencePoint = 0.0;
         if (mInputManager.m_buttons.get("0a")) {
             elevatorReferencePoint = 0;
@@ -59,25 +60,28 @@ public class TestTeleopMaster extends TeleopMaster {
         else {
             mSubsystemManager.mElevator.elevatorMotor.set(0.0);
         }
-
+        */
         int wristReferencePoint = 0;
-        if (mInputManager.m_buttons.get("0d_up")) {
-            wristReferencePoint = 3190;
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
-        } 
-        else if (mInputManager.m_buttons.get("0d_down")) {
-            wristReferencePoint = 0;
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
-        }
-        else if (mInputManager.m_buttons.get("0d_left")) {
-            wristReferencePoint = 2000;
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.MotionMagic, wristReferencePoint);
-        } 
-        else if (mInputManager.m_buttons.get("0d_right")) {
-            mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, mInputManager.m_joysticks.get("0ry"));
 
+        if (mInputManager.m_buttons.get("0y")) {
+            wristReferencePoint = 3190;
+            mSubsystemManager.mWrist.set(ControlMode.MotionMagic, wristReferencePoint);
         } 
-        else {}
+        else if (mInputManager.m_buttons.get("0x")) {
+            wristReferencePoint = 2000;
+            mSubsystemManager.mWrist.set(ControlMode.MotionMagic, wristReferencePoint);
+        } 
+        else if (mInputManager.m_buttons.get("0a")) {
+            wristReferencePoint = 0;
+            mSubsystemManager.mWrist.set(ControlMode.MotionMagic, wristReferencePoint);
+        }
+        else {
+            double throttle = Utilities.handleDeadband(-mInputManager.m_joysticks.get("0ry"), 0.05);
+            if (throttle == 0) {
+                mSubsystemManager.mWrist.currentFlag = false;
+            }
+            mSubsystemManager.mWrist.set(ControlMode.PercentOutput, throttle);
+        }
 
         if (mInputManager.m_buttons.get("0l_bumper")) {
             mSubsystemManager.mBallManipulator.setState(BallManipulatorState.IN);
@@ -92,9 +96,8 @@ public class TestTeleopMaster extends TeleopMaster {
             mSubsystemManager.mWrist.wristMotor.setSelectedSensorPosition(0);
         }
         /*
-        System.out.println("Elevator Setpoint: " + mode);
-        System.out.println("Elevator Position: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
-        System.out.println("Elevator Velocity: " + mSubsystemManager.mElevator.elevatorEncoder.getPosition());
+        System.out.println("Wrist Position: " + mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition());
+        System.out.println("Wrist Velocity: " + mSubsystemManager.mWrist.elevatorEncoder.getSelectedSensorVelocity());
         System.out.println("-----------------");
         */
 

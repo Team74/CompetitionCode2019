@@ -25,14 +25,18 @@ public class Wrist implements Updateable {
 
     public final int kSlotIDX = 0;
     public final int kTimeoutMs = 30;
+    
+    public final double kCurrentLimit = 40.0;
+    public boolean currentFlag = false;
+    public boolean limitSwitchFlag = false;
 
     public final boolean kMotorInvert = false;
-    public final boolean kSensorPhase = true;
+    public final boolean kSensorPhase = false;
 
     public double kP, kI, kD, kF;
 
-    public final int kMaxVel = 400;
-    public final int kMaxAccel = 200;
+    public final int kMaxVel = 100;
+    public final int kMaxAccel = 50;
 
     public final double kHoldingDeadzone = 0.0;
 
@@ -136,7 +140,19 @@ public class Wrist implements Updateable {
     }
     public void checkLimit() {
         if (isWristUp.get()) {
-            //wristMotor.setSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+            wristMotor.setSelectedSensorPosition(0, kSlotIDX, kTimeoutMs);
+            limitSwitchFlag = true;
+        }
+    }
+
+    public void set(ControlMode _controlMode, double _demand) {
+        if (kCurrentLimit <= Math.abs(wristMotor.getOutputCurrent())) {
+            currentFlag = true;
+        }
+        if (currentFlag) {
+            wristMotor.set(ControlMode.PercentOutput, 0.0);
+        } else {
+            wristMotor.set(_controlMode, _demand);
         }
     }
 
@@ -145,7 +161,7 @@ public class Wrist implements Updateable {
         updatePIDFCoefficents();
 
         /*
-        wristMotor.set(ControlMode.MotionMagic, listedSetpoints[currentTarget]);
+        set(ControlMode.MotionMagic, listedSetpoints[currentTarget]);
         
         if(Math.abs(listedSetpoints[currentTarget] - wristMotor.getSelectedSensorPosition()) < kHoldingDeadzone ) {//we're here!
             currentState = WristState.HOLDING;

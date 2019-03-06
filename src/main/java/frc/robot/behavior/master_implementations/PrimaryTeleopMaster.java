@@ -112,7 +112,11 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             
         }
         /*
-        isBall = true; // get trigger
+        if (mInputManager.m_buttons.get("1l_trigger")) {
+            isBall = true;
+        } else if (mInputManager.m_buttons.get("1r_trigger")) {
+            isBall = false;
+        }
 
         switch(1) {
             case 1:

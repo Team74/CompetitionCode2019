@@ -147,6 +147,21 @@ public class InputManager implements Updateable {
         } else {
             m_buttons.put("1d_up", false);
         }
+        if(m_controller_1.getPOV(0) == -1) {
+            m_buttons.put("1d_left", false);
+        } else if(225 < m_controller_1.getPOV(0) || m_controller_1.getPOV(0) < 315) {
+            m_buttons.put("1d_left", true);
+        } else {
+            m_buttons.put("1d_left", false);
+        }
+
+        if(m_controller_1.getPOV(0) == -1) {
+            m_buttons.put("1d_right", false);
+        } else if(45 < m_controller_1.getPOV(0) || m_controller_1.getPOV(0) < 135) {
+            m_buttons.put("1d_right", true);
+        } else {
+            m_buttons.put("1d_right", false);
+        }
     }
 
 }

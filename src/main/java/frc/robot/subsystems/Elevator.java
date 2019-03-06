@@ -74,7 +74,7 @@ public class Elevator implements Updateable {
         maxAcc = 5600;
         allowedError = 0.0;
 
-        kP = 0.0;
+        kP = 0.00005;
         kI = 0.0;
         kD = 0.0;
         kF = 0.000156;
@@ -152,7 +152,7 @@ public class Elevator implements Updateable {
 
     public void update(double dT) {
         checkLimit();
-        updatePIDFCoefficents();
+        //updatePIDFCoefficents();
         /*
         elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);
         if(Math.abs(listedSetpoints[currentTarget] - elevatorEncoder.getPosition()) < kHoldingDeadzone ) {//we're here)
