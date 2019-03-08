@@ -7,7 +7,8 @@ import frc.robot.SubsystemManager;
 import frc.robot.InputManager;
 import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
 import frc.robot.behavior.master_implementations.PrimaryTeleopMaster;
-import frc.robot.behavior.master_implementations.SimpleTeleopMaster;;
+import frc.robot.behavior.master_implementations.SimpleTeleopMaster;
+import frc.robot.behavior.master_implementations.TestMaster;
 
 public class Robot extends TimedRobot {
 

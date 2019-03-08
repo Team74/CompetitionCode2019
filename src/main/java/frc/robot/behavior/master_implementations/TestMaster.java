@@ -29,6 +29,10 @@ private HashMap<String, Double> mJoysticks;
     }
 
     public void update(double dt) {
-
+        if (mButtons.get("0a")) {
+            mSubsystemManager.mWrist.setTarget("Perpendicular");
+        } else {
+            mSubsystemManager.mWrist.setTarget("Parallel"); 
+        }
     }
 }
