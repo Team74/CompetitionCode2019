@@ -68,7 +68,6 @@ public class Wrist implements Updateable {
 
         wristMotor.configAllowableClosedloopError(0, kSlotIDX, kTimeoutMs);
 
-
         wristMotor.configMotionCruiseVelocity(kMaxVel, kTimeoutMs);
         wristMotor.configMotionAcceleration(kMaxAccel, kTimeoutMs);
 

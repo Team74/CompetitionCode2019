@@ -30,26 +30,33 @@ public class DrivePlanner implements Updateable {
     public void setSpeed(Speed _speed){
         switch(_speed){
             case Low:
+                //System.out.println("Set Speed: Low");
                 mSubsytemManager.mDrivetrain.lf.kMaxVel = kLowSpeed;
                 mSubsytemManager.mDrivetrain.lb.kMaxVel = kLowSpeed;
                 mSubsytemManager.mDrivetrain.rf.kMaxVel = kLowSpeed;
                 mSubsytemManager.mDrivetrain.rb.kMaxVel = kLowSpeed;
+                break;
             case Mid:
+                //System.out.println("Set Speed: Mid");
                 mSubsytemManager.mDrivetrain.lf.kMaxVel = kMidSpeed;
                 mSubsytemManager.mDrivetrain.lb.kMaxVel = kMidSpeed;
                 mSubsytemManager.mDrivetrain.rf.kMaxVel = kMidSpeed;
                 mSubsytemManager.mDrivetrain.rb.kMaxVel = kMidSpeed;
+                break;
             case High:
+                //System.out.println("Set Speed: High");
                 mSubsytemManager.mDrivetrain.lf.kMaxVel = kHighSpeed;
                 mSubsytemManager.mDrivetrain.lb.kMaxVel = kHighSpeed;
                 mSubsytemManager.mDrivetrain.rf.kMaxVel = kHighSpeed;
                 mSubsytemManager.mDrivetrain.rb.kMaxVel = kHighSpeed;
+                break;
             default:
+                //System.out.println("Set Speed: Default");
                 mSubsytemManager.mDrivetrain.lf.kMaxVel = kMidSpeed;
                 mSubsytemManager.mDrivetrain.lb.kMaxVel = kMidSpeed;
                 mSubsytemManager.mDrivetrain.rf.kMaxVel = kMidSpeed;
                 mSubsytemManager.mDrivetrain.rb.kMaxVel = kMidSpeed;
-
+                break;
         }
     }
 

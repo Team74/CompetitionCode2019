@@ -21,8 +21,8 @@ public class PrimaryTeleopMaster extends TeleopMaster {
     SwerveModule currentMotor;
     String output_extra;
 
-    private HashMap<String, Boolean> m_buttons;
-    private HashMap<String, Double> m_joysticks;
+    private HashMap<String, Boolean> mButtons;
+    private HashMap<String, Double> mJoysticks;
 
     private double kDeadband = 0.05;
 
@@ -37,27 +37,27 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         super(subsystem_manager, input_manager); 
         mStateMachine = mSubsystemManager.mStateMachine;
         mDrivePlanner = mSubsystemManager.mDrivePlanner;
-        m_buttons = mInputManager.m_buttons;
-        m_joysticks = mInputManager.m_joysticks;
+        mButtons = mInputManager.mButtons;
+        mJoysticks = mInputManager.mJoysticks;
 
         currentMotor = mSubsystemManager.mDrivetrain.lb;
         output_extra = "lb: ";
     }
 
     public void update(double dt) {
-        if(mInputManager.m_buttons.get("0a")) {
+        if(mInputManager.mButtons.get("0a")) {
             currentMotor = mSubsystemManager.mDrivetrain.lb;
             output_extra = "lb: ";
         }
-        else if(mInputManager.m_buttons.get("0x")) {
+        else if(mInputManager.mButtons.get("0x")) {
             currentMotor = mSubsystemManager.mDrivetrain.lf;
             output_extra = "lf: ";
         }        
-        else if(mInputManager.m_buttons.get("0y")) {
+        else if(mInputManager.mButtons.get("0y")) {
             currentMotor = mSubsystemManager.mDrivetrain.rf;
             output_extra = "rf: ";
         }       
-        else if(mInputManager.m_buttons.get("0b")) {
+        else if(mInputManager.mButtons.get("0b")) {
             currentMotor = mSubsystemManager.mDrivetrain.rb;
             output_extra = "rb: ";
         }        
@@ -65,43 +65,43 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
         System.out.println(output_extra + encoderCount);
 
-        if (m_buttons.get("0back")) {
+        if (mButtons.get("0back")) {
             System.out.println("Gyro reset");
             mSubsystemManager.mDrivetrain.gyro.reset();
         }
 
-        if (m_buttons.get("0l_trigger") && !m_buttons.get("0r_trigger")) {
+        if (mButtons.get("0l_trigger") && !mButtons.get("0r_trigger")) {
             mDrivePlanner.setSpeed(DrivePlanner.Speed.Low);
-        } else if (m_buttons.get("0r_trigger") && !m_buttons.get("0l_trigger")) {
+        } else if (mButtons.get("0r_trigger") && !mButtons.get("0l_trigger")) {
             mDrivePlanner.setSpeed(DrivePlanner.Speed.High);
-        } else if (m_buttons.get("0l_trigger") && m_buttons.get("0r_trigger")) {
+        } else if (mButtons.get("0l_trigger") && mButtons.get("0r_trigger")) {
             System.out.println("Screw you");
         } else {
             mDrivePlanner.setSpeed(DrivePlanner.Speed.Mid);
         }
-        if (m_buttons.get("0d_down") || m_buttons.get("0d_up") || m_buttons.get("0d_right") || m_buttons.get("0d_left")) {
-            if(m_buttons.get("0d_down")) {
+        if (mButtons.get("0d_down") || mButtons.get("0d_up") || mButtons.get("0d_right") || mButtons.get("0d_left")) {
+            if(mButtons.get("0d_down")) {
                 mDrivePlanner.angle = Math.PI;
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
-            } else if (m_buttons.get("0d_up")) {
+            } else if (mButtons.get("0d_up")) {
                 mDrivePlanner.angle = 0;
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
-            } else if (m_buttons.get("0d_right")) {
+            } else if (mButtons.get("0d_right")) {
                 mDrivePlanner.angle = (Math.PI / 2);
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
-            } else if (m_buttons.get("0d_left")) {
+            } else if (mButtons.get("0d_left")) {
                 mDrivePlanner.angle = -(Math.PI / 2);
                 mDrivePlanner.speed = .5;
                 mDrivePlanner.rotation = 0;
             }
         } else {
             //Handle the swerve drive
-            lx = m_joysticks.get("0lx");
-            ly = m_joysticks.get("0ly");
-            rx = m_joysticks.get("0rx");
+            lx = mJoysticks.get("0lx");
+            ly = mJoysticks.get("0ly");
+            rx = mJoysticks.get("0rx");
 
             lx = Utilities.handleDeadband(lx, kDeadband);
             ly = Utilities.handleDeadband(ly, kDeadband);
@@ -112,24 +112,24 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             
         }
         /*
-        if (mInputManager.m_buttons.get("1l_trigger")) {
+        if (mInputManager.mButtons.get("1l_trigger")) {
             isBall = true;
-        } else if (mInputManager.m_buttons.get("1r_trigger")) {
+        } else if (mInputManager.mButtons.get("1r_trigger")) {
             isBall = false;
         }
 
         switch(1) {
             case 1:
-                if (m_buttons.get("1a")){
+                if (mButtons.get("1a")){
                     setPointName = "Low";
-                } else if (m_buttons.get("1x")) {
+                } else if (mButtons.get("1x")) {
                     setPointName = "Mid";
-                } else if (m_buttons.get("1y")) {
+                } else if (mButtons.get("1y")) {
                     setPointName = "High";
-                } else if (m_buttons.get("1b")) {
+                } else if (mButtons.get("1b")) {
                     setPointName = "Cargo";
                 } else {
-                    if(m_buttons.get("1d_down")) {
+                    if(mButtons.get("1d_down")) {
                         setPointName = "INTAKE_BALL";
                     }
                     mStateMachine.elevatorSetpoint = setPointName;
@@ -140,12 +140,12 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         }
 
         mStateMachine.wristSetpoint = "Perpendicular";
-        if(m_buttons.get("1d_up")) {
+        if(mButtons.get("1d_up")) {
             mStateMachine.ballManipulatorTarget = "Out";
             if(setPointName == "INTAKE_BALL" || setPointName.contains("Cargo")) {
                 mStateMachine.wristSetpoint = "CargoDiagonal";
             }
-        } else if(m_buttons.get("1d_down")) {
+        } else if(mButtons.get("1d_down")) {
             if(setPointName == "INTAKE_BALL") {
                 mStateMachine.wristSetpoint = "Parallel";
                 mStateMachine.ballManipulatorTarget = "In";
@@ -156,7 +156,7 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             mStateMachine.ballManipulatorTarget = "Hold";
         }
 
-        mStateMachine.panelManipulatorTarget = m_buttons.get("1r_bumper") ? "Out" : "In";
+        mStateMachine.panelManipulatorTarget = mButtons.get("1r_bumper") ? "Out" : "In";
         //make that a toggle if we want; for now, hold it down
         */
     }

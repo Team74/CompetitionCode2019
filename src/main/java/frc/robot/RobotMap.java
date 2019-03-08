@@ -50,6 +50,8 @@ public class RobotMap {
 
     public TalonSRX Wrist_0 = TalonSRXBuilder.buildDefaultTalon(7);//Wrist
 
+    public TalonSRX Climber_0;// = TalonSRXBuilder.buildDefaultTalon(100);//Climber
+
     public static DigitalInput isWristUp = new DigitalInput(9);
     public static DigitalInput isElevatorDown = new DigitalInput(1);
 

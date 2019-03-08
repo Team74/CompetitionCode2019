@@ -7,7 +7,7 @@ import frc.robot.SubsystemManager;
 import frc.robot.InputManager;
 import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
 import frc.robot.behavior.master_implementations.PrimaryTeleopMaster;
-import frc.robot.behavior.master_implementations.TestTeleopMaster;
+import frc.robot.behavior.master_implementations.SimpleTeleopMaster;;
 
 public class Robot extends TimedRobot {
 
@@ -25,22 +25,23 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         mSubsystemManager = new SubsystemManager(); //this will set up the whole robot and its subsystems
         mInputManager = new InputManager(); //this is the significantly smaller bit of code that handles input from the xbox controllers and such
-
+        
         mTimer.stop();
         mTimer.reset();
     }
     public void autonomousInit() {
-        mSubsystemManager.setCurrentMaster(new Implemented_AutonMaster(mSubsystemManager));
+        mSubsystemManager.setCurrentMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
          //or whatever other auton we want -- we'll probably need something for SmartDashboard eventually
 
          mTimer.start();
         }   
     public void autonomousPeriodic() {
         updateTime();
+        mInputManager.update(dt);
         mSubsystemManager.update(dt); 
     }
     public void teleopInit() {
-        mSubsystemManager.setCurrentMaster(new TestTeleopMaster(mSubsystemManager, mInputManager));
+        mSubsystemManager.setCurrentMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
         //similarly, if we want to do, say, a different control scheme, a different teleopmaster could be subbed in that would interpret the inputs differently
         mTimer.reset();
         mTimer.start();

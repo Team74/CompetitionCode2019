@@ -89,12 +89,12 @@ public class Dashboard implements Updateable {
         elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
         elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
         testElevatorSetpoint = robotTuning.add("Elevator Setpoint", 115.0).getEntry();
-        /*
+        
         elevatorP = robotTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
         elevatorI = robotTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
         elevatorD = robotTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
         elevatorF = robotTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
-        */
+        
         testWristSetpoint = robotTuning.add("Wrist Setpoint", 0).getEntry();
         wristEncoder = robotTuning.add("Wrist Encoder", mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition()).getEntry();
         wristCurrent = robotTuning.add("Wrist Current", mSubsystemManager.mWrist.wristMotor.getOutputCurrent()).getEntry();
