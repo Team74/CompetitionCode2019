@@ -5,7 +5,7 @@ import frc.robot.InputManager;
 import frc.robot.DrivePlanner;
 
 import frc.robot.behavior.TeleopMaster;
-
+import frc.robot.subsystems.Climber.ClimberState;
 import frc.lib.utils.Utilities;
 
 import static frc.robot.subsystems.BallManipulator.BallManipulatorState;
@@ -81,6 +81,17 @@ public class SimpleTeleopMaster extends TeleopMaster {
 
             
         }
+        //Handle Climber
+        /*
+        if(mButtons.get("1d_down")) {
+            mSubsystemManager.mClimber.setState(ClimberState.Pushing);
+        } else if(mButtons.get("1d_up")) {
+            mSubsystemManager.mClimber.setState(ClimberState.Retracting);
+        } else {
+            mSubsystemManager.mClimber.setState(ClimberState.Holding);
+        }
+        */
+
         double elevatorStick = -mJoysticks.get("1ly");
         elevatorStick = Utilities.handleDeadband(elevatorStick, kDeadband);
 

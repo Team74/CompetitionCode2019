@@ -138,22 +138,25 @@ public class InputManager implements Updateable {
 
         if(mController1.getPOV(0) == -1) {
             mButtons.put("1d_down", false);
-        } else if(135 < mController1.getPOV(0) && mController1.getPOV(0) < 225) {
+        } else if(mController1.getPOV(0) == 180) {
             mButtons.put("1d_down", true);
+            System.out.println("POV Down");
         } else {
             mButtons.put("1d_down", false);
         }
 
         if(mController1.getPOV(0) == -1) {
             mButtons.put("1d_up", false);
-        } else if(mController1.getPOV(0) <= 225 && mController1.getPOV(0) >= 135) {
+        } else if(mController1.getPOV(0) == 0) {
             mButtons.put("1d_up", true);
         } else {
             mButtons.put("1d_up", false);
         }
+
         if(mController1.getPOV(0) == -1) {
             mButtons.put("1d_left", false);
-        } else if(225 < mController1.getPOV(0) || mController1.getPOV(0) < 315) {
+        } else if(mController1.getPOV(0) == 270) {
+            System.out.println("POV Left");
             mButtons.put("1d_left", true);
         } else {
             mButtons.put("1d_left", false);
@@ -161,7 +164,8 @@ public class InputManager implements Updateable {
 
         if(mController1.getPOV(0) == -1) {
             mButtons.put("1d_right", false);
-        } else if(45 < mController1.getPOV(0) || mController1.getPOV(0) < 135) {
+        } else if(mController1.getPOV(0) == 90) {
+            System.out.println("POV Right");
             mButtons.put("1d_right", true);
         } else {
             mButtons.put("1d_right", false);
