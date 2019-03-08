@@ -23,7 +23,9 @@ public class BallManipulator implements Updateable{
     private final double kCurrentLimit = 10.0;
 
     private final double kInSpeed = .4;
-    private final double kOutSpeed = 1.0;
+    private final double kOutSpeedFront = 1.0;
+    private final double kOutSpeedBack = 1.0;
+
 
     public static enum BallManipulatorState {
         IN, OUT, HOLDING;
@@ -64,8 +66,8 @@ public class BallManipulator implements Updateable{
                 }
             break;
             case OUT:
-                mIntakeFront.set(ControlMode.PercentOutput, -kOutSpeed);
-                mIntakeBack.set(ControlMode.PercentOutput, kOutSpeed);
+                mIntakeFront.set(ControlMode.PercentOutput, -kOutSpeedFront);
+                mIntakeBack.set(ControlMode.PercentOutput, kOutSpeedBack);
                 haveBall = false;
             break;
             case HOLDING:
