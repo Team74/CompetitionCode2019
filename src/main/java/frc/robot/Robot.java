@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
         mTimer.reset();
     }
     public void autonomousInit() {
-        mSubsystemManager.setCurrentMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
+        mSubsystemManager.setCurrentMaster(new TestMaster(mSubsystemManager, mInputManager));
          //or whatever other auton we want -- we'll probably need something for SmartDashboard eventually
 
          mTimer.start();

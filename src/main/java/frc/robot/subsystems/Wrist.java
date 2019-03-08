@@ -159,13 +159,13 @@ public class Wrist implements Updateable {
         checkLimit();
         updatePIDFCoefficents();
 
-        /*
+        
         set(ControlMode.MotionMagic, listedSetpoints[currentTarget]);
         
         if(Math.abs(listedSetpoints[currentTarget] - wristMotor.getSelectedSensorPosition()) < kHoldingDeadzone ) {//we're here!
             currentState = WristState.HOLDING;
         }
-        */
+        
     }
 
 }
