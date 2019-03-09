@@ -5,6 +5,8 @@ import frc.robot.SubsystemManager;
 import static frc.robot.RobotMap.isElevatorDown;
 import static frc.robot.RobotMap.isWristUp;
 
+import org.opencv.videoio.VideoWriter;
+
 import frc.lib.utils.Utilities;
 
 import edu.wpi.cscore.UsbCamera;
@@ -56,6 +58,11 @@ public class Dashboard implements Updateable {
     public NetworkTableEntry rfAngle;
     public NetworkTableEntry rbAngle;
 
+    public NetworkTableEntry lfEncoder;
+    public NetworkTableEntry lbEncoder;
+    public NetworkTableEntry rfEncoder;
+    public NetworkTableEntry rbEncoder;
+
     public NetworkTableEntry elevatorState;
     public NetworkTableEntry elevatorTarget;
     public NetworkTableEntry wristState;
@@ -72,7 +79,7 @@ public class Dashboard implements Updateable {
         cameraTab = Shuffleboard.getTab("Camera");
         robotState = Shuffleboard.getTab("Robot State");
 
-        Shuffleboard.selectTab("Robot Tuning");
+        Shuffleboard.selectTab("Camera");
 
         sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
 
@@ -85,6 +92,11 @@ public class Dashboard implements Updateable {
         lbAngle = teleopTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         rfAngle = teleopTab.add("RF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
         rbAngle = teleopTab.add("RB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+
+        lfEncoder = teleopTab.add("LF Encoder", mSubsystemManager.mDrivetrain.lf.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        lbEncoder = teleopTab.add("LB Encoder", mSubsystemManager.mDrivetrain.lb.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        rfEncoder = teleopTab.add("RF Encoder", mSubsystemManager.mDrivetrain.rf.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        rbEncoder = teleopTab.add("RB Encoder", mSubsystemManager.mDrivetrain.rb.rotate_motor.getSelectedSensorPosition(0)).getEntry();
 
         elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
         elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
@@ -123,6 +135,11 @@ public class Dashboard implements Updateable {
         lbAngle.setDouble(mSubsystemManager.mDrivetrain.lb.currentAngle);
         rfAngle.setDouble(mSubsystemManager.mDrivetrain.rf.currentAngle);
         rbAngle.setDouble(mSubsystemManager.mDrivetrain.rb.currentAngle);
+
+        lfEncoder.setNumber(mSubsystemManager.mDrivetrain.lf.rotate_motor.getSelectedSensorPosition(0));
+        lbEncoder.setNumber(mSubsystemManager.mDrivetrain.lb.rotate_motor.getSelectedSensorPosition(0));
+        rfEncoder.setNumber(mSubsystemManager.mDrivetrain.rf.rotate_motor.getSelectedSensorPosition(0));
+        rbEncoder.setNumber(mSubsystemManager.mDrivetrain.rb.rotate_motor.getSelectedSensorPosition(0));        
 
         elevatorEncoder.setDouble(mSubsystemManager.mElevator.elevatorEncoder.getPosition());
         elevatorCurrent.setDouble(mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent());

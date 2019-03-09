@@ -39,12 +39,13 @@ public class Drivetrain implements Updateable {
 
         lf = new SwerveModule( robotmap.Drive_0, robotmap.Drive_E_0, robotmap.Steering_0, 229);
         lb = new SwerveModule( robotmap.Drive_1, robotmap.Drive_E_1, robotmap.Steering_1, 152);
-        rf = new SwerveModule( robotmap.Drive_2, robotmap.Drive_E_2, robotmap.Steering_2, 4);
+        rf = new SwerveModule( robotmap.Drive_2, robotmap.Drive_E_2, robotmap.Steering_2, 443);
         rb = new SwerveModule( robotmap.Drive_3, robotmap.Drive_E_3, robotmap.Steering_3, 500);
         
         lf.drive_motor.setInverted(false);
         
         lb.drive_motor.setInverted(false);
+        
         
         rf.drive_motor.setInverted(true);
 
