@@ -20,7 +20,7 @@ public class BallManipulator implements Updateable{
 
     public final int kTimeoutMs = 30;
 
-    private final double kCurrentLimit = 10.0;
+    private final double kCurrentLimit = 7.5;
 
     private final double kInSpeed = .4;
     private final double kOutSpeedFront = 1.0;
