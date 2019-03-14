@@ -23,8 +23,8 @@ public class Wrist implements Updateable {
 
     public TalonSRX wristMotor;
 
-    public final int kSlotIDX = 0;
-    public final int kTimeoutMs = 30;
+    private final int kSlotIDX = 0;
+    private final int kTimeoutMs = 30;
     
     public final double kCurrentLimit = 40.0;
     public boolean currentFlag = false;
@@ -40,8 +40,8 @@ public class Wrist implements Updateable {
 
     public final double kHoldingDeadzone = 0.0;
 
-    public int[] listedSetpoints = new int[0];
-    public HashMap<String, Integer> listedSetpoints_aliases = new HashMap<String, Integer>();;
+    public HashMap<String, Integer> kWristSetPoints = new HashMap<String, Integer>();
+
     public int currentTarget;
 
     public static enum WristState {
@@ -50,7 +50,6 @@ public class Wrist implements Updateable {
     public WristState currentState;
 
     public Wrist(SubsystemManager _subsystemManager, RobotMap _robotMap){
-        
         mSubsystemManager = _subsystemManager;
         mRobotMap = _robotMap;
         wristMotor = mRobotMap.Wrist_0;
@@ -84,6 +83,8 @@ public class Wrist implements Updateable {
 		wristMotor.config_kP(kSlotIDX, kP, kTimeoutMs);
 		wristMotor.config_kI(kSlotIDX, kI, kTimeoutMs);
         wristMotor.config_kD(kSlotIDX, kD, kTimeoutMs);
+
+        setSetpoints();
     }
 
     private void updatePIDFCoefficents() {
@@ -111,36 +112,31 @@ public class Wrist implements Updateable {
         }
     }
 
-    public void setSetpoints(String[] aliases, int[] targets) {
-        if(aliases.length != targets.length) {
-            throw new RuntimeException("setSetpoints received bad inputs");
-        }
-
-        for(int i = 0; i < aliases.length; ++i) {
-            listedSetpoints_aliases.put(aliases[i], i);
-        }
-
-        setSetpoints(targets);
-    }
-
-    public void setSetpoints(int[] targets) {
-        listedSetpoints = targets;
-    }
-
-    public void setTarget(String targetName) {
-        setTarget(listedSetpoints_aliases.get(targetName));
-    }
-
-    public void setTarget(int target) {
-        if(currentTarget != target) {
-            currentTarget = target;
-            currentState = WristState.MOVING;
-        }
-    }
     public void checkLimit() {
         if (isWristUp.get()) {
             wristMotor.setSelectedSensorPosition(0, kSlotIDX, kTimeoutMs);
             limitSwitchFlag = true;
+        }
+    }
+
+    public void setSetpoints() {
+        kWristSetPoints.put("Stow", 0);
+        kWristSetPoints.put("Perpendicular", 0);
+        kWristSetPoints.put("Parallel", 0);
+        kWristSetPoints.put("CargoDiagonal", 0);
+    }
+
+    public void setTarget(String _target) {
+        currentTarget = kWristSetPoints.get(_target);
+    }
+
+    public void updateState() {
+
+        if (Math.abs(currentTarget - wristMotor.getSelectedSensorPosition()) <= kHoldingDeadzone ) {
+            //At target
+            currentState = WristState.HOLDING;
+        } else {
+            currentState= WristState.MOVING;
         }
     }
 
@@ -158,14 +154,8 @@ public class Wrist implements Updateable {
     public void update(double dT) {
         checkLimit();
         updatePIDFCoefficents();
-
-        /*
-        set(ControlMode.MotionMagic, listedSetpoints[currentTarget]);
-        
-        if(Math.abs(listedSetpoints[currentTarget] - wristMotor.getSelectedSensorPosition()) < kHoldingDeadzone ) {//we're here!
-            currentState = WristState.HOLDING;
-        }
-        */
+        updateState();
+        set(ControlMode.MotionMagic, currentTarget);
     }
 
 }

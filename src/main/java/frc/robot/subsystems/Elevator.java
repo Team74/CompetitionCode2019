@@ -40,13 +40,14 @@ public class Elevator implements Updateable {
     public CANEncoder elevatorEncoder;
     public CANPIDController elevatorController;
 
-    public double kHoldingDeadzone = 50;
     public double kP, kI, kD, kIZ, kF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedError;
     public int kSlotIDX = 0;
 
-    public double[] listedSetpoints = new double[0];
-    public HashMap<String, Integer> listedSetpoints_aliases = new HashMap<String, Integer>();
-    public int currentTarget;
+    public HashMap<String, Double> kElevatorSetpoints = new HashMap<String, Double>();
+
+    public double currentTarget;
+
+    public double kHoldingDeadzone = 0.0;
 
     public ElevatorState currentState;
 
@@ -86,7 +87,7 @@ public class Elevator implements Updateable {
         elevatorController.setSmartMotionMaxAccel(maxAcc, kSlotIDX);
         elevatorController.setSmartMotionAllowedClosedLoopError(allowedError, kSlotIDX);
 
-        //elevatorMotor.burnFlash();
+        setSetpoints();
     }
 
     public void updatePIDFCoefficents() {
@@ -118,28 +119,27 @@ public class Elevator implements Updateable {
         }
     }
 
-    public void setSetpoints(String[] aliases, double[] targets) {
-        if(aliases.length != targets.length) {
-            throw new RuntimeException("setSetpoints received bad inputs");
+    public void setSetpoints() {
+        kElevatorSetpoints.put("Bottom", 0.0);
+        kElevatorSetpoints.put("Intake", 0.0);
+        kElevatorSetpoints.put("Low_Panel", 40.0);
+        kElevatorSetpoints.put("Mid_Panel", 132.0);
+        kElevatorSetpoints.put("High_Panel", 0.0);
+        kElevatorSetpoints.put("Low_Ball", 0.0);
+        kElevatorSetpoints.put("Mid_Ball", 109.0);
+        kElevatorSetpoints.put("High_Ball", 199.0);
+        kElevatorSetpoints.put("Cargo_Ball", 0.0);
         }
-
-        for(int i = 0; i < aliases.length; ++i) {
-            listedSetpoints_aliases.put(aliases[i], i);
-        }
-
-        setSetpoints(targets);
-    }
-    public void setSetpoints(double[] targets) {
-        listedSetpoints = targets;
-    }
-
-    public void setTarget(String targetName) {
-        setTarget(listedSetpoints_aliases.get(targetName));
-    }
     
-    public void setTarget(int target) {
-        if(currentTarget != target) {
-            currentTarget = target;
+    public void setTarget(String _target) {
+        currentTarget = kElevatorSetpoints.get(_target);
+
+    }
+
+    public void updateState() {
+        if (Math.abs(currentTarget - elevatorEncoder.getPosition()) <= kHoldingDeadzone) {
+            currentState = ElevatorState.HOLDING;
+        } else {
             currentState = ElevatorState.MOVING;
         }
     }
@@ -151,13 +151,9 @@ public class Elevator implements Updateable {
     }
 
     public void update(double dT) {
+        updatePIDFCoefficents();
         checkLimit();
-        //updatePIDFCoefficents();
-        /*
-        elevatorController.setReference(listedSetpoints[currentTarget], ControlType.kSmartMotion, kSlotIDX);
-        if(Math.abs(listedSetpoints[currentTarget] - elevatorEncoder.getPosition()) < kHoldingDeadzone ) {//we're here)
-            currentState = ElevatorState.HOLDING;
-        }
-        */
+        updateState();
+        elevatorController.setReference(currentTarget, ControlType.kSmartMotion);
     }
 }

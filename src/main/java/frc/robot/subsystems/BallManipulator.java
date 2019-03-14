@@ -25,10 +25,11 @@ public class BallManipulator implements Updateable{
     private final double kInSpeed = .4;
     private final double kOutSpeedFront = 1.0;
     private final double kOutSpeedBack = 1.0;
+    private final double kClimbSpeed = .4;
 
 
     public static enum BallManipulatorState {
-        IN, OUT, HOLDING;
+        IN, OUT, CLIMBING, HOLDING;
     }
     public BallManipulatorState currentState = BallManipulatorState.HOLDING;
 
@@ -57,22 +58,25 @@ public class BallManipulator implements Updateable{
             case IN:
                 if (kCurrentLimit <= Math.abs(mIntakeBack.getOutputCurrent())) {
                     currentState = BallManipulatorState.HOLDING;
-                    mIntakeFront.set(ControlMode.PercentOutput, 0);
-                    mIntakeBack.set(ControlMode.PercentOutput, 0);
+                    mIntakeFront.set(ControlMode.PercentOutput, 0.0);
+                    mIntakeBack.set(ControlMode.PercentOutput, 0.0);
                     haveBall = true;
                 } else {
                     mIntakeFront.set(ControlMode.PercentOutput, kInSpeed);
                     mIntakeBack.set(ControlMode.PercentOutput, -kInSpeed);
                 }
-            break;
+                break;
             case OUT:
                 mIntakeFront.set(ControlMode.PercentOutput, -kOutSpeedFront);
                 mIntakeBack.set(ControlMode.PercentOutput, kOutSpeedBack);
                 haveBall = false;
-            break;
+                break;
+            case CLIMBING:
+                mIntakeFront.set(ControlMode.PercentOutput, kClimbSpeed);
+                mIntakeBack.set(ControlMode.PercentOutput, 0.0);
             case HOLDING:
-                mIntakeFront.set(ControlMode.PercentOutput, 0);
-                mIntakeBack.set(ControlMode.PercentOutput, 0);
+                mIntakeFront.set(ControlMode.PercentOutput, 0.0);
+                mIntakeBack.set(ControlMode.PercentOutput, 0.0);
                 break;
             default:
                 throw new RuntimeException("How did this happen? @BallIntake.java");
