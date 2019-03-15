@@ -31,7 +31,9 @@ public class PrimaryTeleopMaster extends TeleopMaster {
     private double rx;
 
     String setPointName = "";
-    boolean isBall = true;   //true means ball
+
+    private boolean lastInput = false;
+    private boolean isBall = true;   //true means ball
 
     public PrimaryTeleopMaster(SubsystemManager subsystem_manager, InputManager input_manager) { 
         super(subsystem_manager, input_manager); 
@@ -42,6 +44,13 @@ public class PrimaryTeleopMaster extends TeleopMaster {
 
         currentMotor = mSubsystemManager.mDrivetrain.lb;
         output_extra = "lb: ";
+    }
+
+    private void toggleIsBall(boolean _input) {
+        if (_input && !lastInput) {
+            isBall = !isBall;
+        }
+        lastInput = _input;
     }
 
     public void update(double dt) {
@@ -111,53 +120,41 @@ public class PrimaryTeleopMaster extends TeleopMaster {
 
             
         }
-        /*
-        if (mInputManager.mButtons.get("1l_trigger")) {
-            isBall = true;
-        } else if (mInputManager.mButtons.get("1r_trigger")) {
-            isBall = false;
-        }
-
-        switch(1) {
-            case 1:
-                if (mButtons.get("1a")){
-                    setPointName = "Low";
-                } else if (mButtons.get("1x")) {
-                    setPointName = "Mid";
-                } else if (mButtons.get("1y")) {
-                    setPointName = "High";
-                } else if (mButtons.get("1b")) {
-                    setPointName = "Cargo";
-                } else {
-                    if(mButtons.get("1d_down")) {
-                        setPointName = "INTAKE_BALL";
-                    }
-                    mStateMachine.elevatorSetpoint = setPointName;
-                    break;
-                }
-                setPointName += isBall ? "_Ball" : "_Panel";
-                mStateMachine.elevatorSetpoint = setPointName;
-        }
-
-        mStateMachine.wristSetpoint = "Perpendicular";
-        if(mButtons.get("1d_up")) {
-            mStateMachine.ballManipulatorTarget = "Out";
-            if(setPointName == "INTAKE_BALL" || setPointName.contains("Cargo")) {
-                mStateMachine.wristSetpoint = "CargoDiagonal";
+        //Handle the rest of the robot
+        toggleIsBall(mButtons.get("1l_trigger"));//Set ball or panel mode
+        if (isBall) {
+            if (mButtons.get("1a")) {
+                mStateMachine.setConfiguration_LowBall();
+            } else if (mButtons.get("1x")) {
+                mStateMachine.setConfiguration_MidBall();
+            } else if (mButtons.get("1y")) {
+                mStateMachine.setConfiguration_HighBall();
+            } else if (mButtons.get("1b")) {
+                mStateMachine.setConfiguration_CargoBall();
             }
-        } else if(mButtons.get("1d_down")) {
-            if(setPointName == "INTAKE_BALL") {
-                mStateMachine.wristSetpoint = "Parallel";
-                mStateMachine.ballManipulatorTarget = "In";
-            } else {
-                mStateMachine.ballManipulatorTarget = "Hold";
+
+            if (mButtons.get("1l_bumper")) {
+                mStateMachine.setConfiguration_IntakeBall();
+            } else if (mButtons.get("1r_bumper")) {
+                mStateMachine.setPartialConfiguration_ScoreBall();
             }
         } else {
-            mStateMachine.ballManipulatorTarget = "Hold";
+            if (mButtons.get("1a")) {
+                mStateMachine.setConfiguration_LowPanel();
+            } else if (mButtons.get("1x")) {
+                mStateMachine.setConfiguration_MidPanel();
+            } else if (mButtons.get("1y")) {
+                mStateMachine.setConfiguration_HighPanel();
+            } else if (mButtons.get("1b")) {
+                mStateMachine.setConfiguration_MidPanel();
+            }
+
+            if (mButtons.get("1l_bumper")) {
+                mStateMachine.setConfiguration_IntakePanel();
+            } else if (mButtons.get("1r_bumper")) {
+                mStateMachine.setPartialConfiguration_ScorePanel();
+            }
         }
 
-        mStateMachine.panelManipulatorTarget = mButtons.get("1r_bumper") ? "Out" : "In";
-        //make that a toggle if we want; for now, hold it down
-        */
     }
 }

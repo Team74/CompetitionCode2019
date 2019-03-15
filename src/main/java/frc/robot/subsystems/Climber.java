@@ -77,7 +77,7 @@ public class Climber implements Updateable {
     }
 
     public void setSetpoints() {
-        kClimberSetpoints.put("Stowed", 0);
+        kClimberSetpoints.put("Stow", 0);
         kClimberSetpoints.put("L2", 0);
         kClimberSetpoints.put("L3", 0);
     }
