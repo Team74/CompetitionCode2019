@@ -28,6 +28,7 @@ public class SubsystemManager implements Updateable {
     public StateTracker mStateTracker;
     public BallManipulator mBallManipulator;
     public PanelManipulator mPanelManipulator;
+    public Climber mClimber;
     public Dashboard mDashboard;
     public ElevatorSim mElevatorSim;
     public WristSim mWristSim;
@@ -46,6 +47,7 @@ public class SubsystemManager implements Updateable {
         mStateTracker = new StateTracker(this);
         mBallManipulator = new BallManipulator(mRobotMap);
         mPanelManipulator = new PanelManipulator(mRobotMap);
+        mClimber = new Climber(this, mRobotMap);
         mDashboard = new Dashboard(this);
         mStateMachine = new StateMachine(this);
 
@@ -60,6 +62,7 @@ public class SubsystemManager implements Updateable {
         m_listOfUpdatingObjects.add(mStateTracker);
         m_listOfUpdatingObjects.add(mBallManipulator);
         m_listOfUpdatingObjects.add(mPanelManipulator);
+        m_listOfUpdatingObjects.add(mClimber);
         m_listOfUpdatingObjects.add(mDashboard);
 
         // ... set up other Subsystems if present

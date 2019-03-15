@@ -20,13 +20,16 @@ public class BallManipulator implements Updateable{
 
     public final int kTimeoutMs = 30;
 
-    private final double kCurrentThreshold = 50.0;
+    private final double kCurrentLimit = 7.5;
 
-    private final double kInSpeed = .2;
-    private final double kOutSpeed = 1.0;
+    private final double kInSpeed = .4;
+    private final double kOutSpeedFront = 1.0;
+    private final double kOutSpeedBack = 1.0;
+    private final double kClimbSpeed = .4;
+
 
     public static enum BallManipulatorState {
-        IN, OUT, HOLDING;
+        IN, OUT, CLIMBING, HOLDING;
     }
     public BallManipulatorState currentState = BallManipulatorState.HOLDING;
 
@@ -51,25 +54,30 @@ public class BallManipulator implements Updateable{
     }
 
     public void update(double dt) {
-        if (mIntakeBack.getOutputCurrent() >= kCurrentThreshold) {
-            currentState = BallManipulatorState.HOLDING;
-            haveBall = true;
-        }
-        
         switch(currentState) {
             case IN:
-                mIntakeFront.set(ControlMode.PercentOutput, kInSpeed);
-                mIntakeBack.set(ControlMode.PercentOutput, -kInSpeed);
-            break;
+                if (kCurrentLimit <= Math.abs(mIntakeBack.getOutputCurrent())) {
+                    currentState = BallManipulatorState.HOLDING;
+                    mIntakeFront.set(ControlMode.PercentOutput, 0.0);
+                    mIntakeBack.set(ControlMode.PercentOutput, 0.0);
+                    haveBall = true;
+                } else {
+                    mIntakeFront.set(ControlMode.PercentOutput, kInSpeed);
+                    mIntakeBack.set(ControlMode.PercentOutput, -kInSpeed);
+                }
+                break;
             case OUT:
-            mIntakeFront.set(ControlMode.PercentOutput, -kOutSpeed);
-            mIntakeBack.set(ControlMode.PercentOutput, kOutSpeed);
-            haveBall = false;
-            break;
+                mIntakeFront.set(ControlMode.PercentOutput, -kOutSpeedFront);
+                mIntakeBack.set(ControlMode.PercentOutput, kOutSpeedBack);
+                haveBall = false;
+                break;
+            case CLIMBING:
+                mIntakeFront.set(ControlMode.PercentOutput, kClimbSpeed);
+                mIntakeBack.set(ControlMode.PercentOutput, 0.0);
             case HOLDING:
-                mIntakeFront.set(ControlMode.PercentOutput, 0);
-                mIntakeBack.set(ControlMode.PercentOutput, 0);
-            break;
+                mIntakeFront.set(ControlMode.PercentOutput, 0.0);
+                mIntakeBack.set(ControlMode.PercentOutput, 0.0);
+                break;
             default:
                 throw new RuntimeException("How did this happen? @BallIntake.java");
         }
