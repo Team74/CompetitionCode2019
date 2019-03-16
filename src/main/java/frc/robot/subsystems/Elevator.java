@@ -133,12 +133,14 @@ public class Elevator implements Updateable {
     
     public void setTarget(String _target) {
         currentTarget = kElevatorSetpoints.get(_target);
+        System.out.println("Elevator Target Set: " + _target);
 
     }
 
     public void updateState() {
         if (Math.abs(currentTarget - elevatorEncoder.getPosition()) <= kHoldingDeadzone) {
             currentState = ElevatorState.HOLDING;
+            System.out.println("Elevator State Set: " + ElevatorState.HOLDING);
         } else {
             currentState = ElevatorState.MOVING;
         }
@@ -151,7 +153,6 @@ public class Elevator implements Updateable {
     }
 
     public void update(double dT) {
-        updatePIDFCoefficents();
         checkLimit();
         updateState();
         elevatorController.setReference(currentTarget, ControlType.kSmartMotion);

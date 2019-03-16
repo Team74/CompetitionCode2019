@@ -87,8 +87,8 @@ public class Wrist implements Updateable {
         setSetpoints();
     }
 
-    private void updatePIDFCoefficents() {
-
+    public void updatePIDFCoefficents() {
+        //Check dashboard to see if coefficents have changed
         double _p = mSubsystemManager.mDashboard.wristP.getDouble(kP);
         double _i = mSubsystemManager.mDashboard.wristI.getDouble(kI);
         double _d = mSubsystemManager.mDashboard.wristD.getDouble(kD);
@@ -128,6 +128,7 @@ public class Wrist implements Updateable {
 
     public void setTarget(String _target) {
         currentTarget = kWristSetPoints.get(_target);
+        System.out.println("Wrist Target Set: " + _target);
     }
 
     public void updateState() {
@@ -135,11 +136,12 @@ public class Wrist implements Updateable {
         if (Math.abs(currentTarget - wristMotor.getSelectedSensorPosition()) <= kHoldingDeadzone ) {
             //At target
             currentState = WristState.HOLDING;
+            System.out.println("Wrist State Set: " + WristState.HOLDING); 
         } else {
             currentState= WristState.MOVING;
         }
     }
-
+    /*
     public void set(ControlMode _controlMode, double _demand) {
         if (kCurrentLimit <= Math.abs(wristMotor.getOutputCurrent())) {
             currentFlag = true;
@@ -150,12 +152,11 @@ public class Wrist implements Updateable {
             wristMotor.set(_controlMode, _demand);
         }
     }
-
+    */
     public void update(double dT) {
         checkLimit();
-        updatePIDFCoefficents();
         updateState();
-        set(ControlMode.MotionMagic, currentTarget);
+        wristMotor.set(ControlMode.MotionMagic, currentTarget);
     }
 
 }

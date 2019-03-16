@@ -29,6 +29,32 @@ private HashMap<String, Double> mJoysticks;
     }
 
     public void update(double dt) {
+        if (mButtons.get("0l_trigger")) {
+            //Update PIDF coefficents
+            mSubsystemManager.mWrist.updatePIDFCoefficents();
+            mSubsystemManager.mElevator.updatePIDFCoefficents();
+        }
 
+        if (mButtons.get("0a")) {
+            mSubsystemManager.mWrist.setTarget("Parallel");
+        } else if (mButtons.get("0b")) {
+            mSubsystemManager.mWrist.setTarget("Perpendicular");
+        } else if (mButtons.get("0x")) {
+            mSubsystemManager.mWrist.setTarget("CargoDiagonal");
+        } else if (mButtons.get("0y")) {
+            mSubsystemManager.mWrist.setTarget("Stow");
+        }
+
+        /*
+        if (mButtons.get("0a")) {
+            mSubsystemManager.mElevator.setTarget("IntakeBall");
+        } else if (mButtons.get("0b")) {
+            mSubsystemManager.mElevator.setTarget("LowBall");
+        } else if (mButtons.get("0x")) {
+            mSubsystemManager.mElevator.setTarget("MidBall");
+        } else if (mButtons.get("0y")) {
+            mSubsystemManager.mElevator.setTarget("HighBall");
+        }
+        */
     }
 }

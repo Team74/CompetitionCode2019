@@ -84,16 +84,17 @@ public class Climber implements Updateable {
 
     public void setTarget(String _target) {
         currentTarget = kClimberSetpoints.get(_target);
+        System.out.println("Climber Target Set: " + _target);
     }
 
     public void updateState() {
         if (Math.abs(currentTarget - climberMotor.getSelectedSensorPosition(kSlotIDX)) <= kHoldingDeadzone) {
             currentState = ClimberState.HOLDING;
+            System.out.println("Climber State Set: Holding");
         } else {
             currentState = ClimberState.MOVING;
         }
     }
-
 
     public void update(double dt) {
         updateState();

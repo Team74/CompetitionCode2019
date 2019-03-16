@@ -101,7 +101,7 @@ public class SimpleTeleopMaster extends TeleopMaster {
 
         mSubsystemManager.mElevator.elevatorMotor.set(elevatorStick);
 
-        mSubsystemManager.mWrist.set(ControlMode.PercentOutput, wristStick);
+        mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, wristStick);
 
         //Handle the Ball Manipulator
         if (mButtons.get("1l_bumper")) {

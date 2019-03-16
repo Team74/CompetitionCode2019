@@ -49,15 +49,16 @@ public class BallManipulator implements Updateable{
         mIntakeBack.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void setState(BallManipulatorState state) {
-        currentState = state;
+    public void setState(BallManipulatorState _state) {
+        currentState = _state;
+        System.out.println("Ball Manipulator State Set: " + _state);
     }
 
     public void update(double dt) {
         switch(currentState) {
             case IN:
                 if (kCurrentLimit <= Math.abs(mIntakeBack.getOutputCurrent())) {
-                    currentState = BallManipulatorState.HOLDING;
+                    setState(BallManipulatorState.HOLDING);
                     mIntakeFront.set(ControlMode.PercentOutput, 0.0);
                     mIntakeBack.set(ControlMode.PercentOutput, 0.0);
                     haveBall = true;
