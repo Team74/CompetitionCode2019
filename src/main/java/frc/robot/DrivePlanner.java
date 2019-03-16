@@ -36,7 +36,7 @@ public class DrivePlanner implements Updateable {
     public DrivePlanner(SubsystemManager subsystemManager){
         mSubsytemManager = subsystemManager;
     }
-
+    /*
     //Generate a trajectory with starting and ending velocity 0
     public Trajectory<TrajectoryEntry<Pose2dWithCurvature>> generateTrajectory(
         boolean _revearsed, 
@@ -68,7 +68,7 @@ public class DrivePlanner implements Updateable {
             double _maxVoltage ){
         return
         }
-
+    */
     public void setSpeed(Speed _speed){
         switch(_speed){
             case Low:

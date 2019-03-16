@@ -143,6 +143,7 @@ public class StateMachine implements Updateable {
     }
 
     public void setConfiguration_LowBall() {
+        currentConfiguration = Configuration.LowBall;
         elevatorTarget = "Low";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
@@ -151,6 +152,7 @@ public class StateMachine implements Updateable {
     }
 
     public void setConfiguration_MidBall() {
+        currentConfiguration = Configuration.MidBall;
         elevatorTarget = "MidBall";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
@@ -159,6 +161,7 @@ public class StateMachine implements Updateable {
     }
 
     public void setConfiguration_HighBall() {
+        currentConfiguration = Configuration.HighBall;
         elevatorTarget = "HighBall";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
@@ -167,6 +170,7 @@ public class StateMachine implements Updateable {
     }
 
     public void setConfiguration_CargoBall() {
+        currentConfiguration = Configuration.CargoBall;
         elevatorTarget = "CargoBall";
         wristTarget = "CargoDiagonal";
         ballManipulatorTarget = "Hold";
@@ -175,6 +179,7 @@ public class StateMachine implements Updateable {
     }
 
     public void setConfiguration_L2Climb() {
+        currentConfiguration = Configuration.L2Climb;
         elevatorTarget = "Bottom";
         wristTarget = "Stow";
         ballManipulatorTarget = "Hold";
@@ -183,6 +188,7 @@ public class StateMachine implements Updateable {
     }
 
     public void setConfiguration_L3Climb() {
+        currentConfiguration = Configuration.L3Climb;
         elevatorTarget = "Bottom";
         wristTarget = "Stow";
         ballManipulatorTarget = "Hold";

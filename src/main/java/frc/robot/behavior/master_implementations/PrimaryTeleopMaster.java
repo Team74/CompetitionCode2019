@@ -57,22 +57,35 @@ public class PrimaryTeleopMaster extends TeleopMaster {
         if(mInputManager.mButtons.get("0a")) {
             currentMotor = mSubsystemManager.mDrivetrain.lb;
             output_extra = "lb: ";
+            double encoderCount = currentMotor.rotate_motor.getSelectedSensorPosition(0);
+            double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
+            System.out.println(output_extra + encoderCount);
+            System.out.println(output_extra + encoderVelocity);
         }
         else if(mInputManager.mButtons.get("0x")) {
             currentMotor = mSubsystemManager.mDrivetrain.lf;
             output_extra = "lf: ";
+            double encoderCount = currentMotor.rotate_motor.getSelectedSensorPosition(0);
+            double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
+            System.out.println(output_extra + encoderCount);
+            System.out.println(output_extra + encoderVelocity);
         }        
         else if(mInputManager.mButtons.get("0y")) {
             currentMotor = mSubsystemManager.mDrivetrain.rf;
             output_extra = "rf: ";
+            double encoderCount = currentMotor.rotate_motor.getSelectedSensorPosition(0);
+            double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
+            System.out.println(output_extra + encoderCount);
+            System.out.println(output_extra + encoderVelocity);
         }       
         else if(mInputManager.mButtons.get("0b")) {
             currentMotor = mSubsystemManager.mDrivetrain.rb;
             output_extra = "rb: ";
+            double encoderCount = currentMotor.rotate_motor.getSelectedSensorPosition(0);
+            double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
+            System.out.println(output_extra + encoderCount);
+            System.out.println(output_extra + encoderVelocity);
         }        
-        double encoderCount = currentMotor.rotate_motor.getSelectedSensorPosition(0);
-        double encoderVelocity = currentMotor.rotate_motor.getSelectedSensorVelocity(0);
-        System.out.println(output_extra + encoderCount);
 
         if (mButtons.get("0back")) {
             System.out.println("Gyro reset");
@@ -154,6 +167,16 @@ public class PrimaryTeleopMaster extends TeleopMaster {
             } else if (mButtons.get("1r_bumper")) {
                 mStateMachine.setPartialConfiguration_ScorePanel();
             }
+        }
+
+        if (mButtons.get("1start")) {
+            mStateMachine.setConfiguration_Travel();
+        }
+
+        if (mButtons.get("1d_left")) {
+            mStateMachine.setConfiguration_L2Climb();
+        } else if (mButtons.get("1d_up")) {
+            mStateMachine.setConfiguration_L3Climb();
         }
 
     }
