@@ -6,7 +6,9 @@ import frc.robot.subsystems.BallManipulator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 
-import static frc.robot.subsystems.BallManipulator.BallManipulatorState;
+import frc.robot.subsystems.Wrist.WristState;
+import frc.robot.subsystems.Elevator.ElevatorState;
+import frc.robot.subsystems.BallManipulator.BallManipulatorState;
 
 public class StateMachine implements Updateable {
 
@@ -29,22 +31,28 @@ public class StateMachine implements Updateable {
     private SubsystemManager mSubsystemManager;
 
     private Configuration currentConfiguration = Configuration.Start;
-    private String elevatorTarget = "Bottom";
+    private String ElevatorTarget = "Bottom";
     private String wristTarget = "Stow";
     private String ballManipulatorTarget = "Hold";
     private String panelManipulatorTarget = "In";
     private String climberTarget = "Stow";
+
+    private String tempElevatorTarget = "";
+    private String tempWristTarget = "";
+    private String tempBallManipulatorTarget = "";
+    private String tempPanelManipulatorTarget = "";
+    private String tempClimberTarget = "";
 
     public StateMachine(SubsystemManager subsystemManager) {
         mSubsystemManager = subsystemManager;
     }
 
     public void setElevatorTarget(String _target) {
-        elevatorTarget = _target;
+        ElevatorTarget = _target;
     }
 
     public String getElevatorTarget() {
-        return elevatorTarget;
+        return ElevatorTarget;
     }
 
     public void setWristTarget(String _target) {
@@ -81,7 +89,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_Start() {
         currentConfiguration = Configuration.Start;
-        elevatorTarget = "Bottom";
+        ElevatorTarget = "Bottom";
         wristTarget = "Stow";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -90,7 +98,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_Travel() {
         currentConfiguration = Configuration.Travel;
-        elevatorTarget = "Bottom";
+        ElevatorTarget = "Bottom";
         wristTarget = "Stow";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -99,7 +107,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_IntakePanel() {
         currentConfiguration = Configuration.IntakePanel;
-        elevatorTarget = "IntakePanel";
+        ElevatorTarget = "IntakePanel";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "Out";
@@ -108,7 +116,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_LowPanel() {
         currentConfiguration = Configuration.LowPanel;
-        elevatorTarget = "LowPanel";
+        ElevatorTarget = "LowPanel";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -117,7 +125,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_MidPanel() {
         currentConfiguration = Configuration.MidPanel;
-        elevatorTarget = "MidPanel";
+        ElevatorTarget = "MidPanel";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -126,7 +134,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_HighPanel() {
         currentConfiguration = Configuration.HighPanel;
-        elevatorTarget = "HighPanel";
+        ElevatorTarget = "HighPanel";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -135,7 +143,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_IntakeBall() {
         currentConfiguration = Configuration.IntakeBall;
-        elevatorTarget = "IntakeBall";
+        ElevatorTarget = "IntakeBall";
         wristTarget = "Perpendicular";
         ballManipulatorTarget = "Intake";
         panelManipulatorTarget = "In";
@@ -144,7 +152,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_LowBall() {
         currentConfiguration = Configuration.LowBall;
-        elevatorTarget = "Low";
+        ElevatorTarget = "Low";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -153,7 +161,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_MidBall() {
         currentConfiguration = Configuration.MidBall;
-        elevatorTarget = "MidBall";
+        ElevatorTarget = "MidBall";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -162,7 +170,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_HighBall() {
         currentConfiguration = Configuration.HighBall;
-        elevatorTarget = "HighBall";
+        ElevatorTarget = "HighBall";
         wristTarget = "Parallel";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -171,7 +179,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_CargoBall() {
         currentConfiguration = Configuration.CargoBall;
-        elevatorTarget = "CargoBall";
+        ElevatorTarget = "CargoBall";
         wristTarget = "CargoDiagonal";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -180,7 +188,7 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_L2Climb() {
         currentConfiguration = Configuration.L2Climb;
-        elevatorTarget = "Bottom";
+        ElevatorTarget = "Bottom";
         wristTarget = "Stow";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
@@ -189,11 +197,16 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_L3Climb() {
         currentConfiguration = Configuration.L3Climb;
-        elevatorTarget = "Bottom";
+        ElevatorTarget = "Bottom";
         wristTarget = "Stow";
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "In";
         climberTarget = "L3";
+    }
+
+    public void setPartialConfiguration_HoldBall() {
+        wristTarget = "Parallel";
+        ballManipulatorTarget = "Hold";
     }
 
     public void setPartialConfiguration_ScoreBall() {
@@ -205,5 +218,15 @@ public class StateMachine implements Updateable {
     }
 
     public void update(double dt) {
+        //First check if elevator is moving, if it is, set wrist, ball, and panel manipulator to travel position
+        if (mSubsystemManager.mElevator.currentState == ElevatorState.MOVING) {
+            tempWristTarget = "Parallel";
+            tempBallManipulatorTarget = "Hold";
+            tempClimberTarget = "Stow";
+        } else if (mSubsystemManager.mElevator.currentState == ElevatorState.HOLDING
+                    && mSubsystemManager.mWrist.currentState == WristState.MOVING) {
+            tempBallManipulatorTarget = "Hold";
+            tempClimberTarget = "Stow";
+        }
     } 
 }
