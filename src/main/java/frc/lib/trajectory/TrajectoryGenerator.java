@@ -50,7 +50,7 @@ public class TrajectoryGenerator {
     public Trajectories getTrajectories() {
         return mTrajectories;
     } 
-
+    /*
     public Trajectory<TrajectoryEntry<Pose2dWithCurvature>> generateTrajectory(
             boolean _revearsed, 
             final List<Pose2d> _waypoints, 
@@ -66,7 +66,6 @@ public class TrajectoryGenerator {
             _maxAcceleration,
              _maxVoltage);
     }
-
     public Trajectory<TrajectoryEntry<Pose2dWithCurvature>> generateTrajectory(
             boolean _revearsed,
             final List<Pose2d> _waypoints,
@@ -78,6 +77,7 @@ public class TrajectoryGenerator {
             double _maxVoltage ){
         return
     }
+    */
     /*
     List of important positions
     Origin is the center of the alliance station wall
@@ -89,13 +89,13 @@ public class TrajectoryGenerator {
     public static final Pose2d kCrossLine = new Pose2d(new Translation2d(50.0, 0.0), Rotation2d.fromDegrees(0));
 
     public class Trajectories {
-
+        /*
         public final Trajectory crossLine;
-
+        
         private Trajectories() {
             crossLine = getCrossLine();
         }
-
+        
         private Trajectory<TrajectoryEntry<Pose2dWithCurvature>> getCrossLine() {
             List<Pose2d> waypoints = new ArrayList<>();
             waypoints.add(kOrigin);
@@ -103,7 +103,7 @@ public class TrajectoryGenerator {
             return generateTrajectory(false, waypoints, Arrays.asList(new CentripitalAccelerationConstraint(kMaxCentripetalAccelerationElevatorDown)),
                     kMaxVelocity, kMaxAcceleration, kMaxVoltage);
         }
-
+        */
     }
 
 
