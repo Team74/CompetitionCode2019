@@ -5,10 +5,11 @@ import frc.robot.InputManager;
 import frc.robot.DrivePlanner;
 
 import frc.robot.behavior.TeleopMaster;
-import frc.robot.subsystems.Climber.ClimberState;
 import frc.lib.utils.Utilities;
 
 import static frc.robot.subsystems.BallManipulator.BallManipulatorState;
+import static frc.robot.subsystems.Climber.ClimberState;
+import static frc.robot.subsystems.ClimberPuller.PullerState;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -81,27 +82,39 @@ public class SimpleTeleopMaster extends TeleopMaster {
 
             
         }
-        //Handle Climber
-        /*
-        if(mButtons.get("1d_down")) {
-            mSubsystemManager.mClimber.setState(ClimberState.Pushing);
-        } else if(mButtons.get("1d_up")) {
-            mSubsystemManager.mClimber.setState(ClimberState.Retracting);
-        } else {
-            mSubsystemManager.mClimber.setState(ClimberState.Holding);
-        }
-        */
-
+        //Handle the elevator
         double elevatorStick = -mJoysticks.get("1ly");
         elevatorStick = Utilities.handleDeadband(elevatorStick, kDeadband);
+        mSubsystemManager.mElevator.elevatorMotor.set(elevatorStick);
+
+        //Handle the wrist
+        if (mButtons.get("1r_trigger")) {
+            mSubsystemManager.mWrist.wristMotor.setSelectedSensorPosition(0);
+        }
 
         double wristStick = -mJoysticks.get("1ry");
         wristStick = Utilities.handleDeadband(wristStick, kDeadband);
         wristStick /= 2;
 
-        mSubsystemManager.mElevator.elevatorMotor.set(elevatorStick);
+        if (mButtons.get("1back")) {
+            mSubsystemManager.mWrist.setIsManual(true);
+        } else if (mButtons.get("1start")) {
+            mSubsystemManager.mWrist.setIsManual(false);
+        }
 
-        mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, wristStick);
+        if (mSubsystemManager.mWrist.getIsManual()) {
+            mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, wristStick);
+        } else {
+            if (mButtons.get("1a")) {
+                mSubsystemManager.mWrist.setTarget("Parallel");
+            } else if (mButtons.get("1b")) {
+                mSubsystemManager.mWrist.setTarget("Perpendicular");
+            } else if (mButtons.get("1x")) {
+                mSubsystemManager.mWrist.setTarget("CargoDiagonal");
+            } else if (mButtons.get("1y")) {
+                mSubsystemManager.mWrist.setTarget("Stow");
+            }
+        }
 
         //Handle the Ball Manipulator
         if (mButtons.get("1l_bumper")) {
@@ -113,5 +126,24 @@ public class SimpleTeleopMaster extends TeleopMaster {
         else if (mButtons.get("1l_trigger")) {
             mSubsystemManager.mBallManipulator.setState(BallManipulatorState.HOLDING);
         }
+
+        //Handle Climber
+        /*
+        if (mButtons.get("1d_up")) {
+            mSubsystemManager.mClimber.setState(ClimberState.EXTENDING);
+        } else if (mButtons.get("1d_down")) {
+            mSubsystemManager.mClimber.setState(ClimberState.RETRACTING);
+        } else {
+            mSubsystemManager.mClimber.setState(ClimberState.HOLDING);
+        }
+
+        if (mButtons.get("1d_left")) {
+            mSubsystemManager.mClimberPuller.setState(PullerState.PULLING);
+        } else if (mButtons.get("1d_right")) {
+            mSubsystemManager.mClimberPuller.setState(PullerState.UNWINDING);
+        } else {
+            mSubsystemManager.mClimberPuller.setState(PullerState.HOLDING);
+        }
+        */
     }
 }

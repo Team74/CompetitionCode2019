@@ -1,4 +1,3 @@
-//TODO: Add PIDF coefficents updater
 package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
@@ -22,28 +21,21 @@ public class Climber implements Updateable {
     public final int kTimeoutMs = 30;
 
     public final boolean kMotorInvert = false;
-    public final boolean kSensorPhase = false;
 
-    public final double kP = 0.0;
-    public final double kI = 0.0;
-    public final double kD = 0.0;
-    public final double kF = 0.0;
+    public boolean isUp = false;
+    public boolean isDown = false;
 
+    public double kCurrentLimit = Double.POSITIVE_INFINITY;
+    public boolean currentFlag = false;
 
-    public final int kMaxVel = 0;
-    public final int kMaxAccel = 0;
+    private ClimberState currentState = ClimberState.HOLDING;
 
-    public double kCurrentLimit;
-    public boolean kCurrentFlag;
-
-    public HashMap<String, Integer> kClimberSetpoints = new HashMap<String, Integer>();
-
-    public int currentTarget;
-
-    public ClimberState currentState;
+    private double kExtendingPower = 1.0;
+    private double kRetractingPower = -0.5;
 
     public static enum ClimberState {
-        MOVING,
+        EXTENDING,
+        RETRACTING,
         HOLDING;
     }
 
@@ -61,43 +53,42 @@ public class Climber implements Updateable {
 		climberMotor.configNominalOutputReverse(0, kTimeoutMs);
 		climberMotor.configPeakOutputForward(1, kTimeoutMs);
         climberMotor.configPeakOutputReverse(-1, kTimeoutMs);
-
-        climberMotor.setSelectedSensorPosition(0, kSlotIDX, kTimeoutMs);
-        climberMotor.setSensorPhase(kSensorPhase);
-
-        climberMotor.config_kP(kSlotIDX, kP, kTimeoutMs);
-        climberMotor.config_kI(kSlotIDX, kI, kTimeoutMs);
-        climberMotor.config_kD(kSlotIDX, kD, kTimeoutMs);
-        climberMotor.config_kF(kSlotIDX, kF, kTimeoutMs);
-
-        climberMotor.configMotionAcceleration(kMaxAccel, kTimeoutMs);
-        climberMotor.configMotionCruiseVelocity(kMaxVel, kTimeoutMs);
-
-        setSetpoints();
     }
 
-    public void setSetpoints() {
-        kClimberSetpoints.put("Stow", 0);
-        kClimberSetpoints.put("L2", 0);
-        kClimberSetpoints.put("L3", 0);
+    public void setState(ClimberState _state) {
+        currentState = _state;
     }
 
-    public void setTarget(String _target) {
-        currentTarget = kClimberSetpoints.get(_target);
-        System.out.println("Climber Target Set: " + _target);
+    public ClimberState getState() {
+        return currentState;
     }
 
-    public void updateState() {
-        if (Math.abs(currentTarget - climberMotor.getSelectedSensorPosition(kSlotIDX)) <= kHoldingDeadzone) {
-            currentState = ClimberState.HOLDING;
-            System.out.println("Climber State Set: Holding");
+    private boolean checkCurrent() {
+        if (Math.abs(climberMotor.getOutputCurrent()) >= kCurrentLimit || currentFlag == true) {
+            currentFlag = true;
+            return true;
         } else {
-            currentState = ClimberState.MOVING;
+            return false;
         }
     }
 
     public void update(double dt) {
-        updateState();
-        climberMotor.set(ControlMode.MotionMagic, currentTarget);
+        switch(currentState) {
+            case EXTENDING:
+                if (checkCurrent()) {
+                    setState(ClimberState.HOLDING);
+                } else {
+                    climberMotor.set(ControlMode.PercentOutput, kExtendingPower);
+                }
+                break;
+            case RETRACTING:
+                climberMotor.set(ControlMode.PercentOutput, kRetractingPower);
+                break;
+            case HOLDING:
+                climberMotor.set(ControlMode.PercentOutput, 0.0);
+                break;
+            default:
+                climberMotor.set(ControlMode.PercentOutput, 0.0);
+        }
     }
 }

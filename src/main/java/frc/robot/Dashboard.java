@@ -27,14 +27,14 @@ public class Dashboard implements Updateable {
 
     public NetworkTableEntry elevatorEncoder;
     public NetworkTableEntry elevatorCurrent;
-    public NetworkTableEntry testElevatorSetpoint;
+    public NetworkTableEntry elevatorVelocity;
 
     public NetworkTableEntry elevatorP;
     public NetworkTableEntry elevatorI;
     public NetworkTableEntry elevatorD;
     public NetworkTableEntry elevatorF;
 
-    public NetworkTableEntry testWristSetpoint;
+    public NetworkTableEntry wristVelocity;
     public NetworkTableEntry wristEncoder;
     public NetworkTableEntry wristCurrent;
 
@@ -100,14 +100,14 @@ public class Dashboard implements Updateable {
 
         elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
         elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
-        testElevatorSetpoint = robotTuning.add("Elevator Setpoint", 115.0).getEntry();
+        elevatorVelocity = robotTuning.add("Elevator Velocity", mSubsystemManager.mElevator.elevatorEncoder.getVelocity()).getEntry();
         
         elevatorP = robotTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
         elevatorI = robotTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
         elevatorD = robotTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
         elevatorF = robotTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
         
-        testWristSetpoint = robotTuning.add("Wrist Setpoint", 0).getEntry();
+        wristVelocity = robotTuning.add("Wrist Velocity", mSubsystemManager.mWrist.wristMotor.getSelectedSensorVelocity(0)).getEntry();
         wristEncoder = robotTuning.add("Wrist Encoder", mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition()).getEntry();
         wristCurrent = robotTuning.add("Wrist Current", mSubsystemManager.mWrist.wristMotor.getOutputCurrent()).getEntry();
 
@@ -143,9 +143,11 @@ public class Dashboard implements Updateable {
 
         elevatorEncoder.setDouble(mSubsystemManager.mElevator.elevatorEncoder.getPosition());
         elevatorCurrent.setDouble(mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent());
+        elevatorVelocity.setDouble(mSubsystemManager.mElevator.elevatorEncoder.getVelocity());
 
         wristEncoder.setNumber(mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition());
         wristCurrent.setDouble(mSubsystemManager.mWrist.wristMotor.getOutputCurrent());
+        wristVelocity.setNumber(mSubsystemManager.mWrist.wristMotor.getSelectedSensorVelocity(0));
         
         frontIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent());
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());

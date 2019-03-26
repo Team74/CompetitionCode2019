@@ -30,13 +30,13 @@ public class Wrist implements Updateable {
     public boolean currentFlag = false;
     public boolean limitSwitchFlag = false;
 
-    public final boolean kMotorInvert = false;
-    public final boolean kSensorPhase = false;
+    public final boolean kMotorInvert = true;
+    public final boolean kSensorPhase = true;
 
     public double kP, kI, kD, kF;
 
-    public final int kMaxVel = 100;
-    public final int kMaxAccel = 50;
+    public final int kMaxVel = 400;
+    public final int kMaxAccel = 300;
 
     public final double kHoldingDeadzone = 0.0;
 
@@ -48,6 +48,8 @@ public class Wrist implements Updateable {
         HOLDING, MOVING, MANUAL;
     }
     public WristState currentState;
+
+    private boolean isManual = false;
 
     public Wrist(SubsystemManager _subsystemManager, RobotMap _robotMap){
         mSubsystemManager = _subsystemManager;
@@ -74,9 +76,9 @@ public class Wrist implements Updateable {
         wristMotor.setSensorPhase(kSensorPhase);
         wristMotor.setSelectedSensorPosition(0, kSlotIDX, kTimeoutMs);
 
-        kP = 1.5;
+        kP = 45;
         kI = 0.0;
-        kD = 0.0;
+        kD = 5000;
         kF = .8525;
 
         wristMotor.config_kF(kSlotIDX, kF, kTimeoutMs);
@@ -121,9 +123,9 @@ public class Wrist implements Updateable {
 
     public void setSetpoints() {
         kWristSetPoints.put("Stow", 0);
-        kWristSetPoints.put("Perpendicular", 0);
-        kWristSetPoints.put("Parallel", 0);
-        kWristSetPoints.put("CargoDiagonal", 0);
+        kWristSetPoints.put("Perpendicular", 2750);
+        kWristSetPoints.put("Parallel", 300);
+        kWristSetPoints.put("CargoDiagonal",700);
     }
 
     public void setTarget(String _target) {
@@ -131,12 +133,19 @@ public class Wrist implements Updateable {
         System.out.println("Wrist Target Set: " + _target);
     }
 
-    public void updateState() {
+    public void setIsManual(boolean _temp) {
+        isManual = _temp;
+    }
 
+    public boolean getIsManual() {
+        return isManual;
+    }
+
+    public void updateState() {
         if (Math.abs(currentTarget - wristMotor.getSelectedSensorPosition()) <= kHoldingDeadzone ) {
             //At target
             currentState = WristState.HOLDING;
-            System.out.println("Wrist State Set: " + WristState.HOLDING); 
+            //System.out.println("Wrist State Set: " + WristState.HOLDING); 
         } else {
             currentState= WristState.MOVING;
         }
@@ -154,9 +163,14 @@ public class Wrist implements Updateable {
     }
     */
     public void update(double dT) {
-        checkLimit();
         updateState();
-        wristMotor.set(ControlMode.MotionMagic, currentTarget);
+                
+        if (!getIsManual()) {
+            wristMotor.set(ControlMode.MotionMagic, currentTarget);
+        } else {
+
+        }
+        
     }
 
 }

@@ -105,7 +105,6 @@ public class InputManager implements Updateable {
             mButtons.put("0d_down", false);
         } else if(mController0.getPOV(0) == 180) {
             mButtons.put("0d_down", true);
-            System.out.println("POV Down");
         } else {
             mButtons.put("0d_down", false);
         }
@@ -121,7 +120,6 @@ public class InputManager implements Updateable {
         if(mController0.getPOV(0) == -1) {
             mButtons.put("0d_left", false);
         } else if(mController0.getPOV(0) == 270) {
-            System.out.println("POV Left");
             mButtons.put("0d_left", true);
         } else {
             mButtons.put("0d_left", false);
@@ -130,7 +128,6 @@ public class InputManager implements Updateable {
         if(mController0.getPOV(0) == -1) {
             mButtons.put("0d_right", false);
         } else if(mController0.getPOV(0) == 90) {
-            System.out.println("POV Right");
             mButtons.put("0d_right", true);
         } else {
             mButtons.put("0d_right", false);
@@ -140,7 +137,6 @@ public class InputManager implements Updateable {
             mButtons.put("1d_down", false);
         } else if(mController1.getPOV(0) == 180) {
             mButtons.put("1d_down", true);
-            System.out.println("POV Down");
         } else {
             mButtons.put("1d_down", false);
         }
@@ -156,7 +152,6 @@ public class InputManager implements Updateable {
         if(mController1.getPOV(0) == -1) {
             mButtons.put("1d_left", false);
         } else if(mController1.getPOV(0) == 270) {
-            System.out.println("POV Left");
             mButtons.put("1d_left", true);
         } else {
             mButtons.put("1d_left", false);
@@ -165,7 +160,6 @@ public class InputManager implements Updateable {
         if(mController1.getPOV(0) == -1) {
             mButtons.put("1d_right", false);
         } else if(mController1.getPOV(0) == 90) {
-            System.out.println("POV Right");
             mButtons.put("1d_right", true);
         } else {
             mButtons.put("1d_right", false);
