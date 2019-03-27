@@ -2,8 +2,10 @@ package frc.lib.utils.geometry;
 
 import frc.lib.utils.geometry.Translation2d;
 import frc.lib.utils.geometry.Rotation2d;
+import frc.lib.utils.Utilities;
+import frc.lib.utils.geometry.IPose2d;
 
-public class Pose2d {
+public class Pose2d implements IPose2d<Pose2d> {
 
     protected static final Pose2d kIdentity = new Pose2d();
 
@@ -59,14 +61,6 @@ public class Pose2d {
         return new Pose2d(mTranslation.inverse().rotateBy(rotation_inverted), rotation_inverted);
     }
 
-    public Pose2d mirror() {
-        return new Pose2d(new Translation2d(getTranslation().x(), -getTranslation().y()), getRotation().inverse());
-    }
-
-    public Pose2d getPose() {
-        return this;
-    }
-
     /*
         Obtain a new Pose2d from a (constant curvature) velocity. See:
         https://github.com/strasdat/Sophus/blob/master/sophus/se2.hpp
@@ -104,16 +98,50 @@ public class Pose2d {
         return new Twist2d(translation_part.x(), translation_part.y(), dtheta);
     }
 
-    public double distance(final Pose2d other) {
-        return Pose2d.log(inverse().transformBy(other)).norm();
-    }
-
-
     public Translation2d getTranslation() {
         return mTranslation;
     }
 
     public Rotation2d getRotation() {
         return mRotation;
+    }
+
+    public boolean epsilonEquals(final Pose2d other, double epsilon) {
+        return getTranslation().epsilonEquals(other.getTranslation(), epsilon) && getRotation().isParallel(other.getRotation());
+    }
+
+    /*
+        Do Twist inerpolation of this pose assuming constant curvature
+    */
+    @Override
+    public Pose2d interpolate(final Pose2d other, double x) {
+        if (x <= 0) {
+            return new Pose2d(this);
+        } else if (x >= 1) {
+            return new Pose2d(other);
+        }
+        final Twist2d twist = Pose2d.log(inverse().transformBy(other));
+        return transformBy(Pose2d.exp(twist.scaled(x)));
+    }
+
+    @Override
+    public double distance(final Pose2d other) {
+        return Pose2d.log(inverse().transformBy(other)).norm();
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null || !(other instanceof Pose2d)) return false;
+        return epsilonEquals((Pose2d)other, Utilities.kEpsilon);
+    }
+    
+    @Override    
+    public Pose2d getPose() {
+        return this;
+    }
+
+    @Override
+    public Pose2d mirror() {
+        return new Pose2d(new Translation2d(getTranslation().x(), -getTranslation().y()), getRotation().inverse());
     }
 }

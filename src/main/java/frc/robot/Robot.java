@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.SubsystemManager;
 import frc.robot.InputManager;
+import frc.robot.Constants;
 import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
 import frc.robot.behavior.master_implementations.PrimaryTeleopMaster;
 import frc.robot.behavior.master_implementations.SimpleTeleopMaster;
@@ -16,7 +17,7 @@ public class Robot extends TimedRobot {
     InputManager mInputManager;
 
     Timer mTimer = new Timer();
-    double dt = 0.02;  //no m_ just for consistency with everywhere else
+    double dt = Constants.dt;  //no m_ just for consistency with everywhere else
     private void updateTime() {
         dt = mTimer.get();
         mTimer.reset();

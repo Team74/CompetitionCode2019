@@ -1,16 +1,16 @@
 package frc.lib.trajectory;
 
 public class TrajectoryPoint<S> {
-    protected final S entry;
+    protected final S state;
     protected final int index;
 
-    public TrajectoryPoint(final S _entry, final int _index) {
-        entry = _entry;
+    public TrajectoryPoint(final S _state, final int _index) {
+        state = _state;
         index = _index;
     }
 
-    public S entry() {
-        return entry;
+    public S state() {
+        return state;
     }
 
     public int index() {

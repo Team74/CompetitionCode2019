@@ -1,5 +1,6 @@
 package frc.lib.utils.geometry;
 
+import frc.lib.utils.Utilities;
 import static frc.lib.utils.Utilities.kEpsilon;
 
 public class Rotation2d {
@@ -98,6 +99,14 @@ public class Rotation2d {
     //Inverse undoes this rotation
     public Rotation2d inverse() {
         return new Rotation2d(cos_angle, -sin_angle, false);
+    }
+
+    public boolean isParallel(final Rotation2d other) {
+        return Utilities.epsilonEquals(Translation2d.cross(toTranslation(), other.toTranslation()), 0.0);
+    }
+
+    public Translation2d toTranslation() {
+        return new Translation2d(cos_angle, sin_angle);
     }
 
     public Rotation2d getRotation(){

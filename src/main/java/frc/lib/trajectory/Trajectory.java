@@ -13,10 +13,10 @@ public class Trajectory<S> {
         points = new ArrayList<TrajectoryPoint<S>>();
     }
     //Trajectory with List of object S
-    public Trajectory(final List<S> entries) {
+    public Trajectory(final List<S> states) {
         points =  new ArrayList<TrajectoryPoint<S>>();
-        for (int i = 0; i < entries.size(); ++i) {
-            points.add(new TrajectoryPoint<>(entries.get(i), i));
+        for (int i = 0; i < states.size(); ++i) {
+            points.add(new TrajectoryPoint<>(states.get(i), i));
         }
     }
 
@@ -32,15 +32,15 @@ public class Trajectory<S> {
         return points.get(index);
     }
 
-    public S getEntry(final int index) {
-        return points.get(index).entry();
+    public S getState(final int index) {
+        return points.get(index).state();
     }
 
     public S getFirstEntry() {
-        return points.get(0).entry();
+        return points.get(0).state();
     }
 
     public S getLastEntry() {
-        return points.get(points.size() - 1).entry();
+        return points.get(points.size() - 1).state();
     }
 }

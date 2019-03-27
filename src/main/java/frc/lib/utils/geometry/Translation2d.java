@@ -1,5 +1,6 @@
 package frc.lib.utils.geometry;
 
+import frc.lib.utils.Utilities;
 //Stores x, y positions as vectors, or transformations from the origin
 
 public class Translation2d {
@@ -66,6 +67,10 @@ public class Translation2d {
     //The "norm" of a transform is th Euclidean distance in x and y. AKA the length of the vector 
     public double norm() {
         return Math.hypot(x, y);
+    }
+
+    public boolean epsilonEquals(final Translation2d other, double epsilon) {
+        return Utilities.epsilonEquals(x(), other.x(), epsilon) && Utilities.epsilonEquals(y(), other.y(), epsilon);
     }
 
     //Implementation of the dot product for two points or "vector points"
