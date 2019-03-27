@@ -50,6 +50,7 @@ public class Elevator implements Updateable {
     public double kHoldingDeadzone = 0.0;
 
     public ElevatorState currentState;
+    private boolean isManual = false;
 
     public Elevator(SubsystemManager _subsystemManager, RobotMap _robotMap){
         mSubsystemManager = _subsystemManager;
@@ -121,26 +122,36 @@ public class Elevator implements Updateable {
 
     public void setSetpoints() {
         kElevatorSetpoints.put("Bottom", 0.0);
-        kElevatorSetpoints.put("Intake", 0.0);
-        kElevatorSetpoints.put("Low_Panel", 40.0);
-        kElevatorSetpoints.put("Mid_Panel", 132.0);
-        kElevatorSetpoints.put("High_Panel", 0.0);
+
+        kElevatorSetpoints.put("IntakeBall", 0.0);
         kElevatorSetpoints.put("Low_Ball", 0.0);
         kElevatorSetpoints.put("Mid_Ball", 109.0);
         kElevatorSetpoints.put("High_Ball", 199.0);
-        kElevatorSetpoints.put("Cargo_Ball", 0.0);
+        kElevatorSetpoints.put("Cargo_Ball", 115.0);
+
+        kElevatorSetpoints.put("Low_Panel", 40.0);
+        kElevatorSetpoints.put("Mid_Panel", 132.0);
+        kElevatorSetpoints.put("High_Panel", 0.0);
         }
+
+    public void setIsManual(boolean _temp) {
+        isManual = _temp;
+    }
+
+    public boolean getIsManual() {
+        return isManual;
+    }
     
     public void setTarget(String _target) {
         currentTarget = kElevatorSetpoints.get(_target);
-        System.out.println("Elevator Target Set: " + _target);
+        System.out.println("Elevator Target Set:  " + _target + "  @height  " + currentTarget);
 
     }
 
     public void updateState() {
         if (Math.abs(currentTarget - elevatorEncoder.getPosition()) <= kHoldingDeadzone) {
             currentState = ElevatorState.HOLDING;
-            System.out.println("Elevator State Set: " + ElevatorState.HOLDING);
+            //System.out.println("Elevator State Set: " + ElevatorState.HOLDING);
         } else {
             currentState = ElevatorState.MOVING;
         }
@@ -152,9 +163,13 @@ public class Elevator implements Updateable {
         }
     }
 
-    public void update(double dT) {
-        checkLimit();
+    public void update(double dt) {
         updateState();
-        elevatorController.setReference(currentTarget, ControlType.kSmartMotion);
+        /*
+        if (!getIsManual()) {
+            elevatorController.setReference(currentTarget, ControlType.kSmartMotion, kSlotIDX);
+            elevatorController.setReference(value, ctrl, pidSlot, arbFeedforward)
+        }
+        */
     }
 }

@@ -16,7 +16,7 @@ import frc.lib.sims.*;
 public class SubsystemManager implements Updateable {
 
     public Master m_currentMaster;  //the thing that's currently giving this thing instructions.
-    private ArrayList<Updateable> m_listOfUpdatingObjects = new ArrayList<Updateable>();  //this will have duplicate references from the various things below, plus others -- positionTracker, etc.
+    private ArrayList<Updateable> mListOfUpdatingObjects = new ArrayList<Updateable>();  //this will have duplicate references from the various things below, plus others -- positionTracker, etc.
 
     //all the individual subsystems
     public RobotMap mRobotMap;   //plus this one, which directly handles the physical components
@@ -28,11 +28,14 @@ public class SubsystemManager implements Updateable {
     public StateTracker mStateTracker;
     public BallManipulator mBallManipulator;
     public PanelManipulator mPanelManipulator;
+    public ClimberPuller mClimberPuller;
     public Climber mClimber;
     public Dashboard mDashboard;
     public ElevatorSim mElevatorSim;
     public WristSim mWristSim;
     public BallManipulatorSim mBallManipulatorSim;
+
+    private final int kTimeoutMs = 30;
 
     //etc. ...
     //incidentally, do we want these to be private? Commands should go from masters through SubsystemManager, and SubsystemManager can deal with converting that into individual commands.
@@ -48,6 +51,7 @@ public class SubsystemManager implements Updateable {
         mBallManipulator = new BallManipulator(mRobotMap);
         mPanelManipulator = new PanelManipulator(mRobotMap);
         mClimber = new Climber(this, mRobotMap);
+        mClimberPuller = new ClimberPuller(this, mRobotMap);
         mDashboard = new Dashboard(this);
         mStateMachine = new StateMachine(this);
 
@@ -55,15 +59,16 @@ public class SubsystemManager implements Updateable {
         mWristSim = new WristSim(this, mRobotMap);
         mBallManipulatorSim = new BallManipulatorSim(mRobotMap);
 
-        m_listOfUpdatingObjects.add(mStateMachine);
-        m_listOfUpdatingObjects.add(mDrivePlanner);
-        m_listOfUpdatingObjects.add(mElevator);
-        m_listOfUpdatingObjects.add(mWrist);
-        m_listOfUpdatingObjects.add(mStateTracker);
-        m_listOfUpdatingObjects.add(mBallManipulator);
-        m_listOfUpdatingObjects.add(mPanelManipulator);
-        m_listOfUpdatingObjects.add(mClimber);
-        m_listOfUpdatingObjects.add(mDashboard);
+        mListOfUpdatingObjects.add(mStateMachine);
+        mListOfUpdatingObjects.add(mDrivePlanner);
+        mListOfUpdatingObjects.add(mElevator);
+        mListOfUpdatingObjects.add(mWrist);
+        mListOfUpdatingObjects.add(mStateTracker);
+        mListOfUpdatingObjects.add(mBallManipulator);
+        mListOfUpdatingObjects.add(mPanelManipulator);
+        mListOfUpdatingObjects.add(mClimber);
+        mListOfUpdatingObjects.add(mClimberPuller);
+        mListOfUpdatingObjects.add(mDashboard);
 
         // ... set up other Subsystems if present
         /*
@@ -79,10 +84,28 @@ public class SubsystemManager implements Updateable {
         m_currentMaster = currentMaster;
     }
 
+    public void setIsManual(boolean _isManual) {
+        mWrist.setIsManual(_isManual);
+        mElevator.setIsManual(_isManual);
+    }
+
+    public boolean getIsManual() {
+        if (mWrist.getIsManual() && mElevator.getIsManual()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void zeroSuperstructureEncoders() {
+        mWrist.wristMotor.setSelectedSensorPosition(0, 0, kTimeoutMs);
+        mElevator.elevatorEncoder.setPosition(0.0);
+    }
+
     public void update(double dt) {
         m_currentMaster.update(dt);//current_master, which has a reference to this object, will call the various commands below to tell the robot to do things
-        for(int i = 0; i < m_listOfUpdatingObjects.size(); ++i){
-            m_listOfUpdatingObjects.get(i).update(dt);
+        for(int i = 0; i < mListOfUpdatingObjects.size(); ++i){
+            mListOfUpdatingObjects.get(i).update(dt);
         }
     }
 

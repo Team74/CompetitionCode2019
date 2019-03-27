@@ -27,15 +27,14 @@ public class StateMachine implements Updateable {
         L2Climb,
         L3Climb;
     }
-
     private SubsystemManager mSubsystemManager;
 
     private Configuration currentConfiguration = Configuration.Start;
-    private String ElevatorTarget = "Bottom";
-    private String wristTarget = "Stow";
-    private String ballManipulatorTarget = "Hold";
-    private String panelManipulatorTarget = "In";
-    private String climberTarget = "Stow";
+    private String ElevatorTarget = "";
+    private String wristTarget = "";
+    private String ballManipulatorTarget = "";
+    private String panelManipulatorTarget = "";
+    private String climberTarget = "";
 
     private String tempElevatorTarget = "";
     private String tempWristTarget = "";
@@ -45,6 +44,8 @@ public class StateMachine implements Updateable {
 
     public StateMachine(SubsystemManager subsystemManager) {
         mSubsystemManager = subsystemManager;
+
+        setConfiguration_Start();
     }
 
     public void setElevatorTarget(String _target) {
@@ -218,7 +219,7 @@ public class StateMachine implements Updateable {
     }
 
     public void update(double dt) {
-        //First check if elevator is moving, if it is, set wrist, ball, and panel manipulator to travel position
+
         if (mSubsystemManager.mElevator.currentState == ElevatorState.MOVING) {
             tempWristTarget = "Parallel";
             tempBallManipulatorTarget = "Hold";

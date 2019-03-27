@@ -32,8 +32,9 @@ public class Robot extends TimedRobot {
         mTimer.reset();
     }
     public void autonomousInit() {
-        mSubsystemManager.mDrivetrain.gyro.reset();
         mSubsystemManager.setCurrentMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
+        mSubsystemManager.mDrivetrain.gyro.reset();
+        mSubsystemManager.zeroSuperstructureEncoders();
          //or whatever other auton we want -- we'll probably need something for SmartDashboard eventually
          mTimer.start();
         }   

@@ -100,6 +100,7 @@ public class TrajectoryGenerator {
         _defaultVelocity,
         _slowdownChunks);
     }
+    */
     /*
     List of important positions
     Origin is the center of the alliance station wall
@@ -161,7 +162,6 @@ public class TrajectoryGenerator {
             return generateTrajectory(false, waypoints, Arrays.asList(new CentripitalAccelerationConstraint(kMaxCentripetalAccelerationElevatorDown)),
                     kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
         }
-
     }
 
 
