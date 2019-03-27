@@ -4,9 +4,6 @@ import frc.robot.SubsystemManager;
 import frc.robot.Updateable;
 import frc.robot.RobotMap;
 
-import static frc.robot.RobotMap.isWristUp;
-
-
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -14,7 +11,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import java.util.HashMap;
 
-public class Wrist implements Updateable {
+public class Wrist implements Subsystem {
     // Parallel Setpoint 0, Perpendiular Setpoint 3190, Cargo Diagonal setpoint 2000
     //Parallel maybe different from Stow
 
@@ -114,13 +111,6 @@ public class Wrist implements Updateable {
         }
     }
 
-    public void checkLimit() {
-        if (isWristUp.get()) {
-            wristMotor.setSelectedSensorPosition(0, kSlotIDX, kTimeoutMs);
-            limitSwitchFlag = true;
-        }
-    }
-
     public void setSetpoints() {
         kWristSetPoints.put("Stow", 0);
         kWristSetPoints.put("Perpendicular", 2750);
@@ -133,11 +123,11 @@ public class Wrist implements Updateable {
         System.out.println("Wrist Target Set: " + _target);
     }
 
-    public void setIsManual(boolean _temp) {
+    public void setManual(boolean _temp) {
         isManual = _temp;
     }
 
-    public boolean getIsManual() {
+    public boolean isManual() {
         return isManual;
     }
 

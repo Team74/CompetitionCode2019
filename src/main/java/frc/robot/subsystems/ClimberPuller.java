@@ -7,7 +7,7 @@ import frc.robot.Updateable;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class ClimberPuller implements Updateable {
+public class ClimberPuller implements Subsystem {
 
     private SubsystemManager mSubsystemManager;
     private RobotMap mRobotMap;

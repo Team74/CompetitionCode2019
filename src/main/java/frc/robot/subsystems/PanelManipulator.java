@@ -7,7 +7,7 @@ import frc.robot.Updateable;
 import frc.robot.RobotMap;
 
 
-public class PanelManipulator implements Updateable{
+public class PanelManipulator implements Subsystem{
 
     public RobotMap mRobotMap;  //reference to the original
 

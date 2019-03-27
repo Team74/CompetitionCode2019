@@ -108,8 +108,8 @@ public class StateMachine implements Updateable {
 
     public void setConfiguration_IntakePanel() {
         currentConfiguration = Configuration.IntakePanel;
-        ElevatorTarget = "IntakePanel";
-        wristTarget = "Parallel";
+        setElevatorTarget("IntakePanel");
+        setWristTarget("Parallel");
         ballManipulatorTarget = "Hold";
         panelManipulatorTarget = "Out";
         climberTarget = "Stow";

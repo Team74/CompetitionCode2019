@@ -4,8 +4,6 @@ import frc.robot.Updateable;
 import frc.robot.SubsystemManager;
 import frc.robot.RobotMap;
 
-import static frc.robot.RobotMap.isElevatorDown;
-
 import java.util.HashMap;
 
 import com.revrobotics.CANEncoder;
@@ -26,7 +24,7 @@ Elevator Setpoints
     HighPanel:
 */
 
-public class Elevator implements Updateable {
+public class Elevator implements Subsystem {
 
 
     public static enum ElevatorState {
@@ -134,11 +132,11 @@ public class Elevator implements Updateable {
         kElevatorSetpoints.put("High_Panel", 0.0);
         }
 
-    public void setIsManual(boolean _temp) {
+    public void setManual(boolean _temp) {
         isManual = _temp;
     }
 
-    public boolean getIsManual() {
+    public boolean isManual() {
         return isManual;
     }
     
@@ -154,12 +152,6 @@ public class Elevator implements Updateable {
             //System.out.println("Elevator State Set: " + ElevatorState.HOLDING);
         } else {
             currentState = ElevatorState.MOVING;
-        }
-    }
-
-    public void checkLimit() {
-        if (isElevatorDown.get()) {
-            //elevatorEncoder.setPosition(0);
         }
     }
 

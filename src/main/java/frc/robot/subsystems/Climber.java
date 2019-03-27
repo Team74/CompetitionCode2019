@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import java.util.HashMap;
 
-public class Climber implements Updateable {
+public class Climber implements Subsystem {
 
     private SubsystemManager mSubsystemManager;
     private RobotMap mRobotMap;

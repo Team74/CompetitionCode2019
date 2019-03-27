@@ -5,7 +5,7 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.robot.RobotMap;
 import frc.robot.Updateable;
 
-public class Drivetrain implements Updateable {
+public class Drivetrain implements Subsystem {
 
     public final boolean kMotorInvert = true;
     public final boolean kSensorPhase = false;
