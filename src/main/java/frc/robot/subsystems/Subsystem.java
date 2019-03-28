@@ -1,30 +1,12 @@
 package frc.robot.subsystems;
 
-import com.sun.javadoc.Type;
-
-/*
-Template for creating the subsystems on the robot
-*/
-
 public interface Subsystem {
-    /*
-    Sets the state of the subsystem automatically
-    What it sets the state to depends on the robot
-    */
-    public void updateState();
+    //Method all subsytems will have to write motor outputs
+    void output();
 
-    /*
-    The talons need an int for velocity and position control, a double for percent output
-    the sparkmax takes a double for all inputs
-    Hence the need for number
-    */
-    public void setTarget(Number _target);
+    //Starts the subsystem, run during autoinit
+    void start();
 
-    public Number getTarget();
-
-    public void setManual(boolean _temp);
-
-    public boolean isManual();
-
-    public void update(double dt);
+    //Stops updating the subsystem
+    void stop();
 }

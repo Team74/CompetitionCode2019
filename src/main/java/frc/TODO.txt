@@ -1,5 +1,12 @@
 Todo:
-    In trajectory implement a class that S extends and that extends every possibler class that S can be
-    Rearchitect statemachine master combo to work better using the new constants class instead of hashmaps instantiated in the subsystem
+    In geometry implement a class that S extends and that extends every possibler class that S can be for the geometry
+
+    Rearchitect subsytems to better work with auton and state machine
+        Combine Elevator and Wrist into "Superstructure" class to handle both
+        Combine Climber and ClimberPuller into one ClimbSystemClass
+            Figure out how to automate the climb sequence
+            
+    Rearchitect swerve code to better work with pose tracking and path following
+
     Create a way to run auto routines
-        Make it look like a 
+        IE. Make is so we can define a list of actions to be done in sequence with some being done in parallel and some being done in series to write and auton

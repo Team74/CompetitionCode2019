@@ -1,15 +1,15 @@
-package frc.robot;
+package frc.robot.drive;
 
 import frc.robot.SubsystemManager;
 import frc.robot.Updateable;
 
 import frc.lib.trajectory.Trajectory;
-import frc.lib.trajectory.TrajectoryEntry;
+import frc.lib.trajectory.timing.TimedState;
 import frc.lib.trajectory.timing.TimingConstraints;
 
 import frc.lib.utils.geometry.*;
 
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.drive.Drivetrain;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class DrivePlanner implements Updateable {
     }
     
     //Generate a trajectory with starting and ending velocity 0
-    public Trajectory<TrajectoryEntry<Pose2dWithCurvature>> generateTrajectory(
+    public Trajectory<TimedState<Pose2dWithCurvature>> generateTrajectory(
         boolean _revearsed, 
         final List<Pose2d> _waypoints, 
         final List<TimingConstraints<Pose2dWithCurvature>> _constraints,
@@ -77,7 +77,7 @@ public class DrivePlanner implements Updateable {
     }
 
     //Can generate trajectories with non 0 stating and ending velocities, also handles all trajectory inital parameterization
-    public Trajectory<TrajectoryEntry<Pose2dWithCurvature>> generateTrajectory(
+    public Trajectory<TimedState<Pose2dWithCurvature>> generateTrajectory(
             boolean _revearsed,
             final List<Pose2d> _waypoints,
             final List<TimingConstraints<Pose2dWithCurvature>> _constraints,
@@ -91,7 +91,7 @@ public class DrivePlanner implements Updateable {
             int _slowdownChunks){
         List<Pose2d> waypointsMaybeFlipped = waypoints;
         //TODO: Make sure the flip constant is consistent with the way we define our cordinate system
-        final Pose2d flip = Pose2d.fromRotation(new Rotation2d(0, -1, false))
+        final Pose2d flip = Pose2d.fromRotation(new Rotation2d(0, -1, false));
         if (reversed) {
             waypointsMaybeFlipped = new ArrayList<>(waypoints.size());
             for (int i = 0; i < waypoints.size(); ++i) {

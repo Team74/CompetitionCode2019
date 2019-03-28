@@ -97,12 +97,12 @@ public class SimpleTeleopMaster extends TeleopMaster {
         wristStick /= 2;
 
         if (mButtons.get("1back")) {
-            mSubsystemManager.mWrist.setIsManual(true);
+            mSubsystemManager.mWrist.setManual(true);
         } else if (mButtons.get("1start")) {
-            mSubsystemManager.mWrist.setIsManual(false);
+            mSubsystemManager.mWrist.setManual(false);
         }
 
-        if (mSubsystemManager.mWrist.getIsManual()) {
+        if (mSubsystemManager.mWrist.isManual()) {
             mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, wristStick);
         } else {
             if (mButtons.get("1a")) {
