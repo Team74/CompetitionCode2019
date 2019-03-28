@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.SPI;
 This class sets up all the different things related to the PWM, plus some other stuff. It'll get passed in to other classes so they can get references back to the individual components.
 */
 public class RobotMap {
+    //Singular instance of the class
+    private static RobotMap kInstance = null;
+
     //These are set in inches
     public final double wheelBaseWidth = 24.375;
     public final double wheelBaseDepth = 22.375;
@@ -55,7 +58,14 @@ public class RobotMap {
 
     public AHRS navX = new AHRS(SPI.Port.kMXP, (byte)60);
 
-    public RobotMap() {
+    public static RobotMap getInstance() {
+        if (kInstance == null) {
+            kInstance = new RobotMap();
+        }
+        return kInstance;
+    }
+
+    private RobotMap() {
         //sets up stuff if necessary
         Drive_E_0 = Drive_0.getEncoder();
         Drive_E_1 = Drive_1.getEncoder();
