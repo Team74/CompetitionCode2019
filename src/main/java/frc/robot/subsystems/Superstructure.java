@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 public class Superstructure implements Subsystem {
+    //Instance of the subsystem, gettable through the getInstance() method
     private static Superstructure kInstance = null;
 
     //Is the subsytem running
@@ -34,8 +35,16 @@ public class Superstructure implements Subsystem {
         }
     }
 
-    public void setSuperstructure(double _newHeight, int _newAngle) {
+    public void commandSuperstructure(double _newHeight, int _newAngle) {
+        commandHeight(_newHeight);
+        commandAngle(_newAngle);
+    }
+
+    public void commandHeight(double _newHeight) {
         targetHeight = _newHeight;
+    }
+
+    public void commandAngle(int _newAngle) {
         targetAngle = _newAngle;
     }
 
