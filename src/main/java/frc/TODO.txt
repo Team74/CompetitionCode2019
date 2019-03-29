@@ -5,8 +5,11 @@ Todo:
         Combine Elevator and Wrist into "Superstructure" class to handle both
         Combine Climber and ClimberPuller into one ClimbSystemClass
             Figure out how to automate the climb sequence
-            
+
     Rearchitect swerve code to better work with pose tracking and path following
 
     Create a way to run auto routines
         IE. Make is so we can define a list of actions to be done in sequence with some being done in parallel and some being done in series to write and auton
+        We will have an automodebase like last year which we extend with our automodes.
+        Automodes will contain a list of actions that an executor runs in sequence
+        Actions can either be standard, runonce, a group to run in parallel, or a group to run in series

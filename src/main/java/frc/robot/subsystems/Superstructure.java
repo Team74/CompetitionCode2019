@@ -6,7 +6,11 @@ import frc.robot.Constants;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Superstructure implements Subsystem {
@@ -26,6 +30,10 @@ public class Superstructure implements Subsystem {
     private CANEncoder elevatorEncoder = mRobotMap.Elevator_E_0;
     private CANPIDController elevatorController = elevatorMotor.getPIDController();
 
+    //Default to motion magic
+    private ControlMode wristControlMode = ControlMode.MotionMagic;
+    private ControlType elevatorControlMode = ControlType.kSmartMotion;
+
     private TalonSRX wristMotor = mRobotMap.Wrist_0;
 
 
@@ -40,6 +48,9 @@ public class Superstructure implements Subsystem {
     }
 
     private void configElevatorController() {
+        elevatorMotor.setMotorType(MotorType.kBrushless);
+        elevatorMotor.setIdleMode(IdleMode.kBrake);
+
         elevatorController.setP(Constants.kElevatorP, 0);
         elevatorController.setI(Constants.kElevatorI, 0);
         elevatorController.setD(Constants.kElevatorD, 0);
@@ -50,9 +61,12 @@ public class Superstructure implements Subsystem {
         elevatorController.setSmartMotionMaxAccel(Constants.kElevatorMaxAcceleration, 0);
         elevatorController.setSmartMotionAllowedClosedLoopError(1, 0);
         elevatorController.setOutputRange(-1, 1, 0);
+
     }
 
-    private void ConfigWristController() {
+    private void configWristController() {
+        wristMotor.setNeutralMode(NeutralMode.Brake);
+
         wristMotor.config_kP(0, Constants.kWristP);
         wristMotor.config_kI(0, Constants.kWristP);
         wristMotor.config_kD(0, Constants.kWristP);
@@ -66,6 +80,14 @@ public class Superstructure implements Subsystem {
         wristMotor.configNominalOutputReverse(1.0, 10);
     }
 
+    public void setWristControlMode(ControlMode _controlMode) {
+        wristControlMode = _controlMode;
+    }
+
+    public void setElevatorControlMode(ControlType _controlType) {
+        elevatorControlMode = _controlType;
+    }
+
     public void start() {
         if (!isActive) {
             isActive = true;
@@ -73,8 +95,8 @@ public class Superstructure implements Subsystem {
         elevatorEncoder.setPosition(Constants.kElevatorStartingPosition);
         wristMotor.setSelectedSensorPosition(Constants.kStartingPosition);
 
-        createElevatorPID();
-        createWristPID();
+        configElevatorController();
+        configWristController();
     }
 
     public void stop() {
@@ -116,5 +138,7 @@ public class Superstructure implements Subsystem {
         if (!isActive) {
             return;
         }
+        wristMotor.set(wristControlMode, targetAngle);
+        elevatorController.setReference(targetHeight, elevatorControlMode);
     }
 }

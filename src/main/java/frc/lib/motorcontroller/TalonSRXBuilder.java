@@ -7,15 +7,22 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class TalonSRXBuilder {
 
-    private static int kTimeoutMS = 30;
+    private static int kTimeoutMs ;= 30;
 
     //Defualt configs to use
     //I'll add more when I think of them
     //Test before implementing
     private static NeutralMode neutralMode = NeutralMode.Brake;
 
-    private static double openLoopRampRate = 0.0;//In seconds from 0 to full power
-    private static double closedLoopRampRate = 0.0;//In seconds fron 0 to full power
+    private static final double openLoopRampRate = 0.0;//In seconds from 0 to full power
+    private static final double closedLoopRampRate = 0.0;//In seconds fron 0 to full power
+
+    private static final boolean enableCurrentLimit = false;
+    private static final boolean limitSwitchesEnable = false;
+    private static final boolean enableSoftLimits = false;
+    private static final boolean invertMotor = false;
+    private static final boolean invertSensor = false;
+    private static
 
     public static TalonSRX buildDefaultTalon(int canID){
         return makeTalon(canID);
@@ -30,15 +37,34 @@ public class TalonSRXBuilder {
     private static TalonSRX makeTalon(int canID){
         TalonSRX talon = new TalonSetOverride(canID);
         talon.setNeutralMode(neutralMode);
-        talon.configOpenloopRamp(openLoopRampRate, kTimeoutMS);
-        talon.configClosedloopRamp(closedLoopRampRate, kTimeoutMS);
+        talon.configOpenloopRamp(openLoopRampRate, kTimeoutMs);;
+        talon.configClosedloopRamp(closedLoopRampRate, kTimeoutMs);;
 
         //Set max and min outputs for each direction
-        talon.configNominalOutputForward(0, kTimeoutMS);
-        talon.configPeakOutputForward(1.0, kTimeoutMS);
+        talon.configNominalOutputForward(0, kTimeoutMs);;
+        talon.configPeakOutputForward(1.0, kTimeoutMs);;
 
-        talon.configNominalOutputReverse(0, kTimeoutMS);
-        talon.configPeakOutputReverse(-1.0, kTimeoutMS);
+        talon.configNominalOutputReverse(0, kTimeoutMs);;
+        talon.configPeakOutputReverse(-1.0, kTimeoutMs);;
+
+        talon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, kTimeoutMs);;
+        talon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled, kTimeoutMs);;
+        talon.enableCurrentLimit(enableCurrentLimit);
+        talon.overrideLimitSwitchesEnable(limitSwitchesEnable);
+        talon.overrideSoftLimitsEnable(enableSoftLimits);
+        talon.configNeutralDeadband(0.04);//0.04 is factory default
+
+        //Initally disable these, can be modified later. This just prevents unwanted behavior by accident
+        talon.setInverted(invertMotor);
+        talon.setSensorPhase(invertSensor);
+
+        talon.configVoltageCompSaturation(0.0, kTimeoutMs);
+        talon.enableVoltageCompensation(false);
+
+        talon.clearMotionProfileHasUnderrun(kTimeoutMs);
+        talon.clearMotionProfileTrajectories();
+
+        talon.clearStickyFaults(kTimeoutMs);
 
         return talon;
     }
