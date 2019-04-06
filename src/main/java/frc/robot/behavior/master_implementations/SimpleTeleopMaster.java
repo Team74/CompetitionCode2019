@@ -1,15 +1,14 @@
 package frc.robot.behavior.master_implementations;
 
 import frc.robot.SubsystemManager;
+import frc.robot.Constants;
 import frc.robot.InputManager;
-import frc.robot.DrivePlanner;
 
 import frc.robot.behavior.TeleopMaster;
 import frc.lib.utils.Utilities;
 
-import static frc.robot.subsystems.BallManipulator.BallManipulatorState;
-import static frc.robot.subsystems.Climber.ClimberState;
-import static frc.robot.subsystems.ClimberPuller.PullerState;
+import frc.robot.drive.*;
+import frc.robot.subsystems.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -18,12 +17,14 @@ import java.util.HashMap;
 
 public class SimpleTeleopMaster extends TeleopMaster {
 
-    private DrivePlanner mDrivePlanner;
+    private final SubsystemManager mSubsystemManager;
+    private final DrivePlanner mDrivePlanner;
+    private final InputManager mInputManager; 
 
     private HashMap<String, Boolean> mButtons;
     private HashMap<String, Double> mJoysticks;
 
-    private double kDeadband = 0.05;
+    private final double kJoystickDeadband = Constants.kJoystickDeadband;
 
     private double ly;
     private double lx;
@@ -31,8 +32,10 @@ public class SimpleTeleopMaster extends TeleopMaster {
 
 
     public SimpleTeleopMaster(SubsystemManager subsystem_manager, InputManager input_manager) {
-        super(subsystem_manager, input_manager);
-        mDrivePlanner = mSubsystemManager.mDrivePlanner;
+        super();
+        mSubsystemManager = SubsystemManager.getInstance();
+        mDrivePlanner = DrivePlanner.getInstance();
+        mInputManager = InputManager.getInstance();
         mButtons = mInputManager.mButtons;
         mJoysticks = mInputManager.mJoysticks;
      }
@@ -74,9 +77,9 @@ public class SimpleTeleopMaster extends TeleopMaster {
             ly = mJoysticks.get("0ly");
             rx = mJoysticks.get("0rx");
 
-            lx = Utilities.handleDeadband(lx, kDeadband);
-            ly = Utilities.handleDeadband(ly, kDeadband);
-            rx = Utilities.handleDeadband(rx, kDeadband);
+            lx = Utilities.handleDeadband(lx, kJoystickDeadband);
+            ly = Utilities.handleDeadband(ly, kJoystickDeadband);
+            rx = Utilities.handleDeadband(rx, kJoystickDeadband);
 
             mDrivePlanner.swerve(lx, ly, rx);
 
@@ -84,7 +87,7 @@ public class SimpleTeleopMaster extends TeleopMaster {
         }
         //Handle the elevator
         double elevatorStick = -mJoysticks.get("1ly");
-        elevatorStick = Utilities.handleDeadband(elevatorStick, kDeadband);
+        elevatorStick = Utilities.handleDeadband(elevatorStick, kJoystickDeadband);
         mSubsystemManager.mElevator.elevatorMotor.set(elevatorStick);
 
         //Handle the wrist
@@ -93,7 +96,7 @@ public class SimpleTeleopMaster extends TeleopMaster {
         }
 
         double wristStick = -mJoysticks.get("1ry");
-        wristStick = Utilities.handleDeadband(wristStick, kDeadband);
+        wristStick = Utilities.handleDeadband(wristStick, kJoystickDeadband);
         wristStick /= 2;
 
         if (mButtons.get("1back")) {

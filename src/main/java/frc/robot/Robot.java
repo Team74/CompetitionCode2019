@@ -10,6 +10,7 @@ import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
 import frc.robot.behavior.master_implementations.PrimaryTeleopMaster;
 import frc.robot.behavior.master_implementations.SimpleTeleopMaster;
 import frc.robot.behavior.master_implementations.TestMaster;
+import frc.robot.drive.Drivetrain;
 
 public class Robot extends TimedRobot {
 
@@ -25,17 +26,16 @@ public class Robot extends TimedRobot {
 
 
     public void robotInit() {
-        mSubsystemManager = new SubsystemManager(); //this will set up the whole robot and its subsystems
-        mInputManager = new InputManager(); //this is the significantly smaller bit of code that handles input from the xbox controllers and such
+        mSubsystemManager = SubsystemManager.getInstance(); //this will set up the whole robot and its subsystems
+        mInputManager = InputManager.getInstance(); //this is the significantly smaller bit of code that handles input from the xbox controllers and such
         
         mTimer.stop();
         mTimer.reset();
     }
     public void autonomousInit() {
-        mSubsystemManager.setCurrentMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
-        mSubsystemManager.mDrivetrain.gyro.reset();
-        mSubsystemManager.zeroSuperstructureEncoders();
-         //or whatever other auton we want -- we'll probably need something for SmartDashboard eventually
+        mSubsystemManager.setMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
+        Drivetrain.getInstance().gyro.reset();
+         //or whatever other auton we want, this will probably be chosen by a selector on the shuffleboard
          mTimer.start();
         }   
     public void autonomousPeriodic() {
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
         mSubsystemManager.update(dt); 
     }
     public void teleopInit() {
-        mSubsystemManager.setCurrentMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
+        mSubsystemManager.setMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
         //similarly, if we want to do, say, a different control scheme, a different teleopmaster could be subbed in that would interpret the inputs differently
         mTimer.reset();
         mTimer.start();

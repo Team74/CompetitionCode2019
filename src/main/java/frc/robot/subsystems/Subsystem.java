@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 public interface Subsystem {
-    //Method all subsytems will have to write motor outputs
+    //Calculates output
     void output();
 
     //Starts the subsystem, run during autoinit
@@ -9,4 +9,7 @@ public interface Subsystem {
 
     //Stops updating the subsystem
     void stop();
+
+    //UPdates the Subsystems
+    void update(double dt);
 }

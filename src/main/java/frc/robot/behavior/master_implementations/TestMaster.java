@@ -67,7 +67,7 @@ private final double kDeadband = 0.05;
         System.out.println("Superstructure Manual: " + mSubsystemManager.getIsManual());
         */
 
-        if (mSubsystemManager.getIsManual()) {
+        if (mSubsystemManager.isManual()) {
             mSubsystemManager.mWrist.wristMotor.set(ControlMode.PercentOutput, wristStick);
             mSubsystemManager.mElevator.elevatorMotor.set(elevatorStick);
         } else {

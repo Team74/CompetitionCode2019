@@ -1,15 +1,33 @@
 Todo:
+    In StateTracker, write the foward kinematics to keep track of our position using encoder and gyro feedback
+
+    Trajectory generator needs to poses defined as well as a fixed cordinate system
+
+    Also need to finish writing the trajectory generation code
+
+    Create pathfollower in DrivePlanner
+        -Look into Nonlinear feedback controller from the paper
+            https://www.dis.uniroma1.it/~labrob/pub/papers/Ramsete01.pdf
+        -Implement pure pursuit
+        -implement standard feedword and feedback
+            -This might be useful for vision based panel/cargo placement
+
     In geometry implement a class that S extends and that extends every possibler class that S can be for the geometry
 
     Rearchitect subsytems to better work with auton and state machine
         Combine Elevator and Wrist into "Superstructure" class to handle both
-        Combine Climber and ClimberPuller into one ClimbSystemClass
+        Combine Climber and ClimberPuller into one ClimbSystemClass or something similar
             Figure out how to automate the climb sequence
+        Figure out how to test the subsystems; also possibly simulate them in code?
 
-    Rearchitect swerve code to better work with pose tracking and path following
+    Rearchitect swerve code to better work with pose tracking and path following, also to be cleaner in general
 
-    Create a way to run auto routines
+    Instead of subsytemManager containing the continuosly updating classes, maybe make another class that we can store them in? Not sure if this is worth it
+
+    Create a way to run auto routines - look into doing this in a second thread, I think it will make a lot of the below tasks easier
         IE. Make is so we can define a list of actions to be done in sequence with some being done in parallel and some being done in series to write and auton
         We will have an automodebase like last year which we extend with our automodes.
         Automodes will contain a list of actions that an executor runs in sequence
         Actions can either be standard, runonce, a group to run in parallel, or a group to run in series
+
+    Make sure intake motors are assigned properly in the BallIntake class

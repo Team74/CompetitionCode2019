@@ -2,6 +2,7 @@ package frc.robot;
 
 public class Constants {
     public static final double dt = 0.02;
+    public static final double kJoystickDeadband = 0.05;
 
     //Physical robot dimensions
     public static final double kRobotWidth = 0.0;//Side to side

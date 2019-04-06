@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 
 public class DrivePlanner implements Updateable {
+    private static DrivePlanner kInstance = null;
+
     private SubsystemManager mSubsytemManager;
     public Drivetrain mDrivetrain;
 
@@ -47,7 +49,18 @@ public class DrivePlanner implements Updateable {
         Low, Mid, High;
     }
 
-    public DrivePlanner(SubsystemManager subsystemManager){
+    public static DrivePlanner getInstance() {
+        if (kInstance == null) {
+            kInstance = new DrivePlanner();
+        }
+        return kInstance;
+    }
+
+    private DrivePlanner() {
+
+    }
+
+    private DrivePlanner(SubsystemManager subsystemManager){
         mSubsytemManager = subsystemManager;
     }
     

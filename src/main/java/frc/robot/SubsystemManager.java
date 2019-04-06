@@ -12,40 +12,45 @@ import frc.robot.behavior.Master;
 import frc.robot.subsystems.*;
 import frc.robot.drive.*;
 
-import frc.lib.sims.*;
-
 public class SubsystemManager implements Updateable {
+    public static SubsystemManager kInstance = null;
 
     public Master m_currentMaster;  //the thing that's currently giving this thing instructions.
 
+    private ArrayList<Subsystem> mSubsystems = new ArrayList<Subsystem>();
     private ArrayList<Updateable> mDrive = new ArrayList<Updateable>();
     private ArrayList<Updateable> mSupport = new ArrayList<Updateable>();  //this will have duplicate references from the various things below, plus others -- positionTracker, etc.
 
     //all the individual subsystems
-    public RobotMap mRobotMap;   //plus this one, which directly handles the physical components
+    private final RobotMap mRobotMap;   //plus this one, which directly handles the physical components
     public StateMachine mStateMachine;
     public StateTracker mStateTracker;
     public Dashboard mDashboard;
 
-    public DrivePlanner mDrivePlanner;
-    public Drivetrain mDrivetrain;
-       //this will get the RobotMap passed in when it's created
+    private final DrivePlanner mDrivePlanner;
+    private final Drivetrain mDrivetrain;
 ;
 
     private final int kTimeoutMs = 30;
 
     //etc. ...
     //incidentally, do we want these to be private? Commands should go from masters through SubsystemManager, and SubsystemManager can deal with converting that into individual commands.
+    public static SubsystemManager getInstance() {
+        if (kInstance == null) {
+            kInstance = new SubsystemManager();
+        }
+        return kInstance;
+    }
 
     SubsystemManager() {
 
-        mRobotMap = new RobotMap(); //initializes all the physical hardware bits, but doesn't do anything further with them
+        mRobotMap = RobotMap.getInstance(); //initializes all the physical hardware bits, but doesn't do anything further with them
         mStateTracker = new StateTracker(this);
         mDashboard = new Dashboard(this);
         mStateMachine = new StateMachine(this);
 
-        mDrivetrain = new Drivetrain(mRobotMap);
-        mDrivePlanner = new DrivePlanner(this);
+        mDrivetrain = Drivetrain.getInstance();
+        mDrivePlanner = DrivePlanner.getInstance();
 
         mSupport.add(mStateMachine);
         mSupport.add(mDrivePlanner);
@@ -65,12 +70,16 @@ public class SubsystemManager implements Updateable {
         //EDIT TO THE PREVIOUS COMMENT: RobotMap should create a lot of these sorts of things, SubsystemManager sets them in a usable state
     }
 
-    public void setCurrentMaster(Master currentMaster) {
+    public void setMaster(Master currentMaster) {
         m_currentMaster = currentMaster;
     }
 
     public void update(double dt) {
         m_currentMaster.update(dt);//current_master, which has a reference to this object, will call the various commands below to tell the robot to do things
+        for(int i = 0; i < mSubsystems.size(); ++i) {
+            mSubsystems.get(i).update(dt);
+        }
+
         for(int i = 0; i < mDrive.size(); ++i) {
             mDrive.get(i).update(dt);
         }

@@ -42,7 +42,7 @@ public class TrajectoryGenerator {
         mSubsystemManager = _subsystemManager;
     }
 
-    public void generateTrajectory() {
+    public void generateTrajectories() {
         if (mTrajectories == null) {
             System.out.println("Generating trajectories... ");
             mTrajectories = new Trajectories();
@@ -100,7 +100,7 @@ public class TrajectoryGenerator {
         _defaultVelocity,
         _slowdownChunks);
     }
-    */
+    
     /*
     List of important positions
     Origin is the center of the alliance station wall

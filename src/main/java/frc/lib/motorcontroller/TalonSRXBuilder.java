@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class TalonSRXBuilder {
 
-    private static int kTimeoutMs ;= 30;
+    private static int kTimeoutMs = 30;
 
     //Defualt configs to use
     //I'll add more when I think of them
@@ -22,9 +22,9 @@ public class TalonSRXBuilder {
     private static final boolean enableSoftLimits = false;
     private static final boolean invertMotor = false;
     private static final boolean invertSensor = false;
-    private static
+    //private static
 
-    public static TalonSRX buildDefaultTalon(int canID){
+    public static TalonSRX buildDefaultTalon(int canID) {
         return makeTalon(canID);
     }
 

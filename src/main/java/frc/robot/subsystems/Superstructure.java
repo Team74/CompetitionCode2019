@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class Superstructure implements Subsystem {
     //Instance of the subsystem, gettable through the getInstance() method
     private static Superstructure kInstance = null;
-    private RobotMap mRobotMap = RobotMap.getInstance();
+    private final RobotMap mRobotMap = RobotMap.getInstance();
 
     //Is the subsytem running
     private boolean isActive = false;
@@ -26,15 +26,15 @@ public class Superstructure implements Subsystem {
     //Wrist angle. Talon wants an int
     private int targetAngle = 0;
 
-    private CANSparkMax elevatorMotor = mRobotMap.Elevator_0;
-    private CANEncoder elevatorEncoder = mRobotMap.Elevator_E_0;
-    private CANPIDController elevatorController = elevatorMotor.getPIDController();
+    private final CANSparkMax elevatorMotor = mRobotMap.Elevator_0;
+    private final CANEncoder elevatorEncoder = mRobotMap.Elevator_E_0;
+    private final CANPIDController elevatorController = elevatorMotor.getPIDController();
 
     //Default to motion magic
     private ControlMode wristControlMode = ControlMode.MotionMagic;
     private ControlType elevatorControlMode = ControlType.kSmartMotion;
 
-    private TalonSRX wristMotor = mRobotMap.Wrist_0;
+    private final TalonSRX wristMotor = mRobotMap.Wrist_0;
 
 
     public static Superstructure getInstance() {
@@ -45,6 +45,7 @@ public class Superstructure implements Subsystem {
     }
     
     private Superstructure() {
+
     }
 
     private void configElevatorController() {
@@ -108,6 +109,11 @@ public class Superstructure implements Subsystem {
         wristMotor.set(ControlMode.PercentOutput, 0.0);
     }
 
+    public void stopMotors() {
+        elevatorMotor.stopMotor();
+        wristMotor.set(ControlMode.PercentOutput, 0.0);
+    }
+
     public void commandSuperstructure(double _newHeight, int _newAngle) {
         commandHeight(_newHeight);
         commandAngle(_newAngle);
@@ -135,10 +141,15 @@ public class Superstructure implements Subsystem {
     }
 
     public void output() {
-        if (!isActive) {
-            return;
-        }
         wristMotor.set(wristControlMode, targetAngle);
         elevatorController.setReference(targetHeight, elevatorControlMode);
+    }
+
+    public void update(double dt) {
+        if (!isActive) {
+            stopMotors();
+            return;
+        }
+        output();
     }
 }

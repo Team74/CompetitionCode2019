@@ -6,6 +6,7 @@ import frc.robot.RobotMap;
 import frc.robot.Updateable;
 
 public class Drivetrain implements Updateable {
+    public static Drivetrain kInstance = null;
 
     public final boolean kMotorInvert = true;
     public final boolean kSensorPhase = false;
@@ -35,7 +36,14 @@ public class Drivetrain implements Updateable {
     private final double WIDTH;
     private final double LENGTH;
 
-    public Drivetrain(RobotMap robotmap) {
+    public static Drivetrain getInstance() {
+        if (kInstance == null) {
+            kInstance = new Drivetrain(RobotMap.getInstance());
+        }
+        return kInstance;
+    }
+
+    private Drivetrain(RobotMap robotmap) {
 
         lf = new SwerveModule( robotmap.Drive_0, robotmap.Drive_E_0, robotmap.Steering_0, 64);
         lb = new SwerveModule( robotmap.Drive_1, robotmap.Drive_E_1, robotmap.Steering_1, 245);

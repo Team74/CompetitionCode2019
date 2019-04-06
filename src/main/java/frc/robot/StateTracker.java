@@ -1,24 +1,49 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 import frc.robot.SubsystemManager;
 import frc.robot.Updateable;
 
-public class StateTracker implements Updateable {
-    public SubsystemManager mSubsytemManager;
-    private double swerveVectors[][];
-    public DriverStation driverStation;
-    public double xPose;
-    public double yPose;
-    public double heading;
+import frc.lib.utils.geometry.*;
 
-    public StateTracker(SubsystemManager _subsystem_manager){
-        mSubsytemManager = _subsystem_manager;
+public class StateTracker implements Updateable {
+    //Class tracks robots center of rotation reletive to the field for use in auto.
+    private static StateTracker kInstance = null;
+
+    private final SubsystemManager mSubsytemManager;
+    private Pose2d previousPose;
+    private Pose2d currentPose;
+
+    private Rotation2d previousHeading;
+    private Rotation2d currentHeading;
+
+    public static StateTracker getInstance() {
+        if (kInstance == null) {
+            kInstance  = new StateTracker();
+        }
+        return kInstance;
     }
 
-    //We can get a vector for each pod and use them to figure out how the robot is moving throughout auton and the match.
-    //aka Inverse Kinematics
+    public StateTracker(){
+        mSubsytemManager = SubsystemManager.getInstance();
+    }
+
+    public Pose2d previousPose() {
+        return previousPose;
+    }
+
+    public Pose2d currentPose() {
+        return currentPose;
+    }
+
+    public Rotation2d previousRotation() {
+        return previousHeading;
+    }
+
+    public Rotation2d currentHeading() {
+        return currentHeading;
+    }
+
+    //Use encoders and gyro to localize ourself to the field
     public void update(double dt){
     }
 

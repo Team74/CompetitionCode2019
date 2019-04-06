@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 
 public class InputManager implements Updateable {
+    public static InputManager kInstance = null; 
 
     private XboxController mController0 = new XboxController(0);
     private XboxController mController1 = new XboxController(1);
@@ -24,9 +25,14 @@ public class InputManager implements Updateable {
     public HashMap<String, Boolean> mButtons  = new HashMap<String, Boolean>();
     public HashMap<String, Double> mJoysticks  = new HashMap<String, Double>();
 
+    public static InputManager getInstance() {
+        if (kInstance == null) {
+            kInstance = new InputManager();
+        }
+        return kInstance;
+    }
 
-
-    public InputManager() {
+    private InputManager() {
         mButtons.put("0x", false);
         mButtons.put("0y", false);
         mButtons.put("0a", false);
