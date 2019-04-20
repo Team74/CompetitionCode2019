@@ -3,7 +3,7 @@ package frc.lib.utils.geometry;
 import frc.lib.utils.Utilities;
 import static frc.lib.utils.Utilities.kEpsilon;
 
-public class Rotation2d {
+public class Rotation2d implements IRotation2d<Rotation2d> {
     protected static final Rotation2d kIdentity = new Rotation2d();
 
     public static final Rotation2d identity() {
@@ -91,6 +91,10 @@ public class Rotation2d {
         return Math.toDegrees(getRadians());
     }
 
+    public double getUnboundedDegrees() {
+        return theta_degrees;
+    }
+
     public Rotation2d rotateBy(final Rotation2d other) {
         return new Rotation2d(cos_angle * other.cos_angle - sin_angle * other.sin_angle,
         cos_angle * other.sin_angle + sin_angle * other.cos_angle, true);
@@ -109,7 +113,30 @@ public class Rotation2d {
         return new Translation2d(cos_angle, sin_angle);
     }
 
-    public Rotation2d getRotation(){
+    @Override
+    public Rotation2d interpolate(final Rotation2d other, double x) {
+        if (x <= 0) {
+            return new Rotation2d(this);
+        } else if (x >= 1) {
+            return new Rotation2d(other);
+        }
+        double angleDiff = inverse().rotateBy(other).getRadians();
+        return this.rotateBy(Rotation2d.fromRadians(angleDiff * x));
+    }
+
+    @Override
+    public double distance(final Rotation2d other) {
+        return inverse().rotateBy(other).getRadians();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof Rotation2d)) return false;
+        return distance((Rotation2d)other) < Utilities.kEpsilon;
+    }
+
+    @Override
+    public Rotation2d getRotation() {
         return this;
     }
 }

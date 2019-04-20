@@ -46,6 +46,7 @@ public class Utilities {
         return Math.min(max, Math.max(min, v));
     }
 
+    //Takes to end points and a percent between them and returns the point that is a percent between them
     public static double interpolate(double a, double b, double x) {
         x = limit(x, 0.0, 1.0);
         return a + (b-a) * x;

@@ -1,6 +1,8 @@
 package frc.lib.trajectory;
 
-public class TrajectoryPoint<S> {
+import frc.lib.utils.geometry.*;
+
+public class TrajectoryPoint<S extends State<S>> {
     protected final S state;
     protected final int index;
 

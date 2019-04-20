@@ -4,9 +4,10 @@ import frc.lib.trajectory.timing.TimedState;
 import frc.lib.trajectory.TrajectoryPoint;
 import frc.lib.trajectory.TrajectorySamplePoint;
 
+import frc.lib.utils.geometry.*;
 import frc.lib.utils.Utilities;
 
-public class TimedView<S> implements TrajectoryView<TimedState<S>> {
+public class TimedView<S extends State<S>> implements TrajectoryView<TimedState<S>> {
     protected final Trajectory<TimedState<S>> trajectory;
     protected final double startTime;
     protected final double endTime;

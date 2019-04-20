@@ -10,6 +10,6 @@ public interface Subsystem {
     //Stops updating the subsystem
     void stop();
 
-    //UPdates the Subsystems
+    //Updates the Subsystems
     void update(double dt);
 }

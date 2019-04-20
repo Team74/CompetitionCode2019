@@ -1,9 +1,10 @@
 package frc.robot;
 
 import frc.robot.SubsystemManager;
+import frc.robot.subsystems.Superstructure;
 
-import static frc.robot.RobotMap.isElevatorDown;
-import static frc.robot.RobotMap.isWristUp;
+import frc.robot.subsystems.*;
+import frc.robot.drive.*;
 
 import org.opencv.videoio.VideoWriter;
 
@@ -13,12 +14,13 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.*;
-//import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 
 public class Dashboard implements Updateable {
+    private static Dashboard kInstance;
 
-    private SubsystemManager mSubsystemManager;
+    private SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+    private Superstructure mSuperstructure = Superstructure.getInstance();
 
     public ShuffleboardTab teleopTab;
     public ShuffleboardTab robotTuning;
@@ -71,8 +73,14 @@ public class Dashboard implements Updateable {
 
     public UsbCamera camera;
 
-    public Dashboard(SubsystemManager _subsystemManager){
-        mSubsystemManager = _subsystemManager;
+    public static Dashboard getInstance() {
+        if (kInstance == null) {
+            kInstance  = new Dashboard();
+        }
+        return kInstance;
+    }
+
+    public Dashboard(){
 
         teleopTab = Shuffleboard.getTab("Teleop");
         robotTuning = Shuffleboard.getTab("Robot Tuning");
@@ -83,38 +91,35 @@ public class Dashboard implements Updateable {
 
         sanityCheck = teleopTab.add("Sanity Check", true).getEntry();
 
-        wristLimit = teleopTab.add("Is Wrist Up?", isWristUp.get()).getEntry();
-        elevatorLimit = teleopTab.add("Is Elevator Down?", isElevatorDown.get()).getEntry();
-
         doWeHaveBall = teleopTab.add("Do we have a ball?", mSubsystemManager.mBallManipulator.haveBall).getEntry();
 
-        lfAngle = teleopTab.add("LF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
-        lbAngle = teleopTab.add("LB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
-        rfAngle = teleopTab.add("RF Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
-        rbAngle = teleopTab.add("RB Angle", mSubsystemManager.mDrivetrain.lf.currentAngle).getEntry();
+        lfAngle = teleopTab.add("LF Angle", Drivetrain.getInstance().lf.currentAngle).getEntry();
+        lbAngle = teleopTab.add("LB Angle", Drivetrain.getInstance().lf.currentAngle).getEntry();
+        rfAngle = teleopTab.add("RF Angle", Drivetrain.getInstance().lf.currentAngle).getEntry();
+        rbAngle = teleopTab.add("RB Angle", Drivetrain.getInstance().lf.currentAngle).getEntry();
 
-        lfEncoder = teleopTab.add("LF Encoder", mSubsystemManager.mDrivetrain.lf.rotate_motor.getSelectedSensorPosition(0)).getEntry();
-        lbEncoder = teleopTab.add("LB Encoder", mSubsystemManager.mDrivetrain.lb.rotate_motor.getSelectedSensorPosition(0)).getEntry();
-        rfEncoder = teleopTab.add("RF Encoder", mSubsystemManager.mDrivetrain.rf.rotate_motor.getSelectedSensorPosition(0)).getEntry();
-        rbEncoder = teleopTab.add("RB Encoder", mSubsystemManager.mDrivetrain.rb.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        lfEncoder = teleopTab.add("LF Encoder", Drivetrain.getInstance().lf.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        lbEncoder = teleopTab.add("LB Encoder", Drivetrain.getInstance().lb.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        rfEncoder = teleopTab.add("RF Encoder", Drivetrain.getInstance().rf.rotate_motor.getSelectedSensorPosition(0)).getEntry();
+        rbEncoder = teleopTab.add("RB Encoder", Drivetrain.getInstance().rb.rotate_motor.getSelectedSensorPosition(0)).getEntry(); 
 
-        elevatorEncoder = robotTuning.add("Elevator Encoder",  mSubsystemManager.mElevator.elevatorEncoder.getPosition()).getEntry();
-        elevatorCurrent = robotTuning.add("Elevator Current", mSubsystemManager.mElevator.elevatorMotor.getOutputCurrent()).getEntry();
-        elevatorVelocity = robotTuning.add("Elevator Velocity", mSubsystemManager.mElevator.elevatorEncoder.getVelocity()).getEntry();
+        elevatorEncoder = robotTuning.add("Elevator Encoder",  mSuperstructure.getElevatorPosition()).getEntry();
+        elevatorCurrent = robotTuning.add("Elevator Current", mSuperstructure.getElevatorCurrent()).getEntry();
+        elevatorVelocity = robotTuning.add("Elevator Velocity", mSuperstructure.getElevatorVelocity()).getEntry();
         
-        elevatorP = robotTuning.add("Elevator P", mSubsystemManager.mElevator.kP).getEntry();
-        elevatorI = robotTuning.add("Elevator I", mSubsystemManager.mElevator.kI).getEntry();
-        elevatorD = robotTuning.add("Elevator D", mSubsystemManager.mElevator.kD).getEntry();
-        elevatorF = robotTuning.add("Elevator F", mSubsystemManager.mElevator.kF).getEntry();
+        elevatorP = robotTuning.add("Elevator P", Constants.kElevatorP).getEntry();
+        elevatorI = robotTuning.add("Elevator I", Constants.kElevatorI).getEntry();
+        elevatorD = robotTuning.add("Elevator D", Constants.kElevatorD).getEntry();
+        elevatorF = robotTuning.add("Elevator F", Constants.kElevatorF).getEntry();
         
-        wristVelocity = robotTuning.add("Wrist Velocity", mSubsystemManager.mWrist.wristMotor.getSelectedSensorVelocity(0)).getEntry();
-        wristEncoder = robotTuning.add("Wrist Encoder", mSubsystemManager.mWrist.wristMotor.getSelectedSensorPosition()).getEntry();
-        wristCurrent = robotTuning.add("Wrist Current", mSubsystemManager.mWrist.wristMotor.getOutputCurrent()).getEntry();
+        wristVelocity = robotTuning.add("Wrist Velocity", mSuperstructure.getWristVelocity()).getEntry();
+        wristEncoder = robotTuning.add("Wrist Encoder", mSuperstructure.getWristPosition()).getEntry();
+        wristCurrent = robotTuning.add("Wrist Current", mSuperstructure.getWristCurrent()).getEntry();
 
-        wristP = robotTuning.add("Wrist P", mSubsystemManager.mWrist.kP).getEntry();
-        wristI = robotTuning.add("Wrist I", mSubsystemManager.mWrist.kI).getEntry();
-        wristD = robotTuning.add("Wrist D", mSubsystemManager.mWrist.kD).getEntry();
-        wristF = robotTuning.add("Wrist F", mSubsystemManager.mWrist.kF).getEntry();
+        wristP = robotTuning.add("Wrist P", Constants.kWristP).getEntry();
+        wristI = robotTuning.add("Wrist I", Constants.kWristI).getEntry();
+        wristD = robotTuning.add("Wrist D", Constants.kWristD).getEntry();
+        wristF = robotTuning.add("Wrist F", Constants.kWristF).getEntry();
         
         frontIntakeCurrent = robotTuning.add("Front Current", mSubsystemManager.mBallManipulator.mIntakeFront.getOutputCurrent()).getEntry();
         backIntakeCurrent = robotTuning.add("Back Current", mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent()).getEntry();
@@ -153,9 +158,5 @@ public class Dashboard implements Updateable {
         backIntakeCurrent.setDouble(mSubsystemManager.mBallManipulator.mIntakeBack.getOutputCurrent());
 
         doWeHaveBall.setBoolean(mSubsystemManager.mBallManipulator.haveBall);
-
-
-        wristLimit.setBoolean(isWristUp.get());
-        elevatorLimit.setBoolean(isElevatorDown.get());
     }
 }

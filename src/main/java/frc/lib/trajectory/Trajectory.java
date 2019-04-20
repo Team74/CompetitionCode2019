@@ -2,11 +2,15 @@ package frc.lib.trajectory;
 
 import frc.lib.trajectory.TrajectoryPoint;
 
+import frc.lib.utils.geometry.*;
+
 import java.util.List;
 import java.util.ArrayList;
 
-public class Trajectory<S> {
+public class Trajectory<S extends State<S>> {
     protected final List<TrajectoryPoint<S>> points;
+
+    protected double defaultVelocity = 0.0;
 
     //Empty trajectory
     public Trajectory() {
@@ -18,6 +22,14 @@ public class Trajectory<S> {
         for (int i = 0; i < states.size(); ++i) {
             points.add(new TrajectoryPoint<>(states.get(i), i));
         }
+    }
+
+    public void setDefaultVelocity(double _defaultVelocity) {
+        this.defaultVelocity = _defaultVelocity;
+    }
+
+    public double defaultVelocity() {
+        return defaultVelocity;
     }
 
     public boolean isEmpty() {

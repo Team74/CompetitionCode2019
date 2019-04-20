@@ -1,7 +1,7 @@
 package frc.lib.trajectory;
 
 import frc.robot.SubsystemManager;
-import frc.robot.DrivePlanner;
+import frc.robot.drive.DrivePlanner;
 
 import frc.lib.trajectory.Trajectory;
 import frc.lib.trajectory.timing.TimedState;
@@ -24,6 +24,7 @@ Paths will be stored in a subclass
 */
 
 public class TrajectoryGenerator {
+    private static TrajectoryGenerator kInstance = null;
 
     private static final double kMaxVelocity = 0.0;//inches per second
     private static final double kMaxAcceleration = 0.0;//inches per second^2
@@ -34,12 +35,18 @@ public class TrajectoryGenerator {
     private static final double kDefaultVelocity = 0.0;
     private static final int kSlowdownChunks = 1;
     
-    private final SubsystemManager mSubsystemManager;
+    private final DrivePlanner mDrivePlanner = DrivePlanner.getInstance();
     private Trajectories mTrajectories = null;
     
+    public static TrajectoryGenerator getInstance() {
+        if (kInstance == null) {
+            kInstance = new TrajectoryGenerator();
+        }
+        return kInstance;
+    }
 
-    public TrajectoryGenerator(SubsystemManager _subsystemManager) {
-        mSubsystemManager = _subsystemManager;
+    public TrajectoryGenerator() {
+        generateTrajectories();
     }
 
     public void generateTrajectories() {
@@ -64,7 +71,7 @@ public class TrajectoryGenerator {
             double _maxVoltage,
             double _defaultVelocity,
             int _slowdownChunks) {
-        return mSubsystemManager.mDrivePlanner.generateTrajectory(
+        return mDrivePlanner.generateTrajectory(
             _revearsed,
             _waypoints, 
             _constraints, 
@@ -88,7 +95,7 @@ public class TrajectoryGenerator {
             double _maxVoltage,
             double _defaultVelocity,
             int _slowdownChunks){
-        return mSubsystemManager.mDrivePlanner.generateTrajectory(_revearsed,
+        return mDrivePlanner.generateTrajectory(_revearsed,
         _waypoints, 
         _constraints, 
         _startVelocity, 

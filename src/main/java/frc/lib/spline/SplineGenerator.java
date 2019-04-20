@@ -26,12 +26,12 @@ public class SplineGenerator {
     /*
         Convenience function to parametrize a spline with some variables held constant
     */
-    //Constant t from 0-1, kMaxDX, kMaxDY, kMaxDTheta
+    //Run one spline with constant t from 0-1, kMaxDX, kMaxDY, kMaxDTheta
     public static List<Pose2dWithCurvature> parameterizeSpline(Spline s) {
         return parameterizeSpline(s, kMaxDX, kMaxDY, kMaxDTheta, 0.0, 1.0);
     }
 
-    //Constant t from 0-1
+    //Run one spline constant t from 0-1 and everything else specified
     public static List<Pose2dWithCurvature> parameterizeSpline(Spline s, double maxDx, double maxDy, double maxDTheta) {
         return parameterizeSpline(s, maxDx, maxDy, maxDTheta, 0.0, 1.0);
     }

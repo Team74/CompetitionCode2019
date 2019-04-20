@@ -1,6 +1,6 @@
 package frc.lib.motorcontroller;
 
-import frc.lib.motorcontroller.TalonSetOverride;
+import frc.lib.motorcontroller.TalonOverride;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -35,7 +35,7 @@ public class TalonSRXBuilder {
     }
 
     private static TalonSRX makeTalon(int canID){
-        TalonSRX talon = new TalonSetOverride(canID);
+        TalonSRX talon = new TalonOverride(canID);
         talon.setNeutralMode(neutralMode);
         talon.configOpenloopRamp(openLoopRampRate, kTimeoutMs);;
         talon.configClosedloopRamp(closedLoopRampRate, kTimeoutMs);;

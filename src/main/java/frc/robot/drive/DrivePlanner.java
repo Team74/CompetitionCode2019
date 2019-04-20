@@ -1,15 +1,13 @@
 package frc.robot.drive;
 
+import frc.robot.Constants;
 import frc.robot.SubsystemManager;
 import frc.robot.Updateable;
 
-import frc.lib.trajectory.Trajectory;
-import frc.lib.trajectory.timing.TimedState;
-import frc.lib.trajectory.timing.TimingConstraints;
-
+import frc.lib.trajectory.*;
+import frc.lib.trajectory.timing.*;
+import frc.lib.utils.Utilities;
 import frc.lib.utils.geometry.*;
-
-import frc.robot.drive.Drivetrain;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -18,8 +16,8 @@ import java.util.ArrayList;
 public class DrivePlanner implements Updateable {
     private static DrivePlanner kInstance = null;
 
-    private SubsystemManager mSubsytemManager;
-    public Drivetrain mDrivetrain;
+    private final SubsystemManager mSubsytemManager = SubsystemManager.getInstance();
+    public Drivetrain mDrivetrain = Drivetrain.getInstance();
 
     //For teleop swerve control
     private final int kLowSpeed = 1000;
@@ -29,6 +27,10 @@ public class DrivePlanner implements Updateable {
     public double angle = 0.0;
     public double rotation = 0.0;
     private double gyroVal;
+
+    //For trajectory generating
+    private double defaultCook = 0.5;
+    private boolean useDefaultCook = true;
 
     //For auto pathfollowing
     private static final double kMaxDx = .25;
@@ -45,6 +47,15 @@ public class DrivePlanner implements Updateable {
 
     private Translation2d followingCenter = Translation2d.identity();
 
+    TrajectoryIterator<TimedState<Pose2dWithCurvature>> currentTrajectory;
+    boolean isReversed = false;
+    double lastTime = Double.POSITIVE_INFINITY;
+    public TimedState<Pose2dWithCurvature> setpoint = new TimedState<>(Pose2dWithCurvature.identity());
+    Pose2d error=  Pose2d.identity();
+    Translation2d output = Translation2d.identity();
+
+    double dt = 0.0;
+
     public static enum Speed{
         Low, Mid, High;
     }
@@ -54,14 +65,32 @@ public class DrivePlanner implements Updateable {
             kInstance = new DrivePlanner();
         }
         return kInstance;
+
     }
 
     private DrivePlanner() {
 
     }
 
-    private DrivePlanner(SubsystemManager subsystemManager){
-        mSubsytemManager = subsystemManager;
+    public void setTrajectory(final TrajectoryIterator<TimedState<Pose2dWithCurvature>> _trajectory) {
+        currentTrajectory = _trajectory;
+        setpoint = _trajectory.getState();
+        defaultCook = _trajectory.trajectory().defaultVelocity();
+        for (int i = 0; i < currentTrajectory.trajectory().length(); ++i) {
+            if (currentTrajectory.trajectory().getState(i).velocity() > Utilities.kEpsilon) {
+                isReversed = false;
+            } else if (currentTrajectory.trajectory().getState(i).velocity() < -Utilities.kEpsilon) {
+                isReversed = true;
+                break;
+            }
+        }
+    }
+
+    public void reset() {
+        error = Pose2d.identity();
+        output = Translation2d.identity();
+        lastTime = Double.POSITIVE_INFINITY;
+        useDefaultCook = true;
     }
     
     //Generate a trajectory with starting and ending velocity 0
@@ -91,7 +120,7 @@ public class DrivePlanner implements Updateable {
 
     //Can generate trajectories with non 0 stating and ending velocities, also handles all trajectory inital parameterization
     public Trajectory<TimedState<Pose2dWithCurvature>> generateTrajectory(
-            boolean _revearsed,
+            boolean _reversed,
             final List<Pose2d> _waypoints,
             final List<TimingConstraints<Pose2dWithCurvature>> _constraints,
             double _startVelocity,
@@ -102,50 +131,71 @@ public class DrivePlanner implements Updateable {
             double _maxVoltage,
             double _defaultVelocity,
             int _slowdownChunks){
-        List<Pose2d> waypointsMaybeFlipped = waypoints;
+        List<Pose2d> waypointsMaybeFlipped = _waypoints;
         //TODO: Make sure the flip constant is consistent with the way we define our cordinate system
         final Pose2d flip = Pose2d.fromRotation(new Rotation2d(0, -1, false));
-        if (reversed) {
-            waypointsMaybeFlipped = new ArrayList<>(waypoints.size());
-            for (int i = 0; i < waypoints.size(); ++i) {
-                waypointsMaybeFlipped.add(waypoints.get(i).transformby(flip));
+        if (_reversed) {
+            waypointsMaybeFlipped = new ArrayList<>(_waypoints.size());
+            for (int i = 0; i < _waypoints.size(); ++i) {
+                waypointsMaybeFlipped.add(_waypoints.get(i).transformBy(flip));
             }
         }
 
         //Create a trajectory from the spline waypoints
-        Trajectory<Pose2dWithCurvature> trajectory = trajec
-        return
+        Trajectory<Pose2dWithCurvature> trajectory = trajectory = TrajectoryUtil.trajectoryFromSplineWaypoints(waypointsMaybeFlipped, kMaxDx, kMaxDy, kMaxDTheta);
+
+        if (_reversed) {
+            List<Pose2dWithCurvature> flipped = new ArrayList<>(trajectory.length());
+            for (int i = 0; i < trajectory.length(); ++i) {
+                Pose2dWithCurvature stateI = trajectory.getState(i);
+                flipped.add(new Pose2dWithCurvature(stateI.getPose().transformBy(flip), -stateI.getCurvature(), stateI.getDCurvatureDs()));
+            }
+
+            trajectory = new Trajectory<>(flipped);
+        }
+
+        List<TimingConstraints<Pose2dWithCurvature>> allConstraints = new ArrayList<>();
+
+        if (_constraints != null) {
+            allConstraints.addAll(_constraints);
+        }
+
+        //Generate the timed trajectory
+        Trajectory<TimedState<Pose2dWithCurvature>> timedTrajectory = TimingUtil.timeParameterizeTrajectory(_reversed, new DistanceView<>(trajectory), kMaxDx, allConstraints,
+                _startVelocity, _endVelocity, _maxVelocity, _maxAcceleration, _maxDeceleration, _slowdownChunks);
+        timedTrajectory.setDefaultVelocity(_defaultVelocity / Constants.kRobotMaxVelocity);
+        return timedTrajectory;
     }
     
     public void setSpeed(Speed _speed){
         switch(_speed){
             case Low:
                 //System.out.println("Set Speed: Low");
-                mSubsytemManager.mDrivetrain.lf.kMaxVel = kLowSpeed;
-                mSubsytemManager.mDrivetrain.lb.kMaxVel = kLowSpeed;
-                mSubsytemManager.mDrivetrain.rf.kMaxVel = kLowSpeed;
-                mSubsytemManager.mDrivetrain.rb.kMaxVel = kLowSpeed;
+                mDrivetrain.lf.kMaxVel = kLowSpeed;
+                mDrivetrain.lb.kMaxVel = kLowSpeed;
+                mDrivetrain.rf.kMaxVel = kLowSpeed;
+                mDrivetrain.rb.kMaxVel = kLowSpeed;
                 break;
             case Mid:
                 //System.out.println("Set Speed: Mid");
-                mSubsytemManager.mDrivetrain.lf.kMaxVel = kMidSpeed;
-                mSubsytemManager.mDrivetrain.lb.kMaxVel = kMidSpeed;
-                mSubsytemManager.mDrivetrain.rf.kMaxVel = kMidSpeed;
-                mSubsytemManager.mDrivetrain.rb.kMaxVel = kMidSpeed;
+                mDrivetrain.lf.kMaxVel = kMidSpeed;
+                mDrivetrain.lb.kMaxVel = kMidSpeed;
+                mDrivetrain.rf.kMaxVel = kMidSpeed;
+                mDrivetrain.rb.kMaxVel = kMidSpeed;
                 break;
             case High:
                 //System.out.println("Set Speed: High");
-                mSubsytemManager.mDrivetrain.lf.kMaxVel = kHighSpeed;
-                mSubsytemManager.mDrivetrain.lb.kMaxVel = kHighSpeed;
-                mSubsytemManager.mDrivetrain.rf.kMaxVel = kHighSpeed;
-                mSubsytemManager.mDrivetrain.rb.kMaxVel = kHighSpeed;
+                mDrivetrain.lf.kMaxVel = kHighSpeed;
+                mDrivetrain.lb.kMaxVel = kHighSpeed;
+                mDrivetrain.rf.kMaxVel = kHighSpeed;
+                mDrivetrain.rb.kMaxVel = kHighSpeed;
                 break;
             default:
                 //System.out.println("Set Speed: Default");
-                mSubsytemManager.mDrivetrain.lf.kMaxVel = kMidSpeed;
-                mSubsytemManager.mDrivetrain.lb.kMaxVel = kMidSpeed;
-                mSubsytemManager.mDrivetrain.rf.kMaxVel = kMidSpeed;
-                mSubsytemManager.mDrivetrain.rb.kMaxVel = kMidSpeed;
+                mDrivetrain.lf.kMaxVel = kMidSpeed;
+                mDrivetrain.lb.kMaxVel = kMidSpeed;
+                mDrivetrain.rf.kMaxVel = kMidSpeed;
+                mDrivetrain.rb.kMaxVel = kMidSpeed;
                 break;
         }
     }
@@ -155,7 +205,7 @@ public class DrivePlanner implements Updateable {
         angle = Math.atan2(_ly, _lx);
         rotation = _rx/30;
 
-        gyroVal = mSubsytemManager.mDrivetrain.gyro.getAngle();
+        gyroVal = mDrivetrain.gyro.getAngle();
         gyroVal *= Math.PI / 180;
 
         angle -= gyroVal;
@@ -167,6 +217,6 @@ public class DrivePlanner implements Updateable {
     }
 
     public void update(double dt) {
-;        mSubsytemManager.mDrivetrain.setMove(speed, angle, rotation);
+;        mDrivetrain.setMove(speed, angle, rotation);
     }
 }

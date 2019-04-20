@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.SubsystemManager;
 import frc.robot.InputManager;
 import frc.robot.Constants;
-import frc.robot.behavior.master_implementations.Implemented_AutonMaster;
+import frc.robot.auton.AutonRunner;
 import frc.robot.behavior.master_implementations.PrimaryTeleopMaster;
 import frc.robot.behavior.master_implementations.SimpleTeleopMaster;
 import frc.robot.behavior.master_implementations.TestMaster;
@@ -16,6 +16,8 @@ public class Robot extends TimedRobot {
 
     SubsystemManager mSubsystemManager;
     InputManager mInputManager;
+
+    AutonRunner mAutonRunner = null;
 
     Timer mTimer = new Timer();
     double dt = Constants.dt;  //no m_ just for consistency with everywhere else
@@ -33,9 +35,12 @@ public class Robot extends TimedRobot {
         mTimer.reset();
     }
     public void autonomousInit() {
-        mSubsystemManager.setMaster(new SimpleTeleopMaster(mSubsystemManager, mInputManager));
         Drivetrain.getInstance().gyro.reset();
-         //or whatever other auton we want, this will probably be chosen by a selector on the shuffleboard
+        if (mAutonRunner != null) {
+            mAutonRunner.stop();
+        }
+        mAutonRunner.start();
+        //or whatever other auton we want, this will probably be chosen by a selector on the shuffleboard
          mTimer.start();
         }   
     public void autonomousPeriodic() {

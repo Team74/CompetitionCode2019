@@ -2,7 +2,9 @@ package frc.lib.trajectory;
 
 import frc.lib.trajectory.TrajectoryPoint;
 
-public class TrajectorySamplePoint<S> {
+import frc.lib.utils.geometry.*;
+
+public class TrajectorySamplePoint<S extends State<S>> {
     protected final S state;
     protected final int indexFloor;
     protected final int indexCeiling;

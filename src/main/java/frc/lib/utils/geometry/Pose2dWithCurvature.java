@@ -1,6 +1,8 @@
 package frc.lib.utils.geometry;
 
-public class Pose2dWithCurvature {
+import frc.lib.utils.Utilities;
+
+public class Pose2dWithCurvature implements IPose2d<Pose2dWithCurvature>, ICurvature<Pose2dWithCurvature> {
     protected static final Pose2dWithCurvature kIdentity = new Pose2dWithCurvature();
 
     public static final Pose2dWithCurvature identity() {
@@ -40,32 +42,61 @@ public class Pose2dWithCurvature {
         curvature = _curvature;
         dcurvature_ds = _dcurvature_ds;
     }
-
+    
+    @Override
     public final Pose2d getPose() {
         return pose;
     }
-
+    
+    @Override
     public double getCurvature() {
         return curvature;
     }
-
-    public double getDCurvature() {
+    
+    @Override
+    public double getDCurvatureDs() {
         return dcurvature_ds;
     }
 
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null || !(other instanceof Pose2dWithCurvature)) return false;
+        Pose2dWithCurvature p2dwc = (Pose2dWithCurvature) other;
+        return getPose().equals(p2dwc.getPose()) &&
+            Utilities.epsilonEquals(getCurvature(), p2dwc.getCurvature()) &&
+            Utilities.epsilonEquals(getDCurvatureDs(), p2dwc.getDCurvatureDs());
+    }
+    
+    @Override
     public final Translation2d getTranslation() {
         return getPose().getTranslation();
     }
 
+    @Override
     public final Rotation2d getRotation() {
         return getPose().getRotation();
     }
-
+    
+    @Override
     public double distance(final Pose2dWithCurvature other) {
         return getPose().distance(other.getPose());
     }
-
+    
+    @Override
     public Pose2dWithCurvature transformBy(Pose2d _transform) {
-        return new Pose2dWithCurvature(getPose().transformBy(_transform), getCurvature(), getDCurvature());
+        return new Pose2dWithCurvature(getPose().transformBy(_transform), getCurvature(), getDCurvatureDs());
     }
+    
+    @Override
+    public Pose2dWithCurvature mirror() {
+        return new Pose2dWithCurvature(getPose().mirror().getPose(), -getCurvature(), -getDCurvatureDs());
+    }
+    
+    @Override
+    public Pose2dWithCurvature interpolate(final Pose2dWithCurvature other, double x) {
+        return new Pose2dWithCurvature(getPose().interpolate(other.getPose(), x),
+         Utilities.interpolate(getCurvature(), other.getCurvature(), x), 
+         Utilities.interpolate(getDCurvatureDs(), other.getDCurvatureDs(), x));
+    }
+
 }

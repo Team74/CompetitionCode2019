@@ -45,8 +45,8 @@ public class SubsystemManager implements Updateable {
     SubsystemManager() {
 
         mRobotMap = RobotMap.getInstance(); //initializes all the physical hardware bits, but doesn't do anything further with them
-        mStateTracker = new StateTracker(this);
-        mDashboard = new Dashboard(this);
+        mStateTracker = StateTracker.getInstance();
+        mDashboard = Dashboard.getInstance();
         mStateMachine = new StateMachine(this);
 
         mDrivetrain = Drivetrain.getInstance();

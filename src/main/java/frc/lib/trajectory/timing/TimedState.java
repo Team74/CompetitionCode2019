@@ -1,8 +1,9 @@
 package frc.lib.trajectory.timing;
 
+import frc.lib.utils.geometry.*;
 import frc.lib.utils.Utilities;
 
-public class TimedState<S> {
+public class TimedState<S extends State<S>> implements State<TimedState<S>> {
     protected final S state;
     protected double t;//Seconds
     protected double velocity;//Inches per second
@@ -10,6 +11,13 @@ public class TimedState<S> {
 
     public TimedState(final S _state) {
         state = _state;
+    }
+
+    public TimedState(final S _state, double _t, double _velocity, double _acceleration) {
+        state = _state;
+        t = _t;
+        velocity = _velocity;
+        acceleration = _acceleration;
     }
 
     public void set_t(double _t) {
@@ -40,6 +48,7 @@ public class TimedState<S> {
         return acceleration;
     }
 
+    @Override
     public TimedState<S> interpolate(TimedState<S> other, double x) {
         final double newT = Utilities.interpolate(t(), other.t(), x);
         final double deltaT = newT - t();
@@ -52,7 +61,15 @@ public class TimedState<S> {
         return new TimedState<S>(state().interpolate(other.state(), newS / state().distance(other.state())), newT, newV, acceleration());
     }
 
-    public double distance(TimedState(S) other) {
+    @Override
+    public double distance(TimedState<S> other) {
         return state().distance(other.state());
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null || !(other instanceof TimedState<?>)) return false;
+        TimedState<?> ts = (TimedState<?>) other;
+        return state().equals(ts.state()) && Utilities.epsilonEquals(t(), ts.t());
     }
 }
