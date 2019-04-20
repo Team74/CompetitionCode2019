@@ -17,6 +17,6 @@ public class TestAuton extends AutonBase {
     //Fill this with actions
     @Override
     protected void routine() {
-        runAction(new TestAction());
+        runAction(new TestAction(1.0));
     }
 }

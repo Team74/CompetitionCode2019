@@ -1,10 +1,10 @@
 package frc.robot.auton;
 
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.auton.actions.Action;
 
 public abstract class AutonBase {
     private double updateRate = 1.0 / 50.0;
-    private long waitTime = (long) updateRate * 1000;
 
     private boolean isActive = false;
 
@@ -33,9 +33,17 @@ public abstract class AutonBase {
 
         while (isActive() && !(action.isFinished())) {
             action.update();
-        }
 
+            long waitTime = (long) updateRate * 1000;
+            try {
+                Thread.sleep(waitTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         action.done();
+        System.out.println("Action completed in: " + (Timer.getFPGATimestamp() - action.startTime));
+
     }
     
 }

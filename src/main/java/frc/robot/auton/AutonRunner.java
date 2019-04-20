@@ -1,7 +1,6 @@
 package frc.robot.auton;
 
 public class AutonRunner {
-    private static AutonRunner kInstance = null;
     private AutonBase auton;
     private Thread thread = null;
 
