@@ -1,37 +1,44 @@
 Todo:
-    In StateTracker, write the foward kinematics to keep track of our position using encoder and gyro feedback
+    In StateTracker, write the foward kinematics to keep track of our position using encoder and gyro feedback aka Localization.
+        -https://www.chiefdelphi.com/t/most-accurate-form-of-localization/166379/4
 
-    Trajectory generator needs to poses defined as well as a fixed cordinate system
+    Trajectory generator needs to poses defined as well as a fixed cordinate system.
 
-    Also need to finish writing the trajectory generation code
+    Also need to finish writing the trajectory generation code.
 
-    Create pathfollower
-        -Look into Nonlinear feedback controller from the paper
+    Create pathfollower.
+        -Look into Nonlinear feedback controller from the paper.
             https://www.dis.uniroma1.it/~labrob/pub/papers/Ramsete01.pdf
-        -Implement pure pursuit
-        -implement standard feedword and feedback
-            -This might be useful for vision based panel/cargo placement
+        -Implement pure pursuit.
+        -implement standard feedword and feedback.
+            -This might be useful for vision based panel/cargo placement.
 
-    Rearchitect subsytems to better work with auton and state machine
-        Combine Elevator and Wrist and Intake  into "Superstructure" class to handle both
-        Combine Climber and ClimberPuller into one ClimbSystemClass or something similar
-            Figure out how to automate the climb sequence
-        Figure out how to test the subsystems; also possibly simulate them in code?
+    Rearchitect subsytems to better work with auton and state machine.
+        -Combine Elevator and Wrist and Intake  into "Superstructure" class to handle both.
+        -Combine Climber and ClimberPuller into one ClimbSystemClass or something similar.
+            -Figure out how to automate the climb sequence.
+        -Figure out how to test the subsystems; also possibly simulate them in code?
 
-    Rearchitect swerve code to better work with pose tracking and path following, also to be cleaner in general
+    Rearchitect swerve code to better work with pose tracking and path following, also to be cleaner in general.
 
-    Instead of subsytemManager containing the continuosly updating classes, maybe make another class that we can store them in? Not sure if this is worth it
+    Instead of subsytemManager containing the continuosly updating classes, maybe make another class that we can store them in? Not sure if this is worth it.
 
-    Work on creating the action components of autons
+    Work on creating the action components of autons.
 
-    Make sure intake motors are assigned properly in the BallIntake class
+    Make sure intake motors are assigned properly in the BallIntake class.
 
-    Go through Constants.java and make sure everything is defined properly and the same way
+    Go through Constants.java and make sure everything is defined properly and the same way.
 
     Characterize swerve drive and store the data iun the appropriate places.
 
-    Finish writing TimingUtil class
+    Finish writing TimingUtil class.
 
-    Figure out a way t test to make sure tht the trajectory generation works
+    Figure out a way t test to make sure tht the trajectory generation works.
 
-    Look into setting up vision tracking
+    Look into setting up vision tracking.
+
+    Look here https://www.chiefdelphi.com/t/potential-engine-a-simple-rtsp-server-for-frc-or-anywhere-else/348935/15
+        for a possible better robot to driver station video streaming solution.
+
+    Figure out a way to log events and data from the robot for post match viewing.
+        -Figure out a system for where to put prints/logs in autonomous and what we should print/log in auto code.
