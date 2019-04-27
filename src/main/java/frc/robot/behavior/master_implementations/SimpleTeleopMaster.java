@@ -34,7 +34,7 @@ public class SimpleTeleopMaster extends TeleopMaster {
         super(subsystem_manager, input_manager);
         mDrivePlanner = mSubsystemManager.mDrivePlanner;
         mButtons = mInputManager.mButtons;
-        mJoysticks = mInputManager.mJoysticks;
+        mJoysticks = mInputManager.mJoysticks; 
      }
 
     public void update(double dt) {
