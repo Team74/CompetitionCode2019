@@ -52,18 +52,19 @@ public class Constants {
     public static final double kEndClimb = 0.0;
 
     //Elevator Constraints
-    public static final double kElevatorMaxVelocity = 0.0;
-    public static final double kElevatorMaxAcceleration = 0.0;
-    public static final double kELevatorMaxJerk = 0.0;
-    public static final double kElevatorMaxVolts = 0.0;
+    public static final double kElevatorMaxVelocity = 0.0;//RPM
+    public static final double kElevatorMaxAcceleration = 0.0;//RPM^2
+    public static final double kELevatorMaxJerk = 0.0;//RPM^3
+    public static final double kElevatorMaxVolts = 0.0;//Volts
     public static final double kElevatorMaxCurrent = 0.0;//Amps
-    public static final double kElevatorCurrentLimit = 0.0;
+    public static final double kElevatorCurrentLimit = 0.0;//Amps
 
     //Elevator PIDF
     public static final double kElevatorP = 0.0;
     public static final double kElevatorI = 0.0;
     public static final double kElevatorD = 0.0;
     public static final double kElevatorF = 1/kElevatorMaxVelocity;
+    public static final double kElevatorFeedfoward = 0.0;
 
     //Wrist Positions
     public static final int kStartingPosition = 0;

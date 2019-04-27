@@ -1,15 +1,15 @@
 package frc.robot.subsystems;
 
 public interface Subsystem {
-    //Calculates output
-    void output();
 
-    //Starts the subsystem, run during autoinit
-    void start();
+    public void readPeriodicInputs();
 
-    //Stops updating the subsystem
-    void stop();
+    public void writePeriodicOutputs();
 
-    //Updates the Subsystems
-    void update(double dt);
+    //Method to write subsystem data to dashboard
+    public void outputTelemetry();
+
+    public void stop();
+
+    public void zeroSensors();
 }

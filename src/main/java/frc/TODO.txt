@@ -20,6 +20,14 @@ Todo:
         -Figure out how to test the subsystems; also possibly simulate them in code?
 
     Rearchitect swerve code to better work with pose tracking and path following, also to be cleaner in general.
+        -Change deadband calculations from individually on the x and y axis, to the magnitude of the <x, y> vecotor, the method for this si in Utilities, just need to work it into swerve code.
+            -Then scale the deadzone so that the first input should just get the robot moving and the furthest input should be maximum speed
+        -Implement a "snap to pole" driver asist for field centric translation.
+        -Implement a heading lock.
+            -Activly corrects changes in heading.
+        -Implement automatic heading changes.
+            -ie. press a button snap the robot to facing directly right, or whatever we set them as.
+            -If the driver manually changes the rotation, the robot ahould keep the new heading
 
     Instead of subsytemManager containing the continuosly updating classes, maybe make another class that we can store them in? Not sure if this is worth it.
 
@@ -42,3 +50,5 @@ Todo:
 
     Figure out a way to log events and data from the robot for post match viewing.
         -Figure out a system for where to put prints/logs in autonomous and what we should print/log in auto code.
+
+    Redo dashboard class to have each subsystem output it's own data

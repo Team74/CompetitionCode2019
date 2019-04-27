@@ -33,8 +33,8 @@ public class DrivePlanner implements Updateable {
     private boolean useDefaultCook = true;
 
     //For auto pathfollowing
-    private static final double kMaxDx = .25;
-    private static final double kMaxDy = 2.0;
+    private static final double kMaxDx = 2.0;
+    private static final double kMaxDy = .25;
     private static final double kMaxDTheta = Math.toRadians(5.0);
 
     //Used in controlling the rotation
@@ -98,8 +98,8 @@ public class DrivePlanner implements Updateable {
         boolean _revearsed, 
         final List<Pose2d> _waypoints, 
         final List<TimingConstraints<Pose2dWithCurvature>> _constraints,
-        double _maxVelocity,
-        double _maxAcceleration,
+        double _maxVelocity, // inches/s
+        double _maxAcceleration, // inches/s^2
         double _maxDeceleration,
         double _maxVoltage,
         double _defaultVelocity,
@@ -125,8 +125,8 @@ public class DrivePlanner implements Updateable {
             final List<TimingConstraints<Pose2dWithCurvature>> _constraints,
             double _startVelocity,
             double _endVelocity,
-            double _maxVelocity,
-            double _maxAcceleration,
+            double _maxVelocity, // inches/s^2
+            double _maxAcceleration, // inches/s^2
             double _maxDeceleration,
             double _maxVoltage,
             double _defaultVelocity,
@@ -142,7 +142,7 @@ public class DrivePlanner implements Updateable {
         }
 
         //Create a trajectory from the spline waypoints
-        Trajectory<Pose2dWithCurvature> trajectory = trajectory = TrajectoryUtil.trajectoryFromSplineWaypoints(waypointsMaybeFlipped, kMaxDx, kMaxDy, kMaxDTheta);
+        Trajectory<Pose2dWithCurvature> trajectory = TrajectoryUtil.trajectoryFromSplineWaypoints(waypointsMaybeFlipped, kMaxDx, kMaxDy, kMaxDTheta);
 
         if (_reversed) {
             List<Pose2dWithCurvature> flipped = new ArrayList<>(trajectory.length());

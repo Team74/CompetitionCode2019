@@ -100,6 +100,10 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
         cos_angle * other.sin_angle + sin_angle * other.cos_angle, true);
     }
 
+    public Rotation2d normal() {
+        return new Rotation2d(-sin_angle, cos_angle, false);
+    }
+
     //Inverse undoes this rotation
     public Rotation2d inverse() {
         return new Rotation2d(cos_angle, -sin_angle, false);
@@ -111,6 +115,19 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
 
     public Translation2d toTranslation() {
         return new Translation2d(cos_angle, sin_angle);
+    }
+
+    public Rotation2d nearestPole() {
+        double pole_sin = 0.0;
+        double pole_cos = 0.0;
+        if (Math.abs(cos_angle) > Math.abs(sin_angle)) {
+            pole_cos = Math.signum(cos_angle);
+            pole_sin = 0.0;
+        } else {
+            pole_cos = 0.0;
+            pole_sin = Math.signum(sin_angle);
+        }
+        return new Rotation2d(pole_cos, pole_sin, false);
     }
 
     @Override

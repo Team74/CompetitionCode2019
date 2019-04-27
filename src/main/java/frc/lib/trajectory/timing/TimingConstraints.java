@@ -31,7 +31,7 @@ public interface TimingConstraints<S> {
         }
 
         public boolean valid() {
-            return minAcceleration <= maxAcceleration;
+            return minAcceleration() <= maxAcceleration();
         }
     }
 }

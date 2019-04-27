@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import frc.robot.RobotMap;
 import frc.robot.Constants;
 
 public class Superstructure implements Subsystem {
@@ -52,7 +51,7 @@ public class Superstructure implements Subsystem {
     }
 
     public void commandAngle(int _newAngle) {
-        mWrist.commandAngle(_newAngle);
+        mWrist.setAngle(_newAngle);
     }
 
     public void setIntakePower(double _power) {

@@ -33,6 +33,7 @@ public class DistanceView<S extends State<S>> implements TrajectoryView<S> {
                 }
             }
         }
+        throw new RuntimeException();
     }
 
     @Override

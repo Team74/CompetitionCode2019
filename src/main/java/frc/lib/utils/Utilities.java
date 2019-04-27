@@ -1,5 +1,6 @@
 package frc.lib.utils;
 
+import frc.lib.utils.geometry.*;
 public class Utilities {
     
     //Really small number
@@ -10,8 +11,12 @@ public class Utilities {
 
     }
 
-    public static double handleDeadband(double input, double kDeadband) {
+    public static double handleDeadband1D(double input, double kDeadband) {
         return Math.abs(input) <= kDeadband ? 0 : input; 
+    }
+
+    public static Translation2d handleDeadband2D(Translation2d input, double kDeadband) {
+        return input.norm() >= kDeadband ? new Translation2d() : input;
     }
 
     public static boolean doubleToBool(double input){
@@ -37,7 +42,7 @@ public class Utilities {
         return vector;
     }
     
-    //Limits the given input to the given magnitude
+    //Functions to limit the input to a range a values
     public static double limit(double v, double maxMagnitude) {
         return limit(v, -maxMagnitude, maxMagnitude);
     }
