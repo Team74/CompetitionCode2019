@@ -140,7 +140,6 @@ public class TrajectoryGenerator {
             leftCrossLine = getLeftCrossLine();
             centerCrossLine = getCenterCrossLine();
             rightCrossLine = getRightCrossLine();
-
         }
 
         //TODO: kMaxDeceleration can be changed for differant paths

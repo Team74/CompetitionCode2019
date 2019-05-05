@@ -1,9 +1,7 @@
 package frc.lib.trajectory.timing;
 
 import frc.lib.trajectory.*;
-import frc.lib.trajectory.timing.TimingConstraints.MinMaxAcceleration;
 import frc.lib.utils.geometry.*;
-import frc.lib.utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
