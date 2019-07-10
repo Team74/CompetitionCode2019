@@ -1,5 +1,7 @@
 package frc.lib.utils.geometry;
 
+import org.opencv.core.Mat;
+
 import frc.lib.utils.Utilities;
 //Stores x, y positions as vectors, or transformations from the origin
 
@@ -33,6 +35,18 @@ public class Translation2d implements ITranslation2d<Translation2d> {
         y = other.y;
     }
 
+    public static Translation2d fromXY(double _x, double _y) {
+        return fromXYS(_x, _y, 1.0);
+    }
+
+    public static Translation2d fromXYS(double _x, double _y, double _s) {
+        return new Translation2d(_x , _y).scale(_s);
+    }
+
+    public static Translation2d fromPolar(Rotation2d direction, double magnitude) {
+        return new Translation2d(direction.cos(), direction.sin()).scale(magnitude);
+    }
+
     public double x() {
         return x;
     }
@@ -48,8 +62,11 @@ public class Translation2d implements ITranslation2d<Translation2d> {
     public void setY(double _y){
         y = _y;
     }
-
-    //You can combine transforms by adding the x and y shifts AKA adding vectors
+    /**
+     * You can combine transforms by adding the x and y shifts AKA adding vectors
+     * @param other
+     * @return This + other
+     */
     public Translation2d translateBy(final Translation2d other) {
         return new Translation2d(x + other.x, y + other.y);
     }
@@ -82,9 +99,18 @@ public class Translation2d implements ITranslation2d<Translation2d> {
         return new Translation2d(e * (other.x - x) + x, e * (other.y - y) + y);
     }
 
+    public Translation2d scale(double _s) {
+        return new Translation2d(x * _s, y * _s);
+    }
+
     //The "norm" of a transform is th Euclidean distance in x and y. AKA the length of the vector 
     public double norm() {
         return Math.hypot(x, y);
+    }
+
+    //Returns norm squared
+    public double norm2() {
+        return Math.pow(x, 2) + Math.pow(y, 2);
     }
 
     public boolean epsilonEquals(final Translation2d other, double epsilon) {

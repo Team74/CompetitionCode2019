@@ -1,5 +1,7 @@
 package frc.robot;
 
+import frc.lib.utils.geometry.Translation2d;
+
 public class Constants {
     public static final double dt = 0.02;
     public static final double kJoystickDeadband = 0.05;
@@ -11,6 +13,20 @@ public class Constants {
     public static final double kRobotHalfLength = kRobotLength / 2.0;
     public static final double kIntakeLength = 0.0;
 
+    //Swerve Dimensions
+    public static final double kWheelBaseWidth = 24.375;
+    public static final double kWheelBaseLength = 22.375;
+    public static final double kHalfWidth = kWheelBaseWidth / 2;
+    public static final double kHalfLength = kWheelBaseLength / 2;
+    public static final double kSwerveDiagonal = Math.hypot(kWheelBaseWidth, kWheelBaseLength);
+
+    //About turning center which is at (0,0)
+    public static final Translation2d kVehicleToFrontLeftSwerve = new Translation2d(-kHalfWidth, kHalfLength);
+    public static final Translation2d kVehicleToFrontRightSwerve = new Translation2d(kHalfWidth, kHalfLength);
+    public static final Translation2d kVehicleToRearRightSwerve = new Translation2d(kHalfWidth, -kHalfLength);
+    public static final Translation2d kVehicleToRearLeftSwerve = new Translation2d(-kHalfWidth, -kHalfLength);
+
+
     //Swerve Constraints
     public static final double kRobotMaxVelocity = 0.0;
     public static final double kRobotMaxAcceleration = 0.0;
@@ -19,15 +35,19 @@ public class Constants {
     public static final int kRobotSteeringMaxAcceleration = 0;
     public static final int kRobotSteeringMaxJerk = 0;
 
+    public static final double kLowSpeedPercent = 0.0;
+    public static final double kMidSpeedPercent = 0.0;
+    public static final double kHighSpeedPercent = 0.0;
+
     //Swerve PIDF
-    public static final double kDriveP = 0.0;
-    public static final double kDriveI = 0.0;
+    public static final double kDriveP = 0.0002;
+    public static final double kDriveI = 1e-6;
     public static final double kDriveD = 0.0;
-    public static final double kDriveF = 1 / kRobotMaxVelocity;
-    public static final double kSteeringP = 0.0;
+    public static final double kDriveF = 0.0;
+    public static final double kSteeringP = 15;
     public static final double kSteeringI = 0.0;
     public static final double kSteeringD = 0.0;
-    public static final double kSteeringF = 1023 / kRobotSteeringMaxVelocity;
+    public static final double kSteeringF = 4.44;
 
     //Elevator Positions
     public static final double kElevatorStartingPosition = 0.0;

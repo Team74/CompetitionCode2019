@@ -13,20 +13,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class DrivePlanner implements Updateable {
+public class DrivePlanner {
     private static DrivePlanner kInstance = null;
 
     private final SubsystemManager mSubsytemManager = SubsystemManager.getInstance();
     public Drivetrain mDrivetrain = Drivetrain.getInstance();
-
-    //For teleop swerve control
-    private final int kLowSpeed = 1000;
-    private final int kMidSpeed = 2500;
-    private final int kHighSpeed = 5000;
-    public double speed = 0.0;
-    public double angle = 0.0;
-    public double rotation = 0.0;
-    private double gyroVal;
 
     //For trajectory generating
     private double defaultCook = 0.5;
@@ -55,10 +46,6 @@ public class DrivePlanner implements Updateable {
     Translation2d output = Translation2d.identity();
 
     double dt = 0.0;
-
-    public static enum Speed{
-        Low, Mid, High;
-    }
 
     public static DrivePlanner getInstance() {
         if (kInstance == null) {
@@ -166,57 +153,28 @@ public class DrivePlanner implements Updateable {
         timedTrajectory.setDefaultVelocity(_defaultVelocity / Constants.kRobotMaxVelocity);
         return timedTrajectory;
     }
-    
-    public void setSpeed(Speed _speed){
-        switch(_speed){
-            case Low:
-                //System.out.println("Set Speed: Low");
-                mDrivetrain.lf.kMaxVel = kLowSpeed;
-                mDrivetrain.lb.kMaxVel = kLowSpeed;
-                mDrivetrain.rf.kMaxVel = kLowSpeed;
-                mDrivetrain.rb.kMaxVel = kLowSpeed;
-                break;
-            case Mid:
-                //System.out.println("Set Speed: Mid");
-                mDrivetrain.lf.kMaxVel = kMidSpeed;
-                mDrivetrain.lb.kMaxVel = kMidSpeed;
-                mDrivetrain.rf.kMaxVel = kMidSpeed;
-                mDrivetrain.rb.kMaxVel = kMidSpeed;
-                break;
-            case High:
-                //System.out.println("Set Speed: High");
-                mDrivetrain.lf.kMaxVel = kHighSpeed;
-                mDrivetrain.lb.kMaxVel = kHighSpeed;
-                mDrivetrain.rf.kMaxVel = kHighSpeed;
-                mDrivetrain.rb.kMaxVel = kHighSpeed;
-                break;
-            default:
-                //System.out.println("Set Speed: Default");
-                mDrivetrain.lf.kMaxVel = kMidSpeed;
-                mDrivetrain.lb.kMaxVel = kMidSpeed;
-                mDrivetrain.rf.kMaxVel = kMidSpeed;
-                mDrivetrain.rb.kMaxVel = kMidSpeed;
-                break;
-        }
+
+    public void setTargetHeading(double _targetHeading, double _rotationTimeDuration, Pose2d _robotPose) {
+        double currentRobotHeading = _robotPose.getRotation().getUnboundedDegrees();
+        targetHeading = Utilities.placeInAppropriate0To360Scope(currentRobotHeading, _targetHeading);
+        headingDifferential = targetHeading - currentRobotHeading;
+        rotationStartTime = currentTrajectory.getProgress();
+        rotationEndTime = rotationStartTime + _rotationTimeDuration;
+        rotationTimeDuration = _rotationTimeDuration;
     }
 
-    public void swerve(double _lx, double _ly, double _rx) {
-        speed = Math.hypot(_lx, _ly);
-        angle = Math.atan2(_ly, _lx);
-        rotation = _rx/30;
-
-        gyroVal = mDrivetrain.gyro.getAngle();
-        gyroVal *= Math.PI / 180;
-
-        angle -= gyroVal;
-
-        angle %= 2*Math.PI;
-        angle += (angle < -Math.PI) ? 2*Math.PI : 0;
-        angle -= (angle > Math.PI) ? 2*Math.PI : 0;
-        angle += Math.PI/2;
+    public double getHeading() {
+        return currentHeading;
     }
+
+    //The following center releative to the robots center
+    public void setFollowingCenter(Translation2d _followingCenter) {
+        followingCenter = _followingCenter;
+    }
+
+
 
     public void update(double dt) {
-;        mDrivetrain.setMove(speed, angle, rotation);
+        //prob nothing here
     }
 }

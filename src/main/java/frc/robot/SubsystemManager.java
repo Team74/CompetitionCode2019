@@ -53,11 +53,9 @@ public class SubsystemManager implements Updateable {
         mDrivePlanner = DrivePlanner.getInstance();
 
         mSupport.add(mStateMachine);
-        mSupport.add(mDrivePlanner);
         mSupport.add(mStateTracker);
         mSupport.add(mDashboard);
 
-        mDrive.add(mDrivePlanner);
         mDrive.add(mDrivetrain);
 
         // ... set up other Subsystems if present

@@ -9,27 +9,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrajectoryUtil {
-    public static <S extends IPose2d<S>> Trajectory<S> mirror(final Trajectory<S> trajectory) {
-        List<S> waypoints = new ArrayList<>(trajectory.length());
-        for (int i = 0; i < trajectory.length(); ++i) {
-            waypoints.add(trajectory.getState(i).mirror());
+    public static <S extends IPose2d<S>> Trajectory<S> mirror(final Trajectory<S> _trajectory) {
+        List<S> waypoints = new ArrayList<>(_trajectory.length());
+        for (int i = 0; i < _trajectory.length(); ++i) {
+            waypoints.add(_trajectory.getState(i).mirror());
         }
         return new Trajectory<>(waypoints);
     }
 
-    public static  <S extends IPose2d<S>> Trajectory<TimedState<S>> mirrorTimed(final Trajectory<TimedState<S>> trajectory) {
-        List<TimedState<S>> waypoints = new ArrayList<>(trajectory.length());
-        for (int i = 0; i < trajectory.length(); ++i) {
-            TimedState<S> timedState = trajectory.getState(i);
+    public static  <S extends IPose2d<S>> Trajectory<TimedState<S>> mirrorTimed(final Trajectory<TimedState<S>>  _trajectory, double _defaultVelocity) {
+        List<TimedState<S>> waypoints = new ArrayList<>(_trajectory.length());
+        for (int i = 0; i < _trajectory.length(); ++i) {
+            TimedState<S> timedState = _trajectory.getState(i);
             waypoints.add(new TimedState<S>(timedState.state().mirror(), timedState.t(), timedState.velocity(), timedState.acceleration()));
         }
-        return new Trajectory<>(waypoints);
+        Trajectory<TimedState<S>> tempTrajectory = new Trajectory<TimedState<S>>(waypoints);
+        tempTrajectory.setDefaultVelocity(_defaultVelocity);
+        return tempTrajectory;
     }
 
-    public static <S extends IPose2d<S>> Trajectory<S> transform(final Trajectory<S> trajectory, Pose2d transform) {
-        List<S> waypoints = new ArrayList<>(trajectory.length());
-        for (int i = 0; i < trajectory.length(); ++i) {
-            waypoints.add(trajectory.getState(i).transformBy(transform));
+    public static <S extends IPose2d<S>> Trajectory<S> transform(final Trajectory<S> _trajectory, Pose2d _transform) {
+        List<S> waypoints = new ArrayList<>(_trajectory.length());
+        for (int i = 0; i < _trajectory.length(); ++i) {
+            waypoints.add(_trajectory.getState(i).transformBy(_transform));
         }
         return new Trajectory<>(waypoints);
     }
@@ -39,6 +41,7 @@ public class TrajectoryUtil {
         for (int i = 1; i < waypoints.size(); ++i) {
             splines.add(new QuinticHermiteSpline(waypoints.get(i - 1), waypoints.get(i)));
         }
+        QuinticHermiteSpline.optimizeSpline(splines);
         return trajectoryFromSplines(splines, maxDx, maxDy, maxDTheta);
     }
 
