@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sun.jdi.Mirror;
+
+import edu.wpi.first.wpilibj.Timer;
+
 /*
 This is the class we will use to generate inital trajectories we want to follow.
 It will contain all the functions and variables neccessary to generate those paths, ie. waypoints
@@ -29,11 +33,7 @@ public class TrajectoryGenerator {
     private static final double kMaxVelocity = 0.0;//inches per second
     private static final double kMaxAcceleration = 0.0;//inches per second^2
     private static final double kMaxDeceleration = 0.0;
-    private static final double kMaxCentripetalAccelerationElevatorDown = 0.0;//iniches per seconds^2 Possibly define this value as a scalar based on elevator height?
-    private static final double kMaxCentripetalAcceleration = 0.0;
     private static final double kMaxVoltage = 0.0;//Volts
-    private static final double kDefaultVelocity = 0.0;
-    private static final int kSlowdownChunks = 1;
     
     private final DrivePlanner mDrivePlanner = DrivePlanner.getInstance();
     private Trajectories mTrajectories = null;
@@ -51,9 +51,10 @@ public class TrajectoryGenerator {
 
     public void generateTrajectories() {
         if (mTrajectories == null) {
+            double startTime = Timer.getFPGATimestamp();
             System.out.println("Generating trajectories... ");
             mTrajectories = new Trajectories();
-            System.out.println("Finished generating trajectories");
+            System.out.println("Finished generating trajectories in: " + (Timer.getFPGATimestamp() - startTime) + " seconds");
         }
     }
 
@@ -117,57 +118,80 @@ public class TrajectoryGenerator {
     */
 
     //TODO: adjust these so positions are correct and rework how some of the crossline points are calculated.
-    public static final Pose2d kLeftStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0));
-    public static final Pose2d kCenterStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0));
-    public static final Pose2d kRightStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0));
+    public static final Pose2d kOrigin = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0.0));
+    public static final Pose2d kTestPathEnd = new Pose2d(new Translation2d(50.0, 0.0), Rotation2d.fromDegrees(0.0));
 
-    public static final Pose2d kLeftHighStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0));
-    public static final Pose2d kRightHighStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0));
+    public static final Pose2d kLeftStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0.0));
+    public static final Pose2d kCenterStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0.0));
 
-    public static final Pose2d kCrossLine = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0));
+    public static final Pose2d kLeftHighStart = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0.0));
+
+    public static final Pose2d kCrossLine = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0.0));
 
     public static final Pose2d kLeftCrossLine = kLeftStart.transformBy(kCrossLine);
     public static final Pose2d kCenterCrossLine = kCenterStart.transformBy(kCrossLine);
-    public static final Pose2d kRightCrossLine = kRightStart.transformBy(kCrossLine);
 
     public class Trajectories {
 
-        public final Trajectory<TimedState<Pose2dWithCurvature>> leftCrossLine;
-        public final Trajectory<TimedState<Pose2dWithCurvature>> centerCrossLine;
-        public final Trajectory<TimedState<Pose2dWithCurvature>> rightCrossLine;
+        public class MirroredTrajectory {
+
+            public final Trajectory<TimedState<Pose2dWithCurvature>> left;
+            public final Trajectory<TimedState<Pose2dWithCurvature>> right;
+
+            public MirroredTrajectory(Trajectory<TimedState<Pose2dWithCurvature>> _left) {
+                this.left = _left;
+                this.right = TrajectoryUtil.mirrorTimed(_left, _left.defaultVelocity());
+            }
+
+            public Trajectory<TimedState<Pose2dWithCurvature>> get(boolean _isLeft) {
+                return _isLeft ? this.left : this.right;
+            }
+        }
+
+        public final Trajectory<TimedState<Pose2dWithCurvature>> testPath;
+
+        public final MirroredTrajectory dismount;
+
+        public final MirroredTrajectory sideCrossLine;
+        public final MirroredTrajectory centerCrossLine;
 
         private Trajectories() {
-            leftCrossLine = getLeftCrossLine();
-            centerCrossLine = getCenterCrossLine();
-            rightCrossLine = getRightCrossLine();
+            testPath = getTestPath();
+            dismount = new MirroredTrajectory(getDismount());
+            sideCrossLine = new MirroredTrajectory(getSideCrossLine());
+            centerCrossLine = new MirroredTrajectory(getCenterCrossLine());
 
         }
 
         //TODO: kMaxDeceleration can be changed for differant paths
         //      kDefaultVelocity can be changed for differant paths
         //      kSlowdownChunks can be changed for differant paths
-        private Trajectory<TimedState<Pose2dWithCurvature>> getLeftCrossLine() {
+        private Trajectory<TimedState<Pose2dWithCurvature>> getTestPath() {
+            List<Pose2d> waypoints = new ArrayList<>();
+            waypoints.add(kOrigin);
+            waypoints.add(kTestPathEnd);
+            return generateTrajectory(false, waypoints, Arrays.asList(), kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
+        }
+
+        private Trajectory<TimedState<Pose2dWithCurvature>> getSideCrossLine() {
             List<Pose2d> waypoints = new ArrayList<>();
             waypoints.add(kLeftStart);
             waypoints.add(kLeftCrossLine);
-            return generateTrajectory(false, waypoints, Arrays.asList(new CentripitalAccelerationConstraint(kMaxCentripetalAccelerationElevatorDown)),
-            kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
+            return generateTrajectory(false, waypoints, Arrays.asList(), kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
         }
 
         private Trajectory<TimedState<Pose2dWithCurvature>> getCenterCrossLine() {
             List<Pose2d> waypoints = new ArrayList<>();
             waypoints.add(kCenterStart);
             waypoints.add(kCenterCrossLine);
-            return generateTrajectory(false, waypoints, Arrays.asList(new CentripitalAccelerationConstraint(kMaxCentripetalAccelerationElevatorDown)),
-                    kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
+            return generateTrajectory(false, waypoints, Arrays.asList(), kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
         }
 
-        private Trajectory<TimedState<Pose2dWithCurvature>> getRightCrossLine() {
+        private Trajectory<TimedState<Pose2dWithCurvature>> getDismount() {
             List<Pose2d> waypoints = new ArrayList<>();
-            waypoints.add(kRightStart);
-            waypoints.add(kRightCrossLine);
-            return generateTrajectory(false, waypoints, Arrays.asList(new CentripitalAccelerationConstraint(kMaxCentripetalAccelerationElevatorDown)),
-                    kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
+            waypoints.add(kLeftHighStart);
+            waypoints.add(kLeftStart);
+            return generateTrajectory(false, waypoints, Arrays.asList(), kMaxVelocity, kMaxAcceleration, kMaxDeceleration, kMaxVoltage, 0, 1);
         }
     }
 

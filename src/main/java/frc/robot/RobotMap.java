@@ -6,25 +6,12 @@ import com.revrobotics.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
-/*
-This class sets up all the different things related to the PWM, plus some other stuff. It'll get passed in to other classes so they can get references back to the individual components.
-*/
+/**
+ * This class sets up all the different things related to the PWM, plus some other stuff. Use getInstance to ensure that there is only one instance of all of this stuff at a time;
+ */
 public class RobotMap {
     //Singular instance of the class
     private static RobotMap kInstance = null;
-
-    //These are set in inches
-    public final double wheelBaseWidth = 24.375;
-    public final double wheelBaseDepth = 22.375;
-
-    public final double wheelDiameter = 0.0;//Meters
-
-    public final double countsPerRev = 0.0;//Encoder ticks per revolution for drive motors
-    
-    //These need to be in meters per second
-    public final double maxVel = 0.0;
-    public final double maxAccel = 0.0;
-    public final double maxJerk = 0.0;
 
     //bunch of references to motors and such
     public CANSparkMax Drive_0 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);//Front left
