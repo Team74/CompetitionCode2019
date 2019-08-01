@@ -14,6 +14,11 @@ public class Wrist implements Subsystem {
     private PeriodicIO periodicIO = new PeriodicIO();
     private WristControlState wristControlState = WristControlState.OPEN_LOOP;
 
+    private double wristAngle = 0.0;//Degrees
+
+    //Is the subsytem running
+    private boolean isActive = false;
+
     public static Wrist getInstance() {
         if (kInstance == null) {
             kInstance = new Wrist();
@@ -37,29 +42,86 @@ public class Wrist implements Subsystem {
         wristMotor.configNominalOutputReverse(1.0, 10);
     }
 
+    public void commandWrist(double _wristDemand, WristControlState _WristControlState) {
+        switch(_WristControlState) {
+            case OPEN_LOOP:
+                setOpenLoop(_wristDemand);
+                break;
+            case POSITION_PID:
+                setPositionPID(_wristDemand);
+                break;
+            case MOTION_MAGIC:
+                setMotionMagic(_wristDemand);
+                break;
+            default:
+                break;
+        }
+    }
+
     public void setOpenLoop(double percentage) {
         wristControlState = WristControlState.OPEN_LOOP;
         periodicIO.demand = percentage;
     }
 
-    public void setPositionPIDPosition(double position) {
+    public void setPositionPID(double position) {
         wristControlState = WristControlState.POSITION_PID;
         periodicIO.demand = position;
     }
 
-    public void setMotionMagicPosition(double position) {
+    public void setMotionMagic(double position) {
         wristControlState = WristControlState.MOTION_MAGIC;
         periodicIO.demand = position;
     }
 
+    /**
+     * Method to set our angle calculation to zero.
+     * Warning: this does not effect the sesnsors.
+     */
+    public void zeroAngle() {
+
+    }
+
+    public double getAngle() {
+        return wristAngle;
+    }
+
+    /**
+     * Method to manually set the angle calculation to a value.
+     * @param _newAngle Value to set the calculation to.
+     */
+    public void setAngle(double _newAngle) {
+        wristAngle = _newAngle;
+    }
+
+    /**
+     * Sets the sensor to zero.
+     */
     @Override
     public void zeroSensors() {
         wristMotor.setSelectedSensorPosition(0);
     }
 
+    public double getSensorPosition() {
+        return wristMotor.getSelectedSensorPosition(0);
+    }
+
+    @Override
+    public void start() {
+        if (!isActive) {
+            isActive = true;
+        }
+    }
+
     @Override
     public void stop() {
+        if (isActive) {
+            isActive = false;
+        }
+    }
 
+    @Override
+    public boolean isActive() {
+        return isActive;
     }
 
     @Override
@@ -77,7 +139,7 @@ public class Wrist implements Subsystem {
 
     }
 
-    private enum WristControlState {
+    public enum WristControlState {
         OPEN_LOOP,
         POSITION_PID,
         MOTION_MAGIC;
@@ -85,18 +147,22 @@ public class Wrist implements Subsystem {
 
     public static class PeriodicIO {
         //Inputs
+        //Control mode to run the motor controller in.
         public ControlMode controlMode;
+        //Sensor position reading.
         public int positionTicks;
+        //Sensor velocity reading.
         public int velocityTicks;
+        //Information from the current Trajectory if using Motion Magic
         public double activeTrajectoryPosition;
         public double activeTrajectoryVelocity;
         public double activeTrajectoryAcceleration;
+        //State of any limit switches in the system.
         public boolean limitSwitch;
+        //Arbitrary number to add to the output sent to the motors.
         public double arbFeedforward;
         public double t;
-
-
-        //Outputs
+        //What to pass to the control setup.
         public double demand;
     }
 

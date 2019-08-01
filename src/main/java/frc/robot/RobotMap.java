@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.lib.motorcontroller.TalonSRXBuilder;
+import frc.lib.motorcontroller.WrappedSparkMax;
 
 import com.revrobotics.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -30,9 +31,7 @@ public class RobotMap {
     public TalonSRX Steering_2 = TalonSRXBuilder.buildDefaultTalon(4);//Front right Steering Motor
     public TalonSRX Steering_3 = TalonSRXBuilder.buildDefaultTalon(5);//Back right Steering Motor
 
-    public CANSparkMax Elevator_0 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
-
-    public CANEncoder Elevator_E_0;
+    public WrappedSparkMax Elevator_0 = new WrappedSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     public TalonSRX Intake_0 = TalonSRXBuilder.buildDefaultTalon(1);//Front
     public TalonSRX Intake_1 = TalonSRXBuilder.buildDefaultTalon(2);//Back

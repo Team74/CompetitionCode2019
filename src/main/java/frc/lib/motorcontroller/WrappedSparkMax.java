@@ -3,17 +3,19 @@ package frc.lib.motorcontroller;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANError;
 import com.revrobotics.CANPIDController;
+import com.revrobotics.CANPIDController.AccelStrategy;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
+
 
 /** 
  * Class to contain all 3 parts of the sparkMax for easy access in code
  * Also provides duplicate command protection
  */
 
-public class WrappedSpark {
+public class WrappedSparkMax {
     private final CANSparkMax motor;
     private final CANPIDController controller;
     private final CANEncoder encoder;
@@ -31,11 +33,11 @@ public class WrappedSpark {
     private int lastSlotID = 0;
     private double lastArbFeedforward = 0.0;
 
-    public WrappedSpark(int _deviceID) {
+    public WrappedSparkMax(int _deviceID) {
         this(_deviceID, MotorType.kBrushless);
     }
 
-    public WrappedSpark(int _deviceID, MotorType _motorType) {
+    public WrappedSparkMax(int _deviceID, MotorType _motorType) {
         motor = new CANSparkMax(_deviceID, _motorType);
         controller = motor.getPIDController();
         encoder = motor.getEncoder();
@@ -66,7 +68,7 @@ public class WrappedSpark {
 
     /**
      * @param _idleMode IdleMode to set motor to
-     * @return CANError.kOK is successful
+     * @return CANError.kOK if successful
      */
     public CANError setIdleMode(IdleMode _idleMode) {
         if (_idleMode == lastIdleMode) return CANError.kOK;
@@ -82,10 +84,20 @@ public class WrappedSpark {
     }
 
     /**
+     * Method to read the position of the sensor.
      * @return The position of the encoder
      */
     public double getPosition() {
         return encoder.getPosition();
+    }
+
+    /**
+     * Method to manually set the positon of the sensor.
+     * @param _position Position to set the sensor to.
+     * @return CANError.kOK if successful
+     */
+    public CANError setPosition(double _position) {
+        return encoder.setPosition(_position);
     }
 
     /**
@@ -117,6 +129,19 @@ public class WrappedSpark {
         if (gains[_slotID][3] == _gain) return CANError.kOK;
         gains[_slotID][3] = _gain;
         return controller.setFF(gains[_slotID][3], _slotID);
+    }
+
+    public CANError configSmartMotion(double _maxVelocity, double _minVelocity, double _maxAcceleration, AccelStrategy _accelStrategy, double _minOutputRange, double _maxOutputRange, int _slotID) {
+        if (getPIDController().setSmartMotionMaxVelocity(_maxVelocity, _slotID) == CANError.kOK &&
+            getPIDController().setSmartMotionMinOutputVelocity(_minVelocity, _slotID) == CANError.kOK &&
+            getPIDController().setSmartMotionMaxAccel(_maxAcceleration, _slotID) == CANError.kOK &&
+            getPIDController().setSmartMotionAccelStrategy(_accelStrategy, _slotID) == CANError.kOK &&
+            getPIDController().setOutputRange(_minOutputRange, _maxOutputRange, _slotID) == CANError.kOK) 
+        {
+            return CANError.kOK;
+        } else {
+            return CANError.kError;
+        }
     }
 
     /**

@@ -52,3 +52,5 @@ Todo:
         -Figure out a system for where to put prints/logs in autonomous and what we should print/log in auto code.
 
     Redo dashboard class to have each subsystem output it's own data
+
+    Implement a fromRotation Pose2d geometry class constructor. Should Take a Rotation2d object as input and construct a Pose2d. 

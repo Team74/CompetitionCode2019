@@ -8,7 +8,7 @@ import frc.robot.subsystems.Subsystem;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class BallIntake {
+public class BallIntake implements Subsystem {
     public static BallIntake kInstance = null;
 
     private final RobotMap mRobotMap = RobotMap.getInstance();
@@ -16,6 +16,7 @@ public class BallIntake {
     private final TalonSRX frontMotor = mRobotMap.Intake_0;
     private final TalonSRX backMotor = mRobotMap.Intake_1;
 
+    //Is the subsytem running
     private boolean isActive = false;
 
     private double frontIntakePower;
@@ -42,6 +43,11 @@ public class BallIntake {
             isActive = false;
         }
 
+    }
+    
+    @Override
+    public boolean isActive() {
+        return isActive;
     }
 
     public void setIntakePower(double _power) {

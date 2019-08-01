@@ -9,7 +9,11 @@ public interface Subsystem {
     //Method to write subsystem data to dashboard
     public void outputTelemetry();
 
+    public void start();
+
     public void stop();
+
+    public boolean isActive();
 
     public void zeroSensors();
 }
